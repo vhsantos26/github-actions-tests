@@ -20,6 +20,6 @@ runs:
     - ${{ inputs.sonar_login }}
     - ${{ inputs.sonar_project_settings }}
     - ${{ inputs.sonar_working_directory }}
-  pre-entrypoint: 'pre-entrypoint.sh'
-  entrypoint: 'entrypoint'
-  post-entrypoint: 'post-entrypoint'
+  pre-entrypoint: 'scripts/pre-entrypoint.sh'
+  entrypoint: 'scripts/entrypoint'
+  post-entrypoint: 'scripts/post-entrypoint'
