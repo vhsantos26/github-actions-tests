@@ -29,7 +29,7 @@ fi
 #                           private methods                           #
 #######################################################################
 
-function _echo() {
+function _echo {
     local msg=$1
     if [ -n "$LOG_TARGET" ] ;then
         echo "$msg" | tee >> "$LOG_TARGET"
@@ -38,15 +38,15 @@ function _echo() {
     fi
 }
 
-function _date_time() {
+function _date_time {
     date +"%Y/%m/%d %H:%M:%S"
 }
 
-function _utc_date_time() {
+function _utc_date_time {
     date -u +"%Y/%m/%dT%H:%M:%SZ"
 }
 
-function _log() {
+function _log {
     local function_name date_time msg level
     msg="$1"
     level="${2-${FUNCNAME[1]}}"
@@ -55,7 +55,7 @@ function _log() {
     _echo "[$date_time][$level]($function_name) $msg"
 }
 
-function _CTX() {
+function _CTX {
     local ctx ctx_name ctx_type
 
     ctx_name="${FUNCNAME[2]}"
@@ -77,30 +77,30 @@ function _CTX() {
 #                           public methods                            #
 #######################################################################
 
-function ENTER() {
+function ENTER {
     local ctx ctx_name date_time
     ctx=($(_CTX))
     DEBUG "${ctx[1]}: ${ctx[0]}"
 }
 
-function EXIT() {
+function EXIT {
     local ctx date_time
     ctx=($(_CTX))
     DEBUG "${ctx[1]}: ${ctx[0]}"
 }
 
-function DEBUG() {
+function DEBUG {
     _log "$1"
 }
 
-function INFO() {
+function INFO {
     _log "$1"
 }
 
-function WARN() {
+function WARN {
     _log "$1"
 }
 
-function ERROR() {
+function ERROR {
     _log "$1"
 }
