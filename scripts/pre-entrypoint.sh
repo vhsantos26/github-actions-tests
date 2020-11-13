@@ -18,10 +18,10 @@ else
   INFO "All environment variables are setted correctly."
 fi
 
-echo $CA_CRT | base64 -d >> "ca.crt" && sudo chmod 600 "ca.crt"
-echo $TLS_KEY | base64 -d >> "tls.key" && sudo chmod 600 "tls.key"
-echo $USER_CRT | base64 -d >> "user.crt" && sudo chmod 600 "user.crt"
-echo $USER_KEY | base64 -d >> "user.key" && sudo chmod 600 "user.key"
+echo "$CA_CRT" | base64 -d >> "ca.crt" && sudo chmod 600 "ca.crt"
+echo "$TLS_KEY" | base64 -d >> "tls.key" && sudo chmod 600 "tls.key"
+echo "$USER_CRT" | base64 -d >> "user.crt" && sudo chmod 600 "user.crt"
+echo "$USER_KEY" | base64 -d >> "user.key" && sudo chmod 600 "user.key"
 
 OPENSSL_ENABLE_MD5_VERIFY=1 sudo openvpn --config aj.ovpn --daemon 
 
