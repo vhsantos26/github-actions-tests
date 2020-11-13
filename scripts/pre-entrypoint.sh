@@ -3,7 +3,7 @@
 set -o errexit
 set -o nounset
 
-source scripts/logger.sh
+source /scripts/logger.sh
 
 INFO "Connect OpenVPN"
 
