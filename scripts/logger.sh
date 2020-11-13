@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # shellcheck disable=SC1090,SC2155
 #
 # Filename: logger.sh
@@ -29,7 +29,7 @@ fi
 #                           private methods                           #
 #######################################################################
 
-function _echo {
+_echo() {
     local msg=$1
     if [ -n "$LOG_TARGET" ] ;then
         echo "$msg" | tee >> "$LOG_TARGET"
@@ -38,15 +38,15 @@ function _echo {
     fi
 }
 
-function _date_time {
+_date_time() {
     date +"%Y/%m/%d %H:%M:%S"
 }
 
-function _utc_date_time {
+_utc_date_time() {
     date -u +"%Y/%m/%dT%H:%M:%SZ"
 }
 
-function _log {
+_log() {
     local function_name date_time msg level
     msg="$1"
     level="${2-${FUNCNAME[1]}}"
@@ -55,7 +55,7 @@ function _log {
     _echo "[$date_time][$level]($function_name) $msg"
 }
 
-function _CTX {
+_CTX() {
     local ctx ctx_name ctx_type
 
     ctx_name="${FUNCNAME[2]}"
@@ -77,30 +77,30 @@ function _CTX {
 #                           public methods                            #
 #######################################################################
 
-function ENTER {
+ENTER() {
     local ctx ctx_name date_time
     ctx=($(_CTX))
     DEBUG "${ctx[1]}: ${ctx[0]}"
 }
 
-function EXIT {
+EXIT() {
     local ctx date_time
     ctx=($(_CTX))
     DEBUG "${ctx[1]}: ${ctx[0]}"
 }
 
-function DEBUG {
+DEBUG() {
     _log "$1"
 }
 
-function INFO {
+INFO() {
     _log "$1"
 }
 
-function WARN {
+WARN() {
     _log "$1"
 }
 
-function ERROR {
+ERROR() {
     _log "$1"
 }
