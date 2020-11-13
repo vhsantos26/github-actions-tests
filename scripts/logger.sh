@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # shellcheck disable=SC1090,SC2155
 #
 # Filename: logger.sh
