@@ -24,7 +24,6 @@ if [ -n "$LOG_TARGET" ] ;then
     touch "$LOG_TARGET"
 fi
 
-
 #######################################################################
 #                           private methods                           #
 #######################################################################
@@ -53,40 +52,6 @@ _log() {
     date_time=$(_date_time)
     function_name="${FUNCNAME[2]}"
     _echo "[$date_time][$level]($function_name) $msg"
-}
-
-_CTX() {
-    local ctx ctx_name ctx_type
-
-    ctx_name="${FUNCNAME[2]}"
-
-    if [ $ctx_name == main ]; then
-        ctx_name=$0
-        ctx_type="script"
-    else
-        ctx_type="function"
-    fi
-
-    ctx=($ctx_name $ctx_type)
-
-    echo "${ctx[@]}"
-}
-
-
-#######################################################################
-#                           public methods                            #
-#######################################################################
-
-ENTER() {
-    local ctx ctx_name date_time
-    ctx=($(_CTX))
-    DEBUG "${ctx[1]}: ${ctx[0]}"
-}
-
-EXIT() {
-    local ctx date_time
-    ctx=($(_CTX))
-    DEBUG "${ctx[1]}: ${ctx[0]}"
 }
 
 DEBUG() {
