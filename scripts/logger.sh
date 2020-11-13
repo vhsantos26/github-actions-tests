@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck disable=SC1090,SC2155
 #
 # Filename: logger.sh
@@ -20,7 +20,7 @@
 
 LOG_TARGET=${1-}
 
-if [[ -n "$LOG_TARGET" ]] ;then
+if [ -n "$LOG_TARGET" ] ;then
     touch "$LOG_TARGET"
 fi
 
@@ -31,7 +31,7 @@ fi
 
 function _echo() {
     local msg=$1
-    if [[ -n "$LOG_TARGET" ]] ;then
+    if [ -n "$LOG_TARGET" ] ;then
         echo "$msg" | tee >> "$LOG_TARGET"
     else
         echo "$msg"
@@ -60,7 +60,7 @@ function _CTX() {
 
     ctx_name="${FUNCNAME[2]}"
 
-    if [[ $ctx_name == main ]]; then
+    if [ $ctx_name == main ]; then
         ctx_name=$0
         ctx_type="script"
     else
