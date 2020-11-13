@@ -3,7 +3,7 @@
 set -o errexit
 set -o nounset
 
-source /scripts/logger.sh
+. /scripts/logger.sh
 
 INFO "Starting the Sonar Scanner Analysis"
 
