@@ -7,4 +7,4 @@ set -o nounset
 
 INFO "Disconnect OpenVPN"
 
-sudo killall openvpn
+sudo pkill openvpn
