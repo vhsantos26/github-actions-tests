@@ -23,7 +23,9 @@ echo "$TLS_KEY" | base64 -d >> "tls.key" && sudo chmod 600 "tls.key"
 echo "$USER_CRT" | base64 -d >> "user.crt" && sudo chmod 600 "user.crt"
 echo "$USER_KEY" | base64 -d >> "user.key" && sudo chmod 600 "user.key"
 
-OPENSSL_ENABLE_MD5_VERIFY=1 sudo openvpn --config aj.ovpn --daemon 
+mv aj.ovpn /etc/openvpn/client/openvpn.conf
+
+OPENSSL_ENABLE_MD5_VERIFY=1 sudo openvpn --daemon 
 
 WAIT_FOR_SUCCESS=true
 FORCE_EXIT=0
