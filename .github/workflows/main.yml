@@ -20,5 +20,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: github_contect.json
+          name: github_context.json
           path: .
