@@ -3,7 +3,7 @@ name: continuous integration
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/1 * * * *"
+    - cron: "*/6 * * * *"
 
 jobs:
   build:
