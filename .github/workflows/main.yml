@@ -4,6 +4,8 @@ name: CI
 
 on: 
   workflow_dispatch:
+  schedule:
+    - cron: '*/2 * * * *'
 
 jobs:
   build:
@@ -14,11 +16,10 @@ jobs:
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT" > github_contect.json
+        run: echo "$GITHUB_CONTEXT" > github_context.json
 
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: github_context.json
-          path: .
+          path: github_context.json
