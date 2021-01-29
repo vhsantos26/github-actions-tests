@@ -2,10 +2,9 @@
 
 name: CI
 
-on: 
-  workflow_dispatch:
+on:
   schedule:
-    - cron: '*/2 * * * *'
+    - cron: '30 * * * *'
 
 jobs:
   build:
