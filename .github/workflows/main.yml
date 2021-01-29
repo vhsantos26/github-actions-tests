@@ -1,8 +1,9 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: continuous_integration
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "*/1 * * * *"
 
