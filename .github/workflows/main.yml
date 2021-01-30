@@ -2,12 +2,15 @@ name: continuous integration
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "*/6 * * * *"
+#   schedule:
+#     - cron: "*/6 * * * *"
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        clients: [aje, aja, ajb, ajc, ajm]
     steps:
       - uses: actions/checkout@v2
 
@@ -21,3 +24,15 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: github_context.json
+          
+      - name: Context Conditional
+        env:
+          url: |
+            ${{ 
+              (matrix.clients == aje && 'aljazeera.com' )
+              || ( matrix.clients == aja && 'aljazeera.net')
+              || ( matrix.clients == ajb && 'balkans.aljazeera.net' )
+              || ( matrix.clients == ajc && 'chinese.aljazeera.net' )
+              || ( matrix.clients == ajm && 'mubasher.aljazeera.net' )
+            }}
+        run: echo $url
