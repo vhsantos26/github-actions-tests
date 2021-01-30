@@ -29,10 +29,10 @@ jobs:
         env:
           url: |
             ${{ 
-              (matrix.clients == aje && 'aljazeera.com' )
-              || ( matrix.clients == aja && 'aljazeera.net')
-              || ( matrix.clients == ajb && 'balkans.aljazeera.net' )
-              || ( matrix.clients == ajc && 'chinese.aljazeera.net' )
-              || ( matrix.clients == ajm && 'mubasher.aljazeera.net' )
+              (matrix.clients == 'aje' && 'aljazeera.com' )
+              || ( matrix.clients == 'aja' && 'aljazeera.net')
+              || ( matrix.clients == 'ajb' && 'balkans.aljazeera.net' )
+              || ( matrix.clients == 'ajc' && 'chinese.aljazeera.net' )
+              || ( matrix.clients == 'ajm' && 'mubasher.aljazeera.net' )
             }}
         run: echo $url
