@@ -18,6 +18,8 @@ jobs:
     strategy:
       matrix:
         clients: [aje, aja, ajb, ajc, ajm]
+    env:
+      TEST: ${{ env.ENVRIONMENT }}
     steps:
       - uses: actions/checkout@v2
 
@@ -45,6 +47,4 @@ jobs:
         run: echo $url
         
       - name: Check env
-        env:
-          TEST: ${{ env.ENVRIONMENT }}
         run: echo $TEST
