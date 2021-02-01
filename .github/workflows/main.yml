@@ -13,11 +13,25 @@ env:
     }}
 
 jobs:
-  build:
+  job1:
+    if: 1 == 1
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        clients: [aje, aja, ajb, ajc, ajm]
+    steps:
+      - uses: actions/checkout@v2
+        
+      - run: echo "First Job has the condition 1 == 1 to run"
+    
+  job2:
+    if: 2 == 1
+    runs-on: ubuntu=latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: echo "Second Job doesn't have any rules to be executed"
+        
+  github-context:
+    needs: [job1, job2]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
@@ -31,20 +45,3 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: github_context.json
-          
-      - name: Context Conditional
-        env:
-          url: |
-            ${{ 
-              (matrix.clients == 'aje' && 'aljazeera.com' )
-              || ( matrix.clients == 'aja' && 'aljazeera.net')
-              || ( matrix.clients == 'ajb' && 'balkans.aljazeera.net' )
-              || ( matrix.clients == 'ajc' && 'chinese.aljazeera.net' )
-              || ( matrix.clients == 'ajm' && 'mubasher.aljazeera.net' )
-            }}
-        run: echo $url
-        
-      - name: Check env
-        env:
-          TEST: ${{ env.ENVRIONMENT }}
-        run: echo $TEST
