@@ -19,7 +19,7 @@ jobs:
       matrix:
         clients: [aje, aja, ajb, ajc, ajm]
     env:
-      TEST: ${{ env.ENVRIONMENT }}
+      TEST: $env.ENVRIONMENT
     steps:
       - uses: actions/checkout@v2
 
