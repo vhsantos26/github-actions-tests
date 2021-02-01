@@ -45,4 +45,6 @@ jobs:
         run: echo $url
         
       - name: Check env
-        run: echo $env.ENVRIONMENT
+        env:
+          TEST: ${{ env.ENVRIONMENT }}
+        run: echo $TEST
