@@ -5,44 +5,164 @@ on:
 #   schedule:
 #     - cron: "*/6 * * * *"
 
-env:
-  ENVRIONMENT: |
-    ${{ 
-      (1 == 1 && 'prod')
-      || ( 1 == 0 && 'stage')
-    }}
+# env:
+#   ENVRIONMENT: |
+#     ${{ 
+#       (1 == 1 && 'prod')
+#       || ( 1 == 0 && 'stage')
+#     }}
 
 jobs:
-  job1:
-    if: 1 == 1
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         
-      - run: echo "First Job has the condition 1 == 1 to run"
+      - run: echo "Build"
     
-  job2:
-    if: 2 == 1
-    runs-on: ubuntu=latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - run: echo "Second Job doesn't have any rules to be executed"
-        
-  github-context:
-    needs: [job1, job2]
-    if: needs.job1.result == 'success' || needs.job2.result == 'success'
+  unit-tests:
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - uses: actions/checkout@v2
 
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT" > github_context.json
+      - run: echo "Unit Tests"
+        
+  danger-pr-check:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
 
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          path: github_context.json
+      - run: echo "Danger PR Check"
+        
+  linters:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: echo "Linters"
+      
+  static-analysis:
+    runs-on: ubuntu-latest
+    needs: [unit-tests, danger-pr-check, linters]
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: echo "Static Analysis"
+          
+  query-map-sync:
+    runs-on: ubuntu-latest
+    needs: [static-analysis]
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: echo "Query Map Sync"
+          
+  push-to-staging:
+    runs-on: ubuntu-latest
+    needs: [query-map-sync]
+    strategy:
+      matrix:
+        clients: [aje, aja, ajb, ajc, ajm]
+    environment: 
+      name: Staging
+      url: ${{ steps.push-to-vip.outputs.url_output }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: echo "Push to Staging ${{ matrix.clients }}"
+          
+      - name: Push to VIP
+        id: push_to_vip
+        run: |
+          echo "::set-output name=url_output::https://staging.${{ matrix.clients }}.aj-harbinger.com"
+
+  push-to-production:
+    if: 1 == 2
+    runs-on: ubuntu-latest
+    needs: [query-map-sync]
+    environment:
+      name: Production
+      url: ${{ steps.push_to_vip.outputs.url_output }}
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Set Environments
+        run: |
+          echo SITE_NAME=aje >> $GITHUB_ENV
+          
+      - run: echo "Push to Production"
+
+      - name: Push to VIP
+        id: push_to_vip
+        env:
+          URL: |
+            ${{ 
+              ( env.SITE_NAME == 'aje' && 'aljazeera.com' )
+              || ( env.SITE_NAME == 'aja' && 'aljazeera.net')
+              || ( env.SITE_NAME == 'ajb' && 'balkans.aljazeera.net' )
+              || ( env.SITE_NAME == 'ajc' && 'chinese.aljazeera.net' )
+              || ( env.SITE_NAME == 'ajm' && 'mubasher.aljazeera.net' )
+            }}
+        run: |
+          echo "::set-output name=url_output::$URL"
+
+  blocker-tests-desktop:
+    runs-on: ubuntu-latest
+    needs: [push-to-staging, push-to-production]
+    strategy:
+      matrix:
+        clients: [aje, aja, ajb, ajc, ajm]
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: echo "Blocker Tests Desktop ${{ matrix.clients }}"
+          
+  blocker-tests-mobile:
+    runs-on: ubuntu-latest
+    needs: [push-to-staging, push-to-production]
+    strategy:
+      matrix:
+        clients: [aje, aja, ajb, ajc, ajm]
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: echo "Blocker Tests Desktop ${{ matrix.clients }}"
+          
+  blocker-tests-graphql:
+    runs-on: ubuntu-latest
+    needs: [push-to-staging, push-to-production]
+    strategy:
+      matrix:
+        clients: [aje, aja, ajb, ajc, ajm]
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: echo "Blocker Tests Desktop ${{ matrix.clients }}"
+          
+  quality-report:
+    runs-on: ubuntu-latest
+    needs: [blocker-tests-desktop, blocker-tests-mobile, blocker-tests-graphql]
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: echo "Quality Report"
+        
+#   github-context:
+#     if: needs.job1.result == 'success' || needs.job2.result == 'success'
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+
+#       - name: Dump GitHub context
+#         env:
+#           GITHUB_CONTEXT: ${{ toJSON(github) }}
+#         run: echo "$GITHUB_CONTEXT" > github_context.json
+
+#       - name: Upload Test Results
+#         if: always()
+#         uses: actions/upload-artifact@v2
+#         with:
+#           path: github_context.json
