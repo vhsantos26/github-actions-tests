@@ -19,6 +19,8 @@ jobs:
       - uses: actions/checkout@v2
         
       - run: mkdir report/
+        
+      - run: touch report/something.xml
       
       - name: Check Artifact Files
         id: check-artifacts
