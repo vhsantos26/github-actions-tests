@@ -27,7 +27,7 @@ jobs:
         run: echo "::set-output name=has_files::$(if [ -n "$(ls -A report/ 2>/dev/null)" ]; then echo true; else echo false; fi)"
         
       - run: echo "Okay, there is a file at least!"
-        if: steps.check-artifacts.outputs.has_files == true
+        if: steps.check-artifacts.outputs.has_files == 'true'
         
   build:
     runs-on: ubuntu-latest
