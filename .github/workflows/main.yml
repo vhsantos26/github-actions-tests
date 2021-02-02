@@ -20,7 +20,7 @@ jobs:
         
       - run: mkdir report/
         
-      - run: touch report/something.xml
+#       - run: touch report/something.xml
       
       - name: Check Artifact Files
         id: check-artifacts
