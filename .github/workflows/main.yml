@@ -54,7 +54,7 @@ jobs:
           
   query-map-sync:
     runs-on: ubuntu-latest
-    needs: [static-analysis, linters, danger-pr-check]
+    needs: [static-analysis]
     steps:
       - uses: actions/checkout@v2
 
