@@ -178,7 +178,7 @@ jobs:
           
   slack-notification:
     runs-on: ubuntu-latest
-    needs: [blocker-tests-desktop-staging, blocker-tests-mobile-staging, blocker-tests-graphql-staging, blocker-tests-desktop-production, blocker-tests-mobile-production, blocker-tests-graphql-production]
+    needs: [build, danger-pr-check, linters, unit-tests, static-analysis, query-map-sync, push-to-staging, push-to-production, blocker-tests-desktop-staging, blocker-tests-mobile-staging, blocker-tests-graphql-staging, blocker-tests-desktop-production, blocker-tests-mobile-production, blocker-tests-graphql-production]
     steps:
       - uses: actions/checkout@v2
 
