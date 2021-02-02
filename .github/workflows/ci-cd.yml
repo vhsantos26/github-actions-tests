@@ -113,6 +113,9 @@ jobs:
             }}
         run: |
           echo "::set-output name=url_output::$URL"
+          
+      - name: The job has succeeded
+        if: ${{ success }}
 
   blocker-tests-desktop:
     runs-on: ubuntu-latest
