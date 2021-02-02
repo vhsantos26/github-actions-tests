@@ -15,18 +15,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      build_status: ${ job.status }
     steps:
       - uses: actions/checkout@v2
         
       - run: echo "Build"
-    
+
   unit-tests:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
       - uses: actions/checkout@v2
 
-      - run: echo ${{ build.status }}
+      - run: echo "Unit Test"
+        
+      - run: echo ${{ needs.build.build_status }}
         
   danger-pr-check:
     runs-on: ubuntu-latest
@@ -47,6 +51,7 @@ jobs:
   static-analysis:
     runs-on: ubuntu-latest
     needs: [unit-tests, danger-pr-check, linters]
+    if: 1 == 2
     steps:
       - uses: actions/checkout@v2
 
