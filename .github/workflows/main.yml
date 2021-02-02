@@ -31,7 +31,7 @@ jobs:
       - run: echo "Unit Test"
         
       - run: echo "Worked!"
-        if: needs.build.status
+        if: needs.build.outputs.status
         
   danger-pr-check:
     runs-on: ubuntu-latest
