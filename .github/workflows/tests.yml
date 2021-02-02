@@ -5,12 +5,12 @@ on:
 #   schedule:
 #     - cron: "*/6 * * * *"
 
-# env:
-#   ENVRIONMENT: |
-#     ${{ 
-#       (1 == 1 && 'prod')
-#       || ( 1 == 0 && 'stage')
-#     }}
+env:
+  ENVRIONMENT: |
+    ${{ 
+      (1 == 1 && 'prod')
+      || ( 1 == 0 && 'stage')
+    }}
 
 jobs:
   shell_validation:
@@ -20,7 +20,7 @@ jobs:
         
       - run: mkdir report/
         
-#       - run: touch report/something.xml
+      - run: touch report/something.xml
       
       - name: Check Artifact Files
         id: check-artifacts
@@ -29,20 +29,20 @@ jobs:
       - run: echo "Okay, there is a file at least!"
         if: steps.check-artifacts.outputs.has_files == 'true'
          
-#   github-context:
-#     if: needs.job1.result == 'success' || needs.job2.result == 'success'
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
+  github-context:
+    needs: [shell_validation]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-#       - name: Dump GitHub context
-#         env:
-#           GITHUB_CONTEXT: ${{ toJSON(github) }}
-#         run: echo "$GITHUB_CONTEXT" > github_context.json
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT" > github_context.json
 
-#       - name: Upload Test Results
-#         if: always()
-#         uses: actions/upload-artifact@v2
-#         with:
-#           path: github_context.json
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          path: github_context.json
 
