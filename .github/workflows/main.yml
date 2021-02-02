@@ -125,7 +125,7 @@ jobs:
         
       - name: Set Environments
         run: |
-          echo SITE_NAME=aje >> $GITHUB_ENV
+          echo SITE_NAME=aja >> $GITHUB_ENV
           
       - run: echo "Push to Production"
 
