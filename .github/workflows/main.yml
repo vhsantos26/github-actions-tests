@@ -13,8 +13,23 @@ on:
 #     }}
 
 jobs:
+  shell_validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        
+      - run: mkdir report/
+      
+      - name: Check Artifact Files
+        id: check-artifacts
+        run: echo "::set-output name=has_files::$(if [ -n "$(ls -A report/ 2>/dev/null)" ]; then echo true; else echo false; fi)"
+        
+      - run: echo "Okay, there is a file at least!"
+        if: steps.check-artifacts.outputs.has_files == true
+        
   build:
     runs-on: ubuntu-latest
+    if: 1 == 2
     steps:
       - uses: actions/checkout@v2
         
