@@ -30,7 +30,9 @@ jobs:
 
       - run: echo "Unit Test"
         
-      - run: echo ${{ needs.build.build_status }}
+      - run: echo $status
+        env:
+          status: ${{ needs.build.build_status }}
         
   danger-pr-check:
     runs-on: ubuntu-latest
