@@ -199,12 +199,15 @@ jobs:
   quality-report:
     runs-on: ubuntu-latest
     needs: [slack-notification]
-    if: needs.blocker-tests-graphql-production.outputs.status == 'success' \
-      || needs.blocker-tests-desktop-production.outputs.status == 'success' \
-      || needs.blocker-tests-mobile-production.outputs.status == 'success' \
-      || needs.blocker-tests-graphql-staging.outputs.status == 'success' \
-      || needs.blocker-tests-desktop-staging.outputs.status == 'success' \
-      || needs.blocker-tests-mobile-staging.outputs.status == 'success' 
+    if: |
+      ${{ 
+        needs.blocker-tests-graphql-production.outputs.status == 'success' 
+        || needs.blocker-tests-desktop-production.outputs.status == 'success' 
+        || needs.blocker-tests-mobile-production.outputs.status == 'success' 
+        || needs.blocker-tests-graphql-staging.outputs.status == 'success' 
+        || needs.blocker-tests-desktop-staging.outputs.status == 'success' 
+        || needs.blocker-tests-mobile-staging.outputs.status == 'success' 
+      }}
     steps:
       - uses: actions/checkout@v2
 
