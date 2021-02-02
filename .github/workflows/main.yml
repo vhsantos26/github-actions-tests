@@ -134,11 +134,11 @@ jobs:
         env:
           URL: |
             ${{ 
-              ( env.SITE_NAME == 'aje' && 'aljazeera.com' )
-              || ( env.SITE_NAME == 'aja' && 'aljazeera.net')
-              || ( env.SITE_NAME == 'ajb' && 'balkans.aljazeera.net' )
-              || ( env.SITE_NAME == 'ajc' && 'chinese.aljazeera.net' )
-              || ( env.SITE_NAME == 'ajm' && 'mubasher.aljazeera.net' )
+              ( env.SITE_NAME == 'aje' && 'https://aljazeera.com' )
+              || ( env.SITE_NAME == 'aja' && 'https://aljazeera.net')
+              || ( env.SITE_NAME == 'ajb' && 'https://balkans.aljazeera.net' )
+              || ( env.SITE_NAME == 'ajc' && 'https://chinese.aljazeera.net' )
+              || ( env.SITE_NAME == 'ajm' && 'https://mubasher.aljazeera.net' )
             }}
         run: |
           echo "::set-output name=url_output::$URL"
