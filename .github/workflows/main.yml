@@ -199,3 +199,10 @@ jobs:
 #         uses: actions/upload-artifact@v2
 #         with:
 #           path: github_context.json
+
+
+  # TODO: after the pull request is merged into the develop we will execute the following jobs
+  # push-to-develop:
+  # blocker-tests:
+  # contract-tests
+  # performance-tests
