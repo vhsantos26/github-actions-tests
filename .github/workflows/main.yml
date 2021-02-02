@@ -116,7 +116,7 @@ jobs:
   push-to-production:
     if: 1 == 1
     runs-on: ubuntu-latest
-    needs: [query-map-sync]
+    needs: [static-analysis]
     environment:
       name: Production
       url: ${{ steps.push_to_vip.outputs.url_output }}
