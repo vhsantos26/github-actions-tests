@@ -113,14 +113,11 @@ jobs:
             }}
         run: |
           echo "::set-output name=url_output::$URL"
-          
-      - name: The job has succeeded
-        if: ${{ success }}
 
   blocker-tests-desktop:
     runs-on: ubuntu-latest
     needs: [push-to-staging, push-to-production]
-    if: needs.push-to-staging.outputs.status == 'success' || needs.push-to-production.outputs.status == 'success'
+    if: always()
     outputs:
       status: ${{ job.status }}
     strategy:
