@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      build_status: ${ job.status }
+      build_status: ${{ job.status }}
     steps:
       - uses: actions/checkout@v2
         
