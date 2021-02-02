@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      build_status: ${{ job.status }}
+      status: ${{ job.status }}
     steps:
       - uses: actions/checkout@v2
         
@@ -30,9 +30,8 @@ jobs:
 
       - run: echo "Unit Test"
         
-      - run: echo $status
-        env:
-          status: ${{ needs.build.build_status }}
+      - run: echo "Worked!"
+        if: needs.build.status
         
   danger-pr-check:
     runs-on: ubuntu-latest
