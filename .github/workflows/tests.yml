@@ -24,7 +24,7 @@ jobs:
         
       - run: |
           mkdir -p report/mobile-desktop/
-          touch reportmobile-desktop/some_a.xml
+          touch report/mobile-desktop/some_a.xml
      
       - name: Upload Test Results
         if: always()
@@ -41,7 +41,7 @@ jobs:
         
       - run: |
           mkdir -p report/mobile-desktop/
-          touch reportmobile-desktop/some_b.xml
+          touch report/mobile-desktop/some_b.xml
      
       - name: Upload Test Results
         if: always()
