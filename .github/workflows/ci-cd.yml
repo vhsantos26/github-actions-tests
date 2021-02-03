@@ -86,7 +86,7 @@ jobs:
           
   push-to-production:
     runs-on: ubuntu-latest
-    if: 1 == 2
+    if: 1 == 1
     needs: [static-analysis]
     outputs:
       status: ${{ job.status }}
