@@ -171,8 +171,7 @@ jobs:
     needs: [blocker-tests-desktop, blocker-tests-mobile, blocker-tests-graphql, static-analysis]
     if: |
       ${{ 
-        always()
-        && ((needs.blocker-tests-graphql.outputs.status == 'success' || needs.blocker-tests-graphql.outputs.status == 'failure') 
+        ((needs.blocker-tests-graphql.outputs.status == 'success' || needs.blocker-tests-graphql.outputs.status == 'failure') 
         || (needs.blocker-tests-desktop.outputs.status == 'success' || needs.blocker-tests-desktop.outputs.status == 'failure') 
         || (needs.blocker-tests-mobile.outputs.status == 'success' || needs.blocker-tests-mobile.outputs.status == 'failure')) 
       }}
