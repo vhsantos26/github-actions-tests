@@ -19,6 +19,7 @@ on:
 jobs:
   artifact_validation_a:
     runs-on: ubuntu-latest
+    if: 1 == 2
     steps:
       - uses: actions/checkout@v2
         
@@ -64,30 +65,13 @@ jobs:
         
   shell_validation:
     runs-on: ubuntu-latest
-    if: 1 == 2
+    strategy:
+      matrix:
+        channels: [aje, aja, ajm, ajc, ajb]
     steps:
       - uses: actions/checkout@v2
         
-      - run: |
-          mkdir -p report/aje-mobile-report
-          mkdir -p report/aja-mobile-report
-          mkdir -p report/ajm-mobile-report
-          mkdir -p report/ajb-mobile-report
-          mkdir -p report/ajc-mobile-report
-        
-      - run: |
-          touch report/aje-mobile-report/something.xml
-          touch report/aja-mobile-report/something.xml
-          touch report/ajm-mobile-report/something.xml
-          touch report/ajb-mobile-report/something.xml
-          touch report/ajc-mobile-report/something.xml
-      
-      - name: Check Artifacts Files
-        id: check-artifacts-files
-        run: echo "::set-output name=has_files::$(if [ -n "$(ls -A report/ 2>/dev/null)" ]; then echo true; else echo false; fi)"
-        
-      - run: echo "Okay, there is a file at least!"
-        if: steps.check-artifacts-files.outputs.has_files == 'true'
+      - run: echo "::warning file=app.js,line=1,col=5::Missing semicolon"
          
   github-context:
     runs-on: ubuntu-latest
