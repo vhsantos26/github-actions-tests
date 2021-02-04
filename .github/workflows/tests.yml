@@ -73,7 +73,7 @@ jobs:
         
       - run: |
           git add .
-          (git diff-index --quiet HEAD && echo "::warning::There are no changes for the $${ matrix.channels }} to commit to VIP Repo ") || echo "git commit"
+          (git diff-index --quiet HEAD && echo "::warning::There are no changes for the ${{ matrix.channels }} to commit to VIP Repo ") || echo "git commit"
          
   github-context:
     runs-on: ubuntu-latest
