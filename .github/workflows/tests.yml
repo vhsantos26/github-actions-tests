@@ -71,7 +71,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         
-      - run: echo "::warning file=.github/workflows/tests.yml,line=74,col=13::Warning settings here"
+      - run: |
+          (git diff-index --quite && echo "::warning::There are no changes for the $${ matrix.channels }} to commit to VIP Repo ") || echo "git commit"
          
   github-context:
     runs-on: ubuntu-latest
