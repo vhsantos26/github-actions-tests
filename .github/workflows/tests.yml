@@ -71,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         
-      - run: echo "::warning file=app.js,line=1,col=5::Missing semicolon"
+      - run: echo "::warning file=.github/workflows/tests.yml,line=74,col=13::Warning settings here"
          
   github-context:
     runs-on: ubuntu-latest
