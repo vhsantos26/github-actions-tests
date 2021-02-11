@@ -13,7 +13,7 @@ env:
 jobs:
   production:
     runs-on: ubuntu-latest
-    if: ${{ env.ENVIRONMENT == 'prod' }}
+    if: $ENVIRONMENT == 'prod'
     outputs:
       status: ${{ job.status }}
     steps:
