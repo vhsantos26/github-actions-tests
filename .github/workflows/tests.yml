@@ -6,76 +6,22 @@ on:
     branches: main
     paths-ignore: 
       - ./github/workflows/ci-cd.yml
-#   schedule:
-#     - cron: "*/6 * * * *"
-
-# env:
-#   ENVRIONMENT: |
-#     ${{ 
-#       (1 == 1 && 'prod')
-#       || ( 1 == 0 && 'stage')
-#     }}
-
 jobs:
-  artifact_validation_a:
+  generate-matrix:
     runs-on: ubuntu-latest
-    if: 1 == 2
-    steps:
-      - uses: actions/checkout@v2
-        
-      - run: |
-          mkdir -p report/mobile-desktop/
-          touch report/mobile-desktop/some_a.xml
-     
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: mobile-desktop
-          path: report/mobile-desktop/
-
-  artifact_validation_b:
-    runs-on: ubuntu-latest
-    needs: [artifact_validation_a]
-    steps:
-      - uses: actions/checkout@v2
-        
-      - run: |
-          mkdir -p report/mobile-desktop/
-          touch report/mobile-desktop/some_b.xml
-     
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: mobile-desktop
-          path: report/mobile-desktop/
-
-  artifact_validation_c:
-    runs-on: ubuntu-latest
-    needs: [artifact_validation_a, artifact_validation_b]
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: mobile-desktop
-          
-      - run: ls -la
-        
-  shell_validation:
+  check-matrix:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        channels: [aje, aja, ajm, ajc, ajb]
+        site: ${{ fromJson(["aje", "aja", "ajm"]) }}
     steps:
       - uses: actions/checkout@v2
-        
-      - run: |
-          git add .
-          (git diff-index --quiet HEAD && echo "::warning::There are no changes for the ${{ matrix.channels }} to commit to VIP Repo ") \
-            || echo "git commit"
-         
+      
+      - run: echo "::warining::Site name is ${{ matrix.site }}"
+    
   github-context:
     runs-on: ubuntu-latest
     if: 1 == 2
