@@ -20,13 +20,12 @@ jobs:
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT" > github_context.json
+          CONTEXT: ${{ github.event_name }}
+        run: echo "$GITHUB_CONTEXT" > "$CONTEXT_context.json"
 
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v2
-        env: 
-          CONTEXT: ${{ github.event_name }}
         with:
           path: $CONTEXT_context.json
 
