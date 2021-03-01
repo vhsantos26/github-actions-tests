@@ -14,7 +14,7 @@ on:
 env:
   ENVIORNMENT: |
     ${{
-       ((github.event.inputs.environment == 'prod') || (github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'schedule')) && 'prod'
+       ((github.event.inputs.environment == 'prod') || (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'schedule')) && 'prod'
        || ((github.event.inputs.environment == 'stage') || (github.event_name == 'push' && github.ref == 'refs/heads/develop') || (github.event_name == 'schedule')) && 'stage'
     }}
     
