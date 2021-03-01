@@ -7,21 +7,6 @@ on:
     paths-ignore: 
       - ./github/workflows/ci-cd.yml
 jobs:
-  generate-matrix:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-  check-matrix:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        site: ${{ fromJson(["aje", "aja", "ajm"]) }}
-    steps:
-      - uses: actions/checkout@v2
-      
-      - run: echo "::warining::Site name is ${{ matrix.site }}"
-    
   github-context:
     runs-on: ubuntu-latest
     steps:
