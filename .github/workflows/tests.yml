@@ -25,6 +25,8 @@ jobs:
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v2
+        env: 
+          CONTEXT: ${{ github.event_name }}
         with:
-          path: github_context.json
+          path: $CONTEXT_context.json
 
