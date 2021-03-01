@@ -6,6 +6,11 @@ on:
     branches: main
     paths-ignore: 
       - ./github/workflows/ci-cd.yml
+  schedule:
+    - cron: "6 * * * *"
+  pull_request:
+    branches: main
+    
 jobs:
   github-context:
     runs-on: ubuntu-latest
