@@ -6,8 +6,8 @@ on:
     branches: main
     paths-ignore: 
       - ./github/workflows/ci-cd.yml
-  schedule:
-    - cron: "6 * * * *"
+#   schedule:
+#     - cron: "6 * * * *"
   pull_request:
     branches: main
     
@@ -17,7 +17,11 @@ env:
        ((github.event.inputs.environment == 'prod') || (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'schedule')) && 'prod'
        || ((github.event.inputs.environment == 'stage') || (github.event_name == 'push' && github.ref == 'refs/heads/develop') || (github.event_name == 'schedule')) && 'stage'
     }}
-  TEST: 'valor_1'
+  TEST: |
+    ${{
+      (1 == 2) && 'valor_2'
+      || (1 == 1) && 'valor_1'
+    }}
     
 jobs:
   context:
@@ -27,11 +31,14 @@ jobs:
       
       - run: echo $ENVIORNMENT
       
-      - run: echo "CHECK IF 1"
+      - name: step without expression
         if: env.TEST == 'valor_1'
+        run: echo "CHECK IF 1"
 
-      - run: echo "CHECK IF 2"
+      - name: step with expression
         if: ${{ env.TEST == 'valor_1' }}
+        run: echo "CHECK IF 2"
+        
 
       - name: Dump GitHub context
         env:
