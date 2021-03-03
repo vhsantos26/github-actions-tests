@@ -17,6 +17,7 @@ env:
        ((github.event.inputs.environment == 'prod') || (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'schedule')) && 'prod'
        || ((github.event.inputs.environment == 'stage') || (github.event_name == 'push' && github.ref == 'refs/heads/develop') || (github.event_name == 'schedule')) && 'stage'
     }}
+  TEST: 'valor_1'
     
 jobs:
   context:
@@ -25,6 +26,12 @@ jobs:
       - uses: actions/checkout@v2
       
       - run: echo $ENVIORNMENT
+      
+      - run: echo "CHECK IF 1"
+        if: env.TEST == 'valor_1'
+
+      - run: echo "CHECK IF 2"
+        if: ${{ env.TEST == 'valor_1' }}
 
       - name: Dump GitHub context
         env:
