@@ -32,11 +32,11 @@ jobs:
       - run: echo $ENVIORNMENT
       
       - name: step without expression
-        if: env.TEST == 'valor_1'
+        if: contains(env.TEST, 'valor_1')
         run: echo "CHECK IF 1"
 
       - name: step with expression
-        if: ${{ env.TEST == 'valor_1' }}
+        if: ${{ contains(env.TEST, 'valor_1') }}
         run: echo "CHECK IF 2"
         
 
