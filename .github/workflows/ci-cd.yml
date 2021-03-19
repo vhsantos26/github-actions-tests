@@ -8,6 +8,8 @@ on:
       - test
     paths-ignore: 
       - .github/workflows/tests.yml
+  pull_request:
+    branches: main
 
 jobs:
   build:
