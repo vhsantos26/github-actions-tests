@@ -36,7 +36,7 @@ jobs:
       
       - run: echo NOME_BRANCH=${GITHUB_REF} >> GITHUB_ENV
       
-      - run: echo "${{ NOME_BRANCH }}"
+      - run: echo "${{ env.NOME_BRANCH }}"
       
       - name: Test
         env:
