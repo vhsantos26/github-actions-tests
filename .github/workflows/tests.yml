@@ -37,8 +37,7 @@ jobs:
       - name: Test
         env:
           SITE_NAME: ${{ env.SITE_NAME }}
-          URL: |
-            ${{ ( env.SITE_NAME == 'aja' && 'https://aljazeera.net') || ( env.SITE_NAME == 'chinese' && 'https://chinese.aljazeera.net' ) || ( env.SITE_NAME == 'aje' && 'https://aljazeera.com') || ( env.SITE_NAME == 'ajm' && 'https://mubasher.aljazeera.net' ) || ( env.SITE_NAME == 'ajb' && 'https://balkans.aljazeera.net' ) }}
+          URL: ${{ ( env.SITE_NAME == 'aja' && 'https://aljazeera.net') || ( env.SITE_NAME == 'chinese' && 'https://chinese.aljazeera.net' ) || ( env.SITE_NAME == 'aje' && 'https://aljazeera.com') || ( env.SITE_NAME == 'ajm' && 'https://mubasher.aljazeera.net' ) || ( env.SITE_NAME == 'ajb' && 'https://balkans.aljazeera.net' ) }}
         run: |
           echo "$URL"
           echo "${{ env.SITE_NAME }}"
