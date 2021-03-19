@@ -34,9 +34,9 @@ jobs:
       
       - run: echo $ENVIORNMENT
       
-      - run: echo SITE_NAME=${GITHUB_REF} >> GITHUB_ENV
+      - run: echo NOME_BRANCH=${GITHUB_REF} >> GITHUB_ENV
       
-      - run: echo "$SITE_NAME"
+      - run: echo "$NOME_BRANCH"
       
       - name: Test
         env:
