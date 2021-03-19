@@ -3,7 +3,9 @@ name: continuous integration
 on:
   workflow_dispatch:
   push:
-    branches: main
+    branches: 
+      - main
+      - test
     paths-ignore: 
       - .github/workflows/tests.yml
 
