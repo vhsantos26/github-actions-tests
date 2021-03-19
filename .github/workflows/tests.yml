@@ -23,7 +23,8 @@ env:
       (1 == 2) && 'valor_2'
       || (1 == 1) && 'valor_1'
     }}
-    
+  SITE_NAME: 'aje
+
 jobs:
   context:
     runs-on: ubuntu-latest
@@ -31,6 +32,19 @@ jobs:
       - uses: actions/checkout@v2
       
       - run: echo $ENVIORNMENT
+      
+      - name: Test
+        env:
+          SITE_NAME: ${{ env.SITE_NAME }}
+          URL: |
+            ${{ 
+              ( env.SITE_NAME == 'aja' && 'https://aljazeera.net')
+              || ( env.SITE_NAME == 'chinese' && 'https://chinese.aljazeera.net' )
+              || ( env.SITE_NAME == 'aje' && 'https://aljazeera.com')
+              || ( env.SITE_NAME == 'ajm' && 'https://mubasher.aljazeera.net' )
+              || ( env.SITE_NAME == 'ajb' && 'https://balkans.aljazeera.net' )
+            }}
+        run: echo "$URL"
       
       - name: step without expression
         if: contains(env.TEST, 'valor_1')
