@@ -18,6 +18,7 @@ env:
         || (github.event_name == 'pull_request' && 'staging')
         || (github.event_name == 'push' && 'production')
         || (contains(github.event.pull_request.labels.*.name, 'develop') && 'dev')
+    }}
   TEST: |
     ${{
       (1 == 2) && 'valor_2'
