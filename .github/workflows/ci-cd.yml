@@ -7,69 +7,49 @@ on:
     paths-ignore: 
       - .github/workflows/tests.yml
 
-env:
-  ENVIRONMENT: prod
-
 jobs:
-  production:
-    runs-on: ubuntu-latest
-    if: 1 == 1
-    outputs:
-      status: ${{ job.status }}
-    steps:
-      - uses: actions/checkout@v2
-     
-  staging:
-    runs-on: ubuntu-latest
-    if: 1 == 2
-    outputs:
-      status: ${{ job.status }}
-    steps:
-      - uses: actions/checkout@v2
-     
   build:
     runs-on: ubuntu-latest
-    needs: [production, staging]
-    if: always() && (needs.production.result == 'success' || needs.staging.result == 'success')
     steps:
       - uses: actions/checkout@v2
 
   unit-tests:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: build
     steps:
       - uses: actions/checkout@v2
         
   danger-pr-check:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: build
     steps:
       - uses: actions/checkout@v2
         
   linters:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: build
     steps:
       - uses: actions/checkout@v2
       
   static-analysis:
     runs-on: ubuntu-latest
-    needs: [unit-tests, danger-pr-check, linters]
+    needs: 
+      - unit-tests
+      - danger-pr-check
+      - linters
     steps:
       - uses: actions/checkout@v2
           
   query-map-sync:
     runs-on: ubuntu-latest
-    needs: [static-analysis]
-    if: 1 == 2
+    needs: static-analysis
+    if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v2
           
   push-to-staging:
     runs-on: ubuntu-latest
-    needs: [query-map-sync]
-    outputs:
-      status: ${{ job.status }}
+    needs: query-map-sync
     strategy:
       matrix:
         clients: [aje, aja, ajc, ajm]
@@ -86,8 +66,8 @@ jobs:
           
   push-to-production:
     runs-on: ubuntu-latest
-    needs: [static-analysis]
-    if: 1 == 1
+    needs: query-map-sync
+    if: always() && (needs.query-map=sync.result == 'skipped')
     outputs:
       status: ${{ job.status }}
     strategy:
@@ -111,70 +91,3 @@ jobs:
             }}
         run: |
           echo "::set-output name=url_output::$URL"
-
-  blocker-tests-desktop:
-    runs-on: ubuntu-latest
-    needs: [push-to-staging, push-to-production]
-    if: always() && (needs.push-to-production.outputs.status == 'success' || needs.push-to-staging.outputs.status == 'success')
-    outputs:
-      status: ${{ job.status }}
-    strategy:
-      matrix:
-        clients: [aje, aja, ajb, ajc, ajm]
-    steps:
-      - uses: actions/checkout@v2
-          
-  blocker-tests-mobile:
-    runs-on: ubuntu-latest
-    needs: [push-to-staging, push-to-production]
-    if: always() && (needs.push-to-production.outputs.status == 'success' || needs.push-to-staging.outputs.status == 'success')
-    outputs:
-      status: ${{ job.status }}
-    strategy:
-      matrix:
-        clients: [aje, aja, ajb, ajc, ajm]
-    steps:
-      - uses: actions/checkout@v2
-          
-  blocker-tests-graphql:
-    runs-on: ubuntu-latest
-    needs: [push-to-staging, push-to-production]
-    if: always() && (needs.push-to-production.outputs.status == 'success' || needs.push-to-staging.outputs.status == 'success')
-    outputs:
-      status: ${{ job.status }}
-    strategy:
-      matrix:
-        clients: [aje, aja, ajb, ajc, ajm]
-    steps:
-      - uses: actions/checkout@v2
-
-  quality-report:
-    runs-on: ubuntu-latest
-    needs: [blocker-tests-desktop, blocker-tests-mobile, blocker-tests-graphql]
-    if: always() && ((needs.blocker-tests-graphql.outputs.status == 'success' || needs.blocker-tests-graphql.outputs.status == 'failure') || (needs.blocker-tests-desktop.outputs.status == 'success' || needs.blocker-tests-desktop.outputs.status == 'failure') || (needs.blocker-tests-mobile.outputs.status == 'success' || needs.blocker-tests-mobile.outputs.status == 'failure')) 
-    steps:
-      - uses: actions/checkout@v2
-        
-#   github-context:
-#     if: needs.job1.result == 'success' || needs.job2.result == 'success'
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-
-#       - name: Dump GitHub context
-#         env:
-#           GITHUB_CONTEXT: ${{ toJSON(github) }}
-#         run: echo "$GITHUB_CONTEXT" > github_context.json
-
-#       - name: Upload Test Results
-#         if: always()
-#         uses: actions/upload-artifact@v2
-#         with:
-#           path: github_context.json
-
-
-  # TODO: after the pull request is merged into the develop we will execute the following jobs
-  # push-to-develop:
-  # blocker-tests:
-  # contract-tests
-  # performance-tests
