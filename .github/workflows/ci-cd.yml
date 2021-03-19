@@ -5,11 +5,15 @@ on:
   push:
     branches: 
       - main
-      - test
+      - dev
     paths-ignore: 
       - .github/workflows/tests.yml
   pull_request:
-    branches: main
+    branches: 
+      - main
+      - dev
+    paths-ignore: 
+      - .github/workflows/tests.yml
 
 jobs:
   build:
