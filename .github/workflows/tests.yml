@@ -45,7 +45,10 @@ jobs:
               || ( env.SITE_NAME == 'ajm' && 'https://mubasher.aljazeera.net' )
               || ( env.SITE_NAME == 'ajb' && 'https://balkans.aljazeera.net' )
             }}
-        run: echo "$URL"
+        run: |
+          echo "$URL"
+          echo "${{ env.SITE_NAME }}"
+          echo "$SITE_NAME"
       
       - name: step without expression
         if: contains(env.TEST, 'valor_1')
