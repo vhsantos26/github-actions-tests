@@ -23,7 +23,7 @@ env:
       (1 == 2) && 'valor_2'
       || (1 == 1) && 'valor_1'
     }}
-  SITE_NAME: 'aje
+  SITE_NAME: 'aje'
 
 jobs:
   context:
