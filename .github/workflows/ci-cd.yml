@@ -13,7 +13,7 @@ env:
 jobs:
   production:
     runs-on: ubuntu-latest
-    if: ${{ env.ENVIRONMENT == 'prod' }}
+    if: 1 == 1
     outputs:
       status: ${{ job.status }}
     steps:
@@ -22,7 +22,7 @@ jobs:
      
   staging:
     runs-on: ubuntu-latest
-    if: $ENVIRONMENT == 'stage'
+    if: 1 == 2
     outputs:
       status: ${{ job.status }}
     steps:
