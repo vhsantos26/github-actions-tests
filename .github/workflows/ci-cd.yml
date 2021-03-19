@@ -67,7 +67,7 @@ jobs:
   push-to-production:
     runs-on: ubuntu-latest
     needs: query-map-sync
-    if: always()
+    if: always() && (needs.query-map-sync.result == 'skipped')
     outputs:
       status: ${{ job.status }}
     strategy:
