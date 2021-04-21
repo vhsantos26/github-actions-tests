@@ -12,32 +12,20 @@ on:
     branches: main
     
 env:
-  ENVIORNMENT: |
-    ${{ (contains(github.event.pull_request.labels.*.name, 'production') && 'production')
-        || (contains(github.event.pull_request.labels.*.name, 'staging') && 'staging')
-        || (github.event_name == 'pull_request' && 'staging')
-        || (github.event_name == 'push' && 'production')
-        || (contains(github.event.pull_request.labels.*.name, 'develop') && 'dev')
-    }}
-  TEST: |
-    ${{
-      (1 == 2) && 'valor_2'
-      || (1 == 1) && 'valor_1'
-    }}
+  ENVIORNMENT: ${{ (contains(github.event.pull_request.labels.*.name, 'production') && 'production') || (contains(github.event.pull_request.labels.*.name, 'staging') && 'staging') || (github.event_name == 'pull_request' && 'staging') || (github.event_name == 'push' && 'production') || (contains(github.event.pull_request.labels.*.name, 'develop') && 'dev') }}
+  TEST: ${{ (1 == 2) && 'valor_2' || (1 == 1) && 'valor_1' }}
   SITE_NAME: 'aje'
 
 jobs:
   context:
     runs-on: ubuntu-latest
     env:
-      BRANCH: ${{ (github.event_name == 'push' && github.ref) || (github.event_name == 'pull_request' && github.head_ref) }}
+      BRANCH: ${{ (github.event_name == 'push' && 'key_push') || ((contains(github.event_name, 'pull') && contains(github.event_name, 'request')) && 'key_pull_request') }}
     steps:
       - uses: actions/checkout@v2
       
       - run: |
-          echo ${{ env.BRANCH }}
           echo $BRANCH
-          echo $env.BRANCH
 
       - run: echo NOME_BRANCH=${GITHUB_REF} >> $GITHUB_ENV
       
