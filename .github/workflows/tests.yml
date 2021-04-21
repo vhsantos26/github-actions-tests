@@ -25,12 +25,15 @@ env:
       || (1 == 1) && 'valor_1'
     }}
   SITE_NAME: 'aje'
+  BRANCH: ${{ (github.event_name == 'push' && github.ref) || (github.event_name == 'pull_request' && github.head_ref) }}
 
 jobs:
   context:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      
+      - run: echo ${{ env.BRANCH }}
 
       - run: echo NOME_BRANCH=${GITHUB_REF} >> $GITHUB_ENV
       
@@ -52,7 +55,6 @@ jobs:
       - name: step with expression
         if: ${{ contains(env.TEST, 'valor_1') }}
         run: echo "CHECK IF 2"
-        
 
       - name: Dump GitHub context
         env:
