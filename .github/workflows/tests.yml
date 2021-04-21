@@ -25,11 +25,12 @@ env:
       || (1 == 1) && 'valor_1'
     }}
   SITE_NAME: 'aje'
-  BRANCH: ${{ (github.event_name == 'push' && github.ref) || (github.event_name == 'pull_request' && github.head_ref) }}
 
 jobs:
   context:
     runs-on: ubuntu-latest
+    env:
+      BRANCH: ${{ (github.event_name == 'push' && github.ref) || (github.event_name == 'pull_request' && github.head_ref) }}
     steps:
       - uses: actions/checkout@v2
       
