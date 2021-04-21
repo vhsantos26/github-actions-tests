@@ -23,6 +23,7 @@ jobs:
       BRANCH: ${{ (github.event_name == 'push' && 'key_push') || ((contains(github.event_name, 'pull') && contains(github.event_name, 'request')) && 'key_pull_request') }}
     steps:
       - uses: actions/checkout@v2
+        if: false
       
       - run: |
           echo $BRANCH
