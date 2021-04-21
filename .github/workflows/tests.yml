@@ -34,12 +34,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - run: echo ${{ env.BRANCH }}
+      - run: |
+          echo ${{ env.BRANCH }}
+          echo $BRANCH
+          echo $env.BRANCH
 
       - run: echo NOME_BRANCH=${GITHUB_REF} >> $GITHUB_ENV
       
       - run: echo "${{ env.NOME_BRANCH }}"
-      
+
       - name: Test
         env:
           SITE_NAME: ${{ env.SITE_NAME }}
