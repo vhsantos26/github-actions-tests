@@ -27,6 +27,7 @@ jobs:
       
       - run: |
           echo $BRANCH
+          echo ${{ env.BRANCH }}
 
       - run: echo NOME_BRANCH=${GITHUB_REF} >> $GITHUB_ENV
       
