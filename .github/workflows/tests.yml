@@ -70,7 +70,7 @@ jobs:
     steps:
       - env: 
           RELEASE_NOTES: ${{ needs.context.outputs.release-notes }}
-        run: ${{ env.RELEASE_NOTES }}
+        run: echo ${{ env.RELEASE_NOTES }}
     
     
     
