@@ -27,7 +27,7 @@ jobs:
         if: 'false'
 
       - run: |
-          echo "::set-output name=release-notes::"Built from Branch: ${{ env.BRANCH }}. CI Build URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}"
+          echo "::set-output name=release-notes::Built from Branch: ${{ env.BRANCH }}. CI Build URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}"
 
       - run: echo NOME_BRANCH=${GITHUB_REF} >> $GITHUB_ENV
       
