@@ -15,6 +15,7 @@ env:
   ENVIORNMENT: ${{ (contains(github.event.pull_request.labels.*.name, 'production') && 'production') || (contains(github.event.pull_request.labels.*.name, 'staging') && 'staging') || (github.event_name == 'pull_request' && 'staging') || (github.event_name == 'push' && 'production') || (contains(github.event.pull_request.labels.*.name, 'develop') && 'dev') }}
   TEST: ${{ (1 == 2) && 'valor_2' || (1 == 1) && 'valor_1' }}
   SITE_NAME: 'aje'
+  RELEASE_NOTES: Built from Branch\:\ ${{ env.BRANCH }} . CI Build URL\:\ https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 jobs:
   context:
@@ -25,9 +26,7 @@ jobs:
       - uses: actions/checkout@v2
         if: 'false'
       
-      - run: |
-          echo "$BRANCH"
-          echo ${{ env.BRANCH }}
+      - run: ${{ env.RELEASE_NOTES }}
 
       - run: echo NOME_BRANCH=${GITHUB_REF} >> $GITHUB_ENV
       
