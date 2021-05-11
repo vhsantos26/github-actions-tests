@@ -22,11 +22,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH: ${{ (github.event_name == 'push' && 'key_push') || ((contains(github.event_name, 'pull') && contains(github.event_name, 'request')) && 'key_pull_request') }}
+    outputs:
+      release-notes: ${{ steps.set-env.outputs.release-notes }}
     steps:
       - uses: actions/checkout@v2
         if: 'false'
 
-      - run: |
+      - id: set-env
+        run: |
           echo "::set-output name=release-notes::Built from Branch: ${{ env.BRANCH }}. CI Build URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}"
 
       - run: echo NOME_BRANCH=${GITHUB_REF} >> $GITHUB_ENV
