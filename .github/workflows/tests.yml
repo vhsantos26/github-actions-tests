@@ -64,8 +64,14 @@ jobs:
         with:
           path: context.json
 
-  deploy:
+  build_android:
     needs: context
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "build_android"
+      
+  deploy:
+    needs: build_android
     runs-on: ubuntu-latest
     steps:
       - env: 
