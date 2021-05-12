@@ -14,7 +14,6 @@ on:
 env:
   BRANCH: ${{ (github.event_name == 'push' && github.ref) || (github.event_name == 'pull_request' && github.head_ref) }}
   ENVIORNMENT: ${{ (contains(github.event.pull_request.labels.*.name, 'production') && 'production') || (contains(github.event.pull_request.labels.*.name, 'staging') && 'staging') || (github.event_name == 'pull_request' && 'staging') || (github.event_name == 'push' && 'production') || (contains(github.event.pull_request.labels.*.name, 'develop') && 'dev') }}
-  TEST: ${{ (1 == 2) && 'valor_2' || (1 == 1) && 'valor_1' }}
   SITE_NAME: 'aje'
 
 jobs:
@@ -44,14 +43,6 @@ jobs:
           echo "$URL"
           echo "${{ env.SITE_NAME }}"
           echo "$SITE_NAME"
-      
-      - name: step without expression
-        if: contains(env.TEST, 'valor_1')
-        run: echo "CHECK IF 1"
-
-      - name: step with expression
-        if: ${{ contains(env.TEST, 'valor_1') }}
-        run: echo "CHECK IF 2"
 
       - name: Dump GitHub context
         env:
