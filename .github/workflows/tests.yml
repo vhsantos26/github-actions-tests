@@ -30,9 +30,7 @@ jobs:
 
       - env:
           VIP_REMOTE_LINK: ${{ env.GITHUB_SHA }} 
-        run: |
-          echo "$VIP_REMOTE_LINK"
-          echo "${GITHUB_SHA}"
+        run: echo "vip_${GITHUB_SHA}"
           
 
       - id: set-env
