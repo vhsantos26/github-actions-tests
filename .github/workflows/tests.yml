@@ -28,6 +28,10 @@ jobs:
       - uses: actions/checkout@v2
         if: 'false'
 
+      - env:
+          VIP_REMOTE_LINK: $GITHUB_SHA
+        run: echo "$VIP_REMOTE_LINK"
+
       - id: set-env
         run: |
           echo "::set-output name=release-notes::'Built from Branch: ${{ env.BRANCH }}. CI Build URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}'"
