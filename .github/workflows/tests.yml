@@ -29,8 +29,11 @@ jobs:
         if: 'false'
 
       - env:
-          VIP_REMOTE_LINK: ${GITHUB_SHA}
-        run: echo "$VIP_REMOTE_LINK"
+          VIP_REMOTE_LINK: ${{ env.GITHUB_SHA }} 
+        run: |
+          echo "$VIP_REMOTE_LINK"
+          echo "${GITHUB_SHA}"
+          
 
       - id: set-env
         run: |
