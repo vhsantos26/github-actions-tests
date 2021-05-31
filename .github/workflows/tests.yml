@@ -12,13 +12,16 @@ on:
 jobs:
   context:
     runs-on: ubuntu-latest
+    outputs:
+      changed-files: ${{ steps.git-diff.outputs.changed-files }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - run: echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}..${{ github.event.after }})" >> $GITHUB_ENV
+      - id: git-diff
+        run: echo "::set-output name=changed-files::$(git diff --name-only ${{ github.event.before }}..${{ github.event.after }})"
       
       - run: echo $CHANGED_FILES
     
@@ -32,3 +35,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: context.json
+          
+  after-context:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ needs.context.outputs.changed-files }} 
