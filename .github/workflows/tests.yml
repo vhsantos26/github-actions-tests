@@ -18,6 +18,12 @@ env:
   SITE_NAME: 'aje'
 
 jobs:
+  verification:
+    runs-on: ubuntu-latest
+    if: hashFiles('.github/**/tests.yml')
+    steps:
+      - run: echo "HERE ON THE VERIFICATION"
+
   context:
     runs-on: ubuntu-latest
     env:
