@@ -39,6 +39,12 @@ jobs:
   after-context:
     runs-on: ubuntu-latest
     needs: context
+    steps:
+      - run: echo "first after"
+  
+  after-after-context:
+    runs-on: ubuntu-latest
+    needs: after-context
     if: contains(needs.context.outputs.changed-files, 'workflows/tests.yml')
     steps:
       - run: echo ${{ needs.context.outputs.changed-files }} 
