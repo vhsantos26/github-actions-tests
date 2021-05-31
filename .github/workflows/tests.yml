@@ -6,64 +6,17 @@ on:
     branches: main
     paths-ignore: 
       - ./github/workflows/ci-cd.yml
-#   schedule:
-#     - cron: "6 * * * *"
   pull_request:
     branches: main
-    
-env:
-  BRANCH: ${{ (github.event_name == 'push' && github.ref) || (github.event_name == 'pull_request' && github.head_ref) }}
-  ENVIORNMENT: ${{ (contains(github.event.pull_request.labels.*.name, 'production') && 'production') || (contains(github.event.pull_request.labels.*.name, 'staging') && 'staging') || (github.event_name == 'pull_request' && 'staging') || (github.event_name == 'push' && 'production') || (contains(github.event.pull_request.labels.*.name, 'develop') && 'dev') }}
-  TEST: ${{ (1 == 2) && 'valor_2' || (1 == 1) && 'valor_1' }}
-  SITE_NAME: 'aje'
 
 jobs:
-  verification:
-    runs-on: ubuntu-latest
-    if: hashFiles('.github/workflows/tests.yml')
-    steps:
-      - run: echo "HERE ON THE VERIFICATION"
-
   context:
     runs-on: ubuntu-latest
-    env:
-      BRANCH: ${{ (github.event_name == 'push' && 'key_push') || ((contains(github.event_name, 'pull') && contains(github.event_name, 'request')) && 'key_pull_request') }}
-    outputs:
-      release-notes: ${{ steps.set-env.outputs.release-notes }}
     steps:
-      - uses: actions/checkout@v2
-        if: 'false'
-
-      - env:
-          VIP_REMOTE_LINK: ${{ env.GITHUB_SHA }} 
-        run: echo "vip_${GITHUB_SHA}"
-          
-
-      - id: set-env
-        run: |
-          echo "::set-output name=release-notes::'Built from Branch: ${{ env.BRANCH }}. CI Build URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}'"
-
-      - run: echo NOME_BRANCH=${GITHUB_REF} >> $GITHUB_ENV
+      - name: echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}..${{ github.event.after }})" >> $GITHUB_ENV
       
-      - run: echo "${{ env.NOME_BRANCH }}"
-
-      - name: Test
-        env:
-          SITE_NAME: ${{ env.SITE_NAME }}
-          URL: ${{ ( env.SITE_NAME == 'aja' && 'https://aljazeera.net') || ( env.SITE_NAME == 'chinese' && 'https://chinese.aljazeera.net' ) || ( env.SITE_NAME == 'aje' && 'https://aljazeera.com') || ( env.SITE_NAME == 'ajm' && 'https://mubasher.aljazeera.net' ) || ( env.SITE_NAME == 'ajb' && 'https://balkans.aljazeera.net' ) }}
-        run: |
-          echo "$URL"
-          echo "${{ env.SITE_NAME }}"
-          echo "$SITE_NAME"
-      
-      - name: step without expression
-        if: contains(env.TEST, 'valor_1')
-        run: echo "CHECK IF 1"
-
-      - name: step with expression
-        if: ${{ contains(env.TEST, 'valor_1') }}
-        run: echo "CHECK IF 2"
-
+      - name: echo $CHANGED_FILES
+    
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
@@ -74,21 +27,3 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: context.json
-
-  build_android:
-    needs: context
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "build_android"
-      
-  deploy:
-    needs: build_android
-    runs-on: ubuntu-latest
-    steps:
-      - env: 
-          RELEASE_NOTES: ${{ needs.context.outputs.release-notes }}
-        run: echo ${{ env.RELEASE_NOTES }}
-    
-    
-    
-    
