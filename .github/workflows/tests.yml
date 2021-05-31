@@ -20,7 +20,7 @@ env:
 jobs:
   verification:
     runs-on: ubuntu-latest
-    if: hashFiles('.github/**/tests.yml')
+    if: hashFiles('.github/workflows/tests.yml')
     steps:
       - run: echo "HERE ON THE VERIFICATION"
 
