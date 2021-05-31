@@ -35,16 +35,13 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: context.json
-          
+    
   after-context:
     runs-on: ubuntu-latest
     needs: context
-    steps:
-      - run: echo "first after"
-  
-  after-after-context:
-    runs-on: ubuntu-latest
-    needs: after-context
-    if: contains(needs.context.outputs.changed-files, 'workflows/tests.yml')
+    if: ${{ 
+        contains(needs.context.outputs.changed-files, 'workflows/tests.yml')
+        || true == false
+      }}
     steps:
       - run: echo ${{ needs.context.outputs.changed-files }} 
