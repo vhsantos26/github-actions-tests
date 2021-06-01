@@ -39,6 +39,6 @@ jobs:
   after-context:
     runs-on: ubuntu-latest
     needs: context
-    if: needs.context.result != 'failure'
+    if: needs.context.result != 'success'
     steps:
       - run: echo ${{ needs.context.outputs.changed-files }} 
