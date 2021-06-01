@@ -39,6 +39,9 @@ jobs:
   after-context:
     runs-on: ubuntu-latest
     needs: context
-    if: ${{ github.event_name == 'push' && (contains(needs.context.outputs.changed-files, 'workflows/tests.yml') || true == false) }}
+    if: ${{ 
+        github.event_name == 'push' 
+        && (contains(needs.context.outputs.changed-files, 'workflows/tests.yml') || true == false) 
+      }}
     steps:
       - run: echo ${{ needs.context.outputs.changed-files }} 
