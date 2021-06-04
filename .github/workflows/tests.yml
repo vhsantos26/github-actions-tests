@@ -39,7 +39,6 @@ jobs:
   after-context:
     runs-on: ubuntu-latest
     needs: context
-    if: needs.context.result != 'success'
     env:
       enviroment: ${{ (needs.context.result == 'success' && 'success') || (needs.deploy-to-dev.result == 'failure' && 'failure') }}
     steps:
