@@ -10,7 +10,16 @@ on:
     branches: main
 
 env:
-  CODE_PUSH_DEPLOYMENT: ${{ (github.event_name == 'push' && (!contains(needs.continuous_integration.outputs.changed-files, 'android/') || !contains(needs.continuous_integration.outputs.changed-files, 'ios/') || !contains(needs.continuous_integration.outputs.changed-files, 'yarn.lock')  || !contains(needs.continuous_integration.outputs.changed-files, 'package.json') ) && 'true' || 'false') }}
+  CODE_PUSH_DEPLOYMENT: |
+    ${{ 
+      (
+        github.event_name == 'push' 
+        && github.event_name != 'one'
+        && github.refs == 'two'
+        && 'true'
+        || 'false
+      )
+    }}
 
 jobs:
   context:
