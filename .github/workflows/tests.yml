@@ -19,6 +19,7 @@ jobs:
   saucelabs-deploy:
     runs-on: ubuntu-latest
     needs: build
+    if: "false"
     outputs:
       file_id: ${{ steps.deploy.outputs.file_id }}
     steps:
@@ -28,7 +29,6 @@ jobs:
   codepush-deploy:
     runs-on: ubuntu-latest
     needs: build
-    if: "false"
     outputs:
       file_id: ${{ steps.deploy.outputs.file_id }}
     steps:
