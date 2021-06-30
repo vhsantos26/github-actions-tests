@@ -8,10 +8,7 @@ on:
       - ./github/workflows/ci-cd.yml
   pull_request:
     branches: main
-
-env:
-  CODE_PUSH_DEPLOYMENT: ${{ ( github.event_name == 'push' && github.event_name != 'one' && github.refs == 'two' && 'true' || 'false ) }}
-
+    
 jobs:
   build:
     runs-on: ubuntu-latest
