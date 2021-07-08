@@ -10,7 +10,8 @@ on:
     branches: main
     
 env:
-  test_env: "Built from Branch: ${{ github.run_id }}. CI Build URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}"
+  first_env: "test"
+  test_env: "Built from Branch: ${{ env.first_env }}. CI Build URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}"
     
 jobs:
   build:
