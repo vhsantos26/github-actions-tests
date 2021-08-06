@@ -16,11 +16,14 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      url: steps.set_url.outputs.url_output
     steps:
       - id: deploy
         run: echo ${{ env.BRANCH_NAME }}
         
-      - run: echo ::set-output name=url_output::$(cat saucelabs-job-id.txt | grep .)
+      - id: set_url
+        run: echo ::set-output name=url_output::$(cat saucelabs-job-id.txt | grep .)
   
   saucelabs-deploy:
     runs-on: ubuntu-latest
@@ -40,6 +43,8 @@ jobs:
     steps:
       - id: deploy
         run: echo "::set-output name=file_id::wxyz5678"
+        
+      - run: echo ${{ needs.build.outputs.url }}
 
   end-to-end:
     runs-on: ubuntu-latest
