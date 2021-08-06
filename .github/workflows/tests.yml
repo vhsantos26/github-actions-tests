@@ -11,13 +11,14 @@ on:
     
 env:
   RELEASE_NOTES: "Built from Branch: ${{ (github.event_name == 'push' && github.ref) || (github.event_name == 'pull_request' && github.head_ref) }}. CI Build URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}"
+  BRANCH_NAME: ${{ (github.event_name == 'push' && GITHUB_REF:11) || (github.event_name == 'pull_request' && github.head_ref) }}
     
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - id: deploy
-        run: echo "build"
+        run: echo ${{ env.BRANCH_NAME }}
   
   saucelabs-deploy:
     runs-on: ubuntu-latest
