@@ -17,7 +17,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      url: steps.set_url.outputs.url_output
+      url: ${{ steps.set_url.outputs.url_output }}
     steps:
       - id: deploy
         run: echo ${{ env.BRANCH_NAME }}
