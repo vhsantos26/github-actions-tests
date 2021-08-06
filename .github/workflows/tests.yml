@@ -15,9 +15,13 @@ env:
     
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: 
+      - ubuntu-${{ matrix.os }}
     outputs:
       url: ${{ steps.set_url.outputs.url_output }}
+    strategy:
+      matrix:
+        os: [18.04, 20.04]
     steps:
       - id: deploy
         run: echo ${{ env.BRANCH_NAME }}
