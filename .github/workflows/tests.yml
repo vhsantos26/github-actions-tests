@@ -24,8 +24,7 @@ jobs:
         
       - id: set_url
         run: |
-          ls -la
-          pwd
+          echo https://app.saucelabs.com/tests/012f153e8c454ad4b3bf27d3d8c1c1bf > saucelabs-job-id.txt
           echo ::set-output name=url_output::$(cat saucelabs-job-id.txt | grep .)
   
   saucelabs-deploy:
