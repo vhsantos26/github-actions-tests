@@ -23,7 +23,9 @@ jobs:
         run: echo ${{ env.BRANCH_NAME }}
         
       - id: set_url
-        run: echo ::set-output name=url_output::$(cat saucelabs-job-id.txt | grep .)
+        run: |
+          ls -la
+          echo ::set-output name=url_output::$(cat saucelabs-job-id.txt | grep .)
   
   saucelabs-deploy:
     runs-on: ubuntu-latest
