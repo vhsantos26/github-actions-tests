@@ -60,4 +60,27 @@ jobs:
       - env:
           APP_ID: ${{ ((needs.saucelabs-deploy.result == 'success') && needs.saucelabs-deploy.outputs.file_id) || ((needs.codepush-deploy.result == 'success') && needs.codepush-deploy.outputs.file_id)}}
         run: echo "${{ env.APP_ID }}"
+        
+  first:
+    runs-on: ubuntu-lates
+    steps:
+      - run: echo "first"
       
+  second:
+    runs-on: ubuntu-lates
+    needs: first
+    steps:
+      - run: exit 1
+
+  third:
+    runs-on: ubuntu-lates
+    needs: second
+    steps:
+      - run: echo "third"
+      
+  fourth:
+    runs-on: ubuntu-lates
+    needs: [first, second, third]
+    if: contains(github.ref, 'master)
+    steps:
+      - run: echo "first"
