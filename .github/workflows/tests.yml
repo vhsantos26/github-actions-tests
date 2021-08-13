@@ -81,6 +81,6 @@ jobs:
   fourth:
     runs-on: ubuntu-lates
     needs: [first, second, third]
-    if: contains(github.ref, 'master)
+    if: contains(github.ref, 'main')
     steps:
       - run: echo "first"
