@@ -69,8 +69,14 @@ jobs:
   second:
     runs-on: ubuntu-latest
     needs: first
+    env: 
+      ENVIRONMENT: qa
+      SERVICE: cms
+      VARS_FILE: vars.sh
     steps:
-      - run: exit 1
+      - run: |
+          exit 1
+          aws --output=text ssm get-parameters-by-path --with-decryption --path "${{ env.ENVIRONMENT }}/xms/${{ env.SERVICE }}" | awk '{ print $4 "=" $6 }' | sed -e "s#${{ env.ENVIRONMENT }}/xms/${{ env.SERVICE }}#qa_#g" > ${VARS_FILE}
 
   third:
     runs-on: ubuntu-latest
