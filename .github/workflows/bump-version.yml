@@ -38,4 +38,8 @@ jobs:
 
       - name: Commit
         # run: git commit -am "Bump version to ${{ github.event.inputs.version }}"
-        run: git diff .
+        run: |
+          git diff .
+          git add .
+          git commit -m 'Bump version'
+          git push 
