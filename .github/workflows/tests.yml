@@ -3,19 +3,23 @@ name: test
 on:
   workflow_dispatch:
   push:
-    branches: main
-    paths-ignore: 
+    branches:
+      - main
+    paths-ignore:
       - ./github/workflows/ci-cd.yml
+      - ./github/workflows/bump-version.yml
   pull_request:
-    branches: main
-    
+    branches:
+      - mai*
+
 env:
   RELEASE_NOTES: "Built from Branch: ${{ (github.event_name == 'push' && github.ref) || (github.event_name == 'pull_request' && github.head_ref) }}. CI Build URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}"
   BRANCH_NAME: ${{ (github.event_name == 'push' && github.event.repository.default_branch ) || (github.event_name == 'pull_request' && github.head_ref) }}
-    
+
 jobs:
   build:
-    runs-on: 
+    runs-on:
+      - self-hosted
       - ubuntu-${{ matrix.os }}
     outputs:
       url: ${{ steps.set_url.outputs.url_output }}
@@ -25,12 +29,12 @@ jobs:
     steps:
       - id: deploy
         run: echo ${{ env.BRANCH_NAME }}
-        
+
       - id: set_url
         run: |
           echo https://app.saucelabs.com/tests/012f153e8c454ad4b3bf27d3d8c1c1bf > saucelabs-job-id.txt
           echo ::set-output name=url_output::$(cat saucelabs-job-id.txt | grep .)
-  
+
   saucelabs-deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -40,7 +44,7 @@ jobs:
     steps:
       - id: deploy
         run: echo "::set-output name=file_id::abcd1234"
-  
+
   codepush-deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -49,7 +53,7 @@ jobs:
     steps:
       - id: deploy
         run: echo "::set-output name=file_id::wxyz5678"
-        
+
       - run: echo ${{ needs.build.outputs.url }}
 
   end-to-end:
@@ -60,16 +64,16 @@ jobs:
       - env:
           APP_ID: ${{ ((needs.saucelabs-deploy.result == 'success') && needs.saucelabs-deploy.outputs.file_id) || ((needs.codepush-deploy.result == 'success') && needs.codepush-deploy.outputs.file_id)}}
         run: echo "${{ env.APP_ID }}"
-        
+
   first:
     runs-on: ubuntu-latest
     steps:
       - run: echo "first"
-      
+
   second:
     runs-on: ubuntu-latest
     needs: first
-    env: 
+    env:
       ENVIRONMENT: qa
       SERVICE: cms
       VARS_FILE: vars.sh
@@ -84,7 +88,7 @@ jobs:
     if: always() && (needs.second.result == 'success' || needs.second.result == 'failure')
     steps:
       - run: echo "third"
-      
+
   fourth:
     runs-on: ubuntu-latest
     needs: [first, second, third]
