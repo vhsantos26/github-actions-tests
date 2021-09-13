@@ -38,11 +38,12 @@ jobs:
           APP_VERSION: ${{ secrets.APP_VERSION }}
         run: sed -i -e 's/^sonar.projectVersion.*$/sonar.projectVersion=${{ env.APP_VERSION }}/' sonar-project.properties
 
-      - name: Commit
-        run: |
-          git config --global user.email "vhsantos26@gmail.com"
-          git config --global user.name "Victor Hugo dos Santos"
-          git diff .
-          git add .
-          git commit -m 'Bump version to ${{ github.event.inputs.version }}'
-          git push
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3.10.1
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          commit-message: Bump version to ${{ github.event.inputs.version }}
+          branch: bump-version/${{ github.event.inputs.version }}
+          delete-branch: true
+          base: develop
+          title: Bump version to ${{ github.event.inputs.version }}
