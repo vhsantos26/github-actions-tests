@@ -13,7 +13,8 @@ on:
 
 jobs:
   bump-mobile-version:
-    runs-on: [self-hosted, linux, ump-mobile]
+    # runs-on: [self-hosted, linux, ump-mobile]
+    runs-on: ubuntu-latest
     if: github.event.inputs.project == 'mobile-platform' && github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
