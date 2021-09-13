@@ -1,0 +1,44 @@
+name: Bump Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: The version to bump to (e.g. v1.0.0)
+        required: true
+      project:
+        default: mobile-platform
+        description: The project to bump the version of (e.g. mobile-platform, tv-platform, web-platform)
+        required: true
+
+jobs:
+  bump-mobile-version:
+    runs-on: [self-hosted, linux, ump-mobile]
+    if: github.event.inputs.project == 'mobile-platform' && github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Bump Package version
+        run: yarn --new-version version ${{ github.event.inputs.version }} --no-git-tag-version --no-commit-hooks
+
+      - name: Bump Sonar Project properties version
+        run: sed -i -e 's/^sonar.projectVersion.*$/sonar.projectVersion=${{ github.event.inputs.version }}/' sonar-project.properties
+
+      - name: Bump GitHub Secret version
+        uses: hmanzur/actions-set-secret@v2.0.0
+        with:
+          name: APP_VERSION
+          value: ${{ github.event.inputs.version }}
+          repository: ALJAZEERAPLUS/ump
+          token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Commit
+        # run: git commit -am "Bump version to ${{ github.event.inputs.version }}"
+        run: git diff .
+
+      - env:
+          APP_VERSION: ${{ secrets.APP_VERSION }}
+        run: |
+          echo ${{ env.APP_VERSION}} >> version.txt
+          cat version.txt
