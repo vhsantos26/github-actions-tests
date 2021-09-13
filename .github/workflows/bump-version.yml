@@ -30,16 +30,20 @@ jobs:
 
       - name: Bump Package version
         env:
-          APP_VERSION: ${{  secrets.APP_VERSION }}
+          APP_VERSION: ${{ secrets.APP_VERSION }}
         run: yarn --new-version version ${{ env.APP_VERSION }} --no-git-tag-version --no-commit-hooks
 
       - name: Bump Sonar Project properties version
-        run: sed -i -e 's/^sonar.projectVersion.*$/sonar.projectVersion=${{ github.event.inputs.version }}/' sonar-project.properties
+        env:
+          APP_VERSION: ${{ secrets.APP_VERSION }}
+        run: sed -i -e 's/^sonar.projectVersion.*$/sonar.projectVersion=${{ env.APP_VERSION }}/' sonar-project.properties
 
       - name: Commit
         # run: git commit -am "Bump version to ${{ github.event.inputs.version }}"
         run: |
+          git config --global user.email "vhsantos26@gmail.com"
+          git config --global user.name "Victor Hugo dos Santos"
           git diff .
           git add .
           git commit -m 'Bump version'
-          git push 
+          git push
