@@ -46,7 +46,7 @@ jobs:
           branch: bump-version/${{ github.event.inputs.version }}
           delete-branch: true
           base: main
-          title: Bump version to ${{ github.event.inputs.version }}
+          title: Bump version ${{ github.event.inputs.version }}
           body: |
-            ## New version: ${{ github.event.inputs.version }}
-          milestone: v${{ github.event.inputs.version }}
+            ## New version: 
+            - ${{ github.event.inputs.version }}
