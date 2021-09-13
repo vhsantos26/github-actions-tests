@@ -38,8 +38,6 @@ jobs:
         # run: git commit -am "Bump version to ${{ github.event.inputs.version }}"
         run: git diff .
 
-      - env:
-          APP_VERSION: ${{ secrets.APP_VERSION }}
+      - if: secrets.APP_VERSION == '2.0.0'
         run: |
-          echo ${{ env.APP_VERSION}} >> version.txt
-          cat version.txt
+          echo "HERE"
