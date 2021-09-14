@@ -48,5 +48,5 @@ jobs:
           base: main
           title: Bump version ${{ github.event.inputs.version }}
           body: |
-            ## New version: 
-            - ${{ github.event.inputs.version }}
+            ## Summary: 
+            - Version: ${{ github.event.inputs.version }}
