@@ -3,6 +3,10 @@ name: Bump Version
 on:
   workflow_dispatch:
     inputs:
+      hotfix:
+        default: 'false'
+        description: "Bump version to hotfix"
+        required: true
       version:
         description: The version to bump to (e.g. v1.0.0)
         required: true
@@ -38,15 +42,30 @@ jobs:
           APP_VERSION: ${{ secrets.APP_VERSION }}
         run: sed -i -e 's/^sonar.projectVersion.*$/sonar.projectVersion=${{ env.APP_VERSION }}/' sonar-project.properties
 
-      - name: Create Pull Request
+      - name: Create Pull Request for Develop
+        if: github.event.inputs.hotfix == 'false'
         uses: peter-evans/create-pull-request@v3.10.1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           commit-message: Bump version to ${{ github.event.inputs.version }}
           branch: bump-version/${{ github.event.inputs.version }}
           delete-branch: true
-          base: main
+          base: develop
           title: Bump version ${{ github.event.inputs.version }}
+          body: |
+            ## Summary: 
+            - Version: ${{ github.event.inputs.version }}
+            
+      - name: Create Pull Request for Hotfix 
+        if: github.event.inputs.hotfix == 'true'
+        uses: peter-evans/create-pull-request@v3.10.1
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          commit-message: Hotfix-${{ github.event.inputs.version }}
+          branch: hotfix-${{ github.event.inputs.version }}
+          delete-branch: true
+          base: main
+          title: HotFix ${{ github.event.inputs.version }}
           body: |
             ## Summary: 
             - Version: ${{ github.event.inputs.version }}
