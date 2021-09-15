@@ -43,7 +43,7 @@ jobs:
         run: sed -i -e 's/^sonar.projectVersion.*$/sonar.projectVersion=${{ env.APP_VERSION }}/' sonar-project.properties
 
       - name: Bump Build Gradle version
-        run: sed -i -e 's/app_version=\".*\"/app_version=\"${{ env.APP_VERSION }}\"/' android/app/build.gradle
+        run: sed -i -e "s/app_version=\".*\"/app_version=\"${{ env.APP_VERSION }}\"/" android/app/build.gradle
 
       - name: Create Pull Request for Develop
         if: github.event.inputs.hotfix == 'false'
