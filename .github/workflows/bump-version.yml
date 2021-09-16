@@ -16,10 +16,13 @@ on:
         required: true
 
 jobs:
-  bump-mobile-version:
-    # runs-on: [self-hosted, linux, ump-mobile]
+  bump-mobile-hotfix-version:
     runs-on: ubuntu-latest
-    if: github.event.inputs.project == 'mobile-platform' && github.event_name == 'workflow_dispatch'
+    if: github.event.inputs.project == 'mobile-platform' && github.event_name == 'workflow_dispatch' && github.event.inputs.hotfix == 'true'
+    strategy:
+      matrix:
+        base-branch: [main, develop]
+      max-parallel: 0
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -41,41 +44,51 @@ jobs:
       - name: Bump Build Gradle version
         run: sed -i -e "s/app_version=\".*\"/app_version=\"${{ github.event.inputs.version }}\"/" android/app/build.gradle
 
-      - name: Create Hotfix Pull Request (main)
-        if: github.event.inputs.hotfix == 'true'
+      - name: Create Hotfix Pull Request (${{ matrix.base-branch }})
         uses: peter-evans/create-pull-request@v3.10.1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           commit-message: Hotfix ${{ github.event.inputs.version }}
           branch: hotfix-${{ github.event.inputs.version }}
           delete-branch: true
-          base: main
+          base: ${{ matrix.base-branch }}
           title: Hotfix ${{ github.event.inputs.version }}
           labels: |
-            main
+            ${{ matrix.base-branch }}
             hotfix-${{ github.event.inputs.version }}
           body: |
             ## Summary: 
             - Version: ${{ github.event.inputs.version }}
 
-      - name: Create Hotfix Pull Request (develop)
-        if: github.event.inputs.hotfix == 'true'
-        uses: peter-evans/create-pull-request@v3.10.1
+  bump-mobile-release-version:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.project == 'mobile-platform' && github.event_name == 'workflow_dispatch' && github.event.inputs.hotfix == 'false'
+    strategy:
+      matrix:
+        base-branch: [develop, main]
+      max-parallel: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Bump GitHub Secret version
+        uses: hmanzur/actions-set-secret@v2.0.0
         with:
+          name: APP_VERSION
+          value: ${{ github.event.inputs.version }}
+          repository: vhsantos26/github-actions-tests
           token: ${{ secrets.ACCESS_TOKEN }}
-          commit-message: Hotfix ${{ github.event.inputs.version }}
-          branch: hotfix-${{ github.event.inputs.version }}
-          delete-branch: true
-          base: develop
-          title: Hotfix ${{ github.event.inputs.version }}
-          labels: |
-            develop
-            hotfix-${{ github.event.inputs.version }}
-          body: |
-            ## Summary: 
-            - Version: ${{ github.event.inputs.version }}
 
-      - name: Create Release Pull Request (develop)
+      - name: Bump Package version
+        run: yarn --new-version version ${{ github.event.inputs.version }} --no-git-tag-version --no-commit-hooks
+
+      - name: Bump Sonar Project properties version
+        run: sed -i -e 's/^sonar.projectVersion.*$/sonar.projectVersion=${{ github.event.inputs.version }}/' sonar-project.properties
+
+      - name: Bump Build Gradle version
+        run: sed -i -e "s/app_version=\".*\"/app_version=\"${{ github.event.inputs.version }}\"/" android/app/build.gradle
+
+      - name: Create Release Pull Request (${{ matrix.base-branch }})
         if: github.event.inputs.hotfix == 'false'
         uses: peter-evans/create-pull-request@v3.10.1
         with:
@@ -83,27 +96,10 @@ jobs:
           commit-message: Release ${{ github.event.inputs.version }}
           branch: rc-${{ github.event.inputs.version }}
           delete-branch: true
-          base: develop
+          base: ${{ matrix.base-branch }}
           title: Release ${{ github.event.inputs.version }}
           labels: |
-            develop
-            rc-${{ github.event.inputs.version }}
-          body: |
-            ## Summary: 
-            - Version: ${{ github.event.inputs.version }}
-
-      - name: Create Release Pull Request (main)
-        if: github.event.inputs.hotfix == 'false'
-        uses: peter-evans/create-pull-request@v3.10.1
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-          commit-message: Release ${{ github.event.inputs.version }}
-          branch: rc-${{ github.event.inputs.version }}
-          delete-branch: true
-          base: main
-          title: Release ${{ github.event.inputs.version }}
-          labels: |
-            main
+            ${{ matrix.base-branch }}
             rc-${{ github.event.inputs.version }}
           body: |
             ## Summary: 
