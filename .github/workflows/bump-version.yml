@@ -37,19 +37,13 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Bump Package version
-        env:
-          APP_VERSION: ${{ secrets.APP_VERSION }}
-        run: yarn --new-version version ${{ env.APP_VERSION }} --no-git-tag-version --no-commit-hooks
+        run: yarn --new-version version ${{ github.event.inputs.version }} --no-git-tag-version --no-commit-hooks
 
       - name: Bump Sonar Project properties version
-        env:
-          APP_VERSION: ${{ secrets.APP_VERSION }}
-        run: sed -i -e 's/^sonar.projectVersion.*$/sonar.projectVersion=${{ env.APP_VERSION }}/' sonar-project.properties
+        run: sed -i -e 's/^sonar.projectVersion.*$/sonar.projectVersion=${{ github.event.inputs.version }}/' sonar-project.properties
 
       - name: Bump Build Gradle version
-        env:
-          APP_VERSION: ${{ secrets.APP_VERSION }}
-        run: sed -i -e "s/app_version=\".*\"/app_version=\"${{ env.APP_VERSION }}\"/" android/app/build.gradle
+        run: sed -i -e "s/app_version=\".*\"/app_version=\"${{ github.event.inputs.version }}\"/" android/app/build.gradle
 
       - name: Create Hotfix Pull Request (${{ matrix.main-branch }})
         if: github.event.inputs.hotfix == 'true'
