@@ -23,6 +23,7 @@ jobs:
     strategy:
       matrix:
         main-branch: [main, develop]
+      max-parallel: 0
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -76,7 +77,7 @@ jobs:
           branch: rc-${{ github.event.inputs.version }}
           delete-branch: true
           base: ${{ matrix.main-branch }}
-          title: Hotfix ${{ github.event.inputs.version }}
+          title: Release ${{ github.event.inputs.version }}
           labels: |
             ${{ matrix.main-branch }}
             rc-${{ github.event.inputs.version }}
