@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       hotfix:
-        default: 'false'
+        default: "false"
         description: "Bump version to hotfix"
         required: true
       version:
@@ -43,32 +43,74 @@ jobs:
         run: sed -i -e 's/^sonar.projectVersion.*$/sonar.projectVersion=${{ env.APP_VERSION }}/' sonar-project.properties
 
       - name: Bump Build Gradle version
-        run: sed -i -e 's/app_version=\".*\"/app_version=\"${{ env.APP_VERSION }}\"/' android/app/build.gradle
+        env:
+          APP_VERSION: ${{ secrets.APP_VERSION }}
+        run: sed -i -e "s/app_version=\".*\"/app_version=\"${{ env.APP_VERSION }}\"/" android/app/build.gradle
 
-      - name: Create Pull Request for Develop
-        if: github.event.inputs.hotfix == 'false'
-        uses: peter-evans/create-pull-request@v3.10.1
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-          commit-message: Bump version to ${{ github.event.inputs.version }}
-          branch: bump-version/${{ github.event.inputs.version }}
-          delete-branch: true
-          base: develop
-          title: Bump version ${{ github.event.inputs.version }}
-          body: |
-            ## Summary: 
-            - Version: ${{ github.event.inputs.version }}
-            
-      - name: Create Pull Request for Hotfix 
+      - name: Create Hotfix Pull Request (main)
         if: github.event.inputs.hotfix == 'true'
         uses: peter-evans/create-pull-request@v3.10.1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          commit-message: Hotfix-${{ github.event.inputs.version }}
+          commit-message: Hotfix ${{ github.event.inputs.version }}
           branch: hotfix-${{ github.event.inputs.version }}
           delete-branch: true
           base: main
-          title: HotFix ${{ github.event.inputs.version }}
+          title: Hotfix ${{ github.event.inputs.version }}
+          labels: |
+            main
+            hotfix-${{ github.event.inputs.version }}
+          body: |
+            ## Summary: 
+            - Version: ${{ github.event.inputs.version }}
+
+      - name: Create Hotfix Pull Request (develop)
+        if: github.event.inputs.hotfix == 'true'
+        uses: peter-evans/create-pull-request@v3.10.1
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          commit-message: Hotfix ${{ github.event.inputs.version }}
+          branch: hotfix-${{ github.event.inputs.version }}
+          delete-branch: true
+          base: develop
+          title: Hotfix ${{ github.event.inputs.version }}
+          labels: |
+            develop
+            hotfix-${{ github.event.inputs.version }}
+          body: |
+            ## Summary: 
+            - Version: ${{ github.event.inputs.version }}
+
+      - name: Create Release Pull Request (develop)
+        if: github.event.inputs.hotfix == 'false'
+        uses: peter-evans/create-pull-request@v3.10.1
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          commit-message: Release ${{ github.event.inputs.version }}
+          branch: rc-${{ github.event.inputs.version }}
+          delete-branch: true
+          base: develop
+          title: Hotfix ${{ github.event.inputs.version }}
+          labels: |
+            develop
+            rc-${{ github.event.inputs.version }}
+          body: |
+            ## Summary: 
+            - Version: ${{ github.event.inputs.version }}
+
+      - name: Create Release Pull Request (main)
+        if: github.event.inputs.hotfix == 'false'
+        uses: peter-evans/create-pull-request@v3.10.1
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          commit-message: Release ${{ github.event.inputs.version }}
+          branch: rc-${{ github.event.inputs.version }}
+          delete-branch: true
+          base: main
+          title: Hotfix ${{ github.event.inputs.version }}
+          labels: |
+            main
+            rc-${{ github.event.inputs.version }}
           body: |
             ## Summary: 
             - Version: ${{ github.event.inputs.version }}
