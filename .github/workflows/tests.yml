@@ -24,11 +24,11 @@ jobs:
       
       - name: Audit
         id: exit-error
-        continue-on-error: true
+        continue-on-error: false
         run: exit 1
         
       - run: echo "::notice::Audit result was error"
-        if: steps.exit-error.outcome == 'failure' || steps.exit-error.outcome == 'success'
+        if: always() && (steps.exit-error.outcome == 'failure' || steps.exit-error.outcome == 'success')
         
       - run: echo "::warning::Unit Test"
         
