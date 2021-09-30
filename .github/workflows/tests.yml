@@ -24,8 +24,8 @@ jobs:
       
       - name: Audit
         id: exit-error
-        continue-on-error: false
-        run: echo "Audit something"
+        continue-on-error: true
+        run: exit 1
         
       - run: echo "::notice::Audit result was error"
         if: steps.exit-error.outcome == 'failure' || steps.exit-error.outcome == 'success'
