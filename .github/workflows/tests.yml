@@ -20,11 +20,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "build"
+      - run: exit 1
       
       - name: Audit
         id: exit-error
-        run: exit 1
+        run: echo "test"
         
       - run: echo "::notice::Audit result was error"
         if: always() && (steps.exit-error.outcome == 'failure' || steps.exit-error.outcome == 'success')
