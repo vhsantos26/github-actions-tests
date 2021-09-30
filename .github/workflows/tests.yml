@@ -22,9 +22,10 @@ jobs:
     steps:
       - run: echo "build"
       
-      - run: Audit
+      - name: Audit
         id: exit-error
-        continue-on-error: true
+        continue-on-error: false
+        run: echo "Audit something"
         
       - run: echo "::notice::Audit result was error"
         if: steps.exit-error.outcome == 'failure' || steps.exit-error.outcome == 'success'
