@@ -24,7 +24,6 @@ jobs:
       
       - name: Audit
         id: exit-error
-        continue-on-error: false
         run: exit 1
         
       - run: echo "::notice::Audit result was error"
