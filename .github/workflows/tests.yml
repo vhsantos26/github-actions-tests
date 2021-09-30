@@ -21,6 +21,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "build"
+      
+      - run: Audit
+        id: exit-error
+        continue-on-error: true
+        
+      - run: echo "::notice::Audit result was error"
+        if: steps.exit-error.outcome == 'failure' || steps.exit-error.outcome == 'success'
+        
+      - run: echo "::warning::Unit Test"
+        
 
   unit-tests:
     runs-on: ubuntu-latest
