@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - develop
     paths-ignore:
       - ./github/workflows/ci-cd.yml
       - ./github/workflows/bump-version.yml
