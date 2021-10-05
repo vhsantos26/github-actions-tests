@@ -20,7 +20,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - if: !contains(github.head_ref, 'rc-')
+      - if: ! contains(github.head_ref, 'rc-')
         run: exit 1
       
       - name: Audit
