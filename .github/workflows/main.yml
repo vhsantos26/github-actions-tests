@@ -19,47 +19,65 @@ jobs:
     outputs:
       codepush-deployment: ${{ steps.codepush-validation.outputs.codepush_deployment }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - run: echo "build"
 
       - id: codepush-validation
         uses: ./.github/github-actions/codepush-validation
 
       - name: Increase Minor Version
-        if: startsWith(github.head_ref, 'rc-') 
+        if: startsWith(github.head_ref, 'rc-')
         run: yarn version --minor --no-git-tag-version --no-commit-hooks
 
       - name: Increase Patch Version
-        if: startsWith(github.head_ref, 'hotfix-') 
+        if: startsWith(github.head_ref, 'hotfix-')
         run: yarn version --patch --no-git-tag-version --no-commit-hooks
 
   unit-tests:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - run: echo "unit-tests"
 
   security-tests:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - run: echo "security-tests"
 
   lint-tests:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - run: echo "security-tests"
 
   static-analysis:
     runs-on: ubuntu-latest
     needs: unit-tests
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - run: echo "static-analysis"
 
   e2e-mobile:
     runs-on: ubuntu-latest
     needs: [build, unit-tests, security-tests, lint-tests, static-analysis]
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - run: echo "e2e-mobile"
 
   deploy_testflight:
@@ -67,6 +85,9 @@ jobs:
     needs: [build, e2e-mobile]
     if: (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) && needs.build.outputs.codepush-deployment == 'false'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - run: echo "deploy_testflight"
 
   deploy_playstore:
@@ -74,6 +95,9 @@ jobs:
     needs: [build, e2e-mobile]
     if: (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) && needs.build.outputs.codepush-deployment == 'false'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - run: echo "deploy_playstore"
 
   deploy_codepush:
@@ -85,13 +109,19 @@ jobs:
       matrix:
         os: [android, ios]
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - run: echo "deploy_codepush ${{ matrix.os }}"
 
   github-release:
     runs-on: ubuntu-latest
     needs: [deploy_testflight, deploy_playstore, deploy_codepush]
-    if: always() && ((needs.deploy_testflight.result == 'success' && needs.deploy_playstore.result == 'success') || needs.deploy_codepush.result == 'success')
+    if: github.ref == 'refs/heads/main'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Get Project Version
         working-directory: ./projects/mobile/
         run: echo "PROJECT_VERSION=$(cat package.json | grep version| cut -d ':' -f2 | sed 's/\"//g' | sed 's/,//g')" >> $GITHUB_ENV
