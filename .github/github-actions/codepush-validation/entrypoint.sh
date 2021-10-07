@@ -1,8 +1,12 @@
 #!/bin/sh
 
+git status
+
 git diff --name-only $INPUT_BASE_BRANCH... > ./git-diff.txt
 
 while read git_diff_line; do
+  echo "::debug::LINE: $git_diff_line "
+
   if [[ "$git_diff_line" == "$INPUT_PACKAGE_JSON_PATH"* ]]; then
     echo "::warning title=$get_diff_line::Skip CodePush deployment as branch may not contains only react-native changes."
     echo "::set-output name=codepush_deployment::false"
