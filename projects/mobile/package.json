@@ -1,0 +1,12 @@
+{
+  "name": "mobile-platform",
+  "version": "2.2.0",
+  "private": true,
+  "scripts": {
+    "tests": "echo 'Running the tests'"
+  },
+  "dependencies": {
+    "code-push": "4.0.5"
+  },
+  "devDependencies": {}
+}
