@@ -1,8 +1,6 @@
 #!/bin/sh
 
-git status
-
-git diff --name-only $INPUT_BASE_BRANCH... > ./git-diff.txt
+git diff --name-only origin/$INPUT_BASE_BRANCH... > ./git-diff.txt
 
 while read git_diff_line; do
   echo "::debug::LINE: $git_diff_line "
