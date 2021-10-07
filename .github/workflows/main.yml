@@ -31,7 +31,7 @@ jobs:
         uses: ./.github/github-actions/codepush-validation
         with: 
           base_branch: ${{ github.base_ref }}
-          package_path: projects/mobile/package.json
+          package_json_path: projects/mobile/package.json
           android_path: projects/mobile/android/
           ios_path: projects/mobile/ios/
           yarn_lock_path: projects/mobile/yarn.lock
