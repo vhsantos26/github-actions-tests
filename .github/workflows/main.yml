@@ -22,7 +22,7 @@ jobs:
       - run: echo "build"
 
       - id: codepush-validation
-        uses: ./github/github-actions/codepush-validation
+        uses: .github/github-actions/codepush-validation
 
       - name: Increase Minor Version
         if: startsWith(github.head_ref, 'rc-') 
