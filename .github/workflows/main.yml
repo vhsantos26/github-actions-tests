@@ -26,6 +26,8 @@ jobs:
 
       - id: codepush-validation
         uses: ./.github/github-actions/codepush-validation
+        with: 
+          base-branch: ${{ github.base_ref }}
 
       - name: Increase Minor Version
         if: startsWith(github.head_ref, 'rc-')
