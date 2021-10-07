@@ -24,7 +24,7 @@ while read git_diff_line; do
   fi
 
   if [[ "$git_diff_line" == "$INPUT_YARN_LOCK_PATH"* ]]; then
-    echo "::warning title=$get_diff_line::Skip CodePush deployment as branch may not contains only react-native changes."
+    echo "::warning::Skip CodePush deployment as branch may not contains only react-native changes (file: $get_diff_line)."
     echo "::set-output name=codepush_deployment::false"
     exit 0
   fi
