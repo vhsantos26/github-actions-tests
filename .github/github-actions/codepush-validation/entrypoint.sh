@@ -1,6 +1,6 @@
 #!/bin/sh
 
-git diff --name-only origin/$INPUT_BASE_BRANCH... > ./git-diff.txt
+git diff --name-only ${INPUT_BEFORE_COMMIT_SHA}..${AFTER_COMMIT_SHA}) > ./git-diff.txt
 
 while read git_diff_line; do
   echo "::debug::Checking $git_diff_line against $INPUT_PACKAGE_JSON_PATH"
