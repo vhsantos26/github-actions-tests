@@ -113,7 +113,7 @@ jobs:
   deploy_codepush:
     runs-on: ubuntu-latest
     needs: [build, e2e-mobile]
-    if: (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-') || github.ref == 'refs/heads/main') && needs.build.outputs.codepush-deployment == 'true'
+    if: (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-') || github.ref == 'refs/heads/develop') && needs.build.outputs.codepush-deployment == 'true'
     strategy:
       fail-fast: true
       matrix:
