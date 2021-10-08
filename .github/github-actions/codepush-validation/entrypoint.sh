@@ -1,4 +1,4 @@
-#!/bin/bash -l
+#!/bin/sh
 
 git diff --name-only origin/$INPUT_BASE_BRANCH... > ./git-diff.txt
 
