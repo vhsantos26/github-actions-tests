@@ -112,7 +112,7 @@ jobs:
   deploy_codepush:
     runs-on: ubuntu-latest
     needs: [build, e2e-mobile]
-    if: (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) && needs.build.outputs.codepush-deployment == 'true'
+    if: (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-') || github.ref == 'refs/heads/main') && needs.build.outputs.codepush-deployment == 'true'
     strategy:
       fail-fast: true
       matrix:
@@ -120,6 +120,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - if: github.ref == 'refs/heads/main'
+        run: echo "Prod"
+
+      - if: startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')
+        run: echo "Staging"
 
       - run: echo "deploy_codepush ${{ matrix.os }}"
 
