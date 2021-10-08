@@ -36,5 +36,5 @@ while read git_diff_line; do
   fi
 done < ./git-diff.txt
 
-echo "::note title=CodePush deployment::CodePush deployment elegible."
+echo "::notice title=CodePush deployment::CodePush deployment elegible."
 echo "::set-output name=codepush_deployment::true"
