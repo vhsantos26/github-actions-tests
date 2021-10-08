@@ -1,6 +1,6 @@
 #!/bin/bash -l
 
-source "$(dirname "$0")/common.sh"
+source "/common.sh"
 
 git diff --name-only origin/$INPUT_BASE_BRANCH... > ./git-diff.txt
 
