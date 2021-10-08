@@ -2,10 +2,12 @@ name: 'CodePush Validation Action'
 description: 'GitHub Action that validates if the CodePush could be executed or not'
 author: 'Victor Hugo dos Santos'
 inputs:
-  base_branch:
-    description: 'The base branch to compare against'
+  before_commit_sha:
+    description: 'The SHA of the commit before the merge'
     required: true
-    default: 'main'
+  after_commit_sha:
+    description: 'The SHA of the commit after the merge'
+    required: true
   package_json_path:
     description: 'The path to the package.json file'
     required: false
@@ -32,7 +34,8 @@ runs:
   using: "docker"
   image: "Dockerfile"
   args:
-    - ${{ inputs.base_branch }}
+    - ${{ inputs.before_commit_sha }}
+    - ${{ inputs.after_commit_sha }}
     - ${{ inputs.package_json_path }}
     - ${{ inputs.android_path }}
     - ${{ inputs.ios_path }}

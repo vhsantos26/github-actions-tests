@@ -30,7 +30,8 @@ jobs:
         id: codepush-validation
         uses: ./.github/github-actions/codepush-validation
         with: 
-          base_branch: ${{ github.base_ref }}
+          before_commit_sha: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event_name == 'push' && github.event.before }}
+          after_commit_sha: ${{ github.sha }}
           package_json_path: projects/mobile/package.json
           android_path: projects/mobile/android/
           ios_path: projects/mobile/ios/
