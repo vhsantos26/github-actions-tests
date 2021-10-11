@@ -26,6 +26,7 @@ jobs:
           
       - env:
           TEST_CONCAT: ${{ github.ref == 'develop' && "'~'secrets.APP_VERSION" }} 
+        run: echo ${{ env.TEST_CONCAT }}
 
       - run: echo "build"
 
