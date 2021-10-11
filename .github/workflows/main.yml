@@ -25,8 +25,9 @@ jobs:
           fetch-depth: 0
           
       - env:
-          TEST_CONCAT: ${{ github.ref == 'develop' && "'~'secrets.APP_VERSION" }} 
-        run: echo ${{ env.TEST_CONCAT }}
+          APP_VERSION: ${{ secrets.APP_VERSION }}
+          IS_HOTFIX: ${{ 'true' == 'true && '~' || '' }}
+        run: echo ${{ env.IS_HOTFIX }}${{ env.TEST_CONCAT }}
 
       - run: echo "build"
 
