@@ -26,7 +26,7 @@ jobs:
           
       - env:
           APP_VERSION: ${{ secrets.APP_VERSION }}
-          IS_HOTFIX: ${{ 'true' == 'true' && '~' || '' }}
+          IS_HOTFIX: ${{ 'false' == 'true' && '~' || '' }}
         run: echo ${{ env.IS_HOTFIX }}${{ env.APP_VERSION }}
 
       - run: echo "build"
