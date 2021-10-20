@@ -45,7 +45,7 @@ jobs:
           
       - name: Get Backward Version
         id: is_backwards_compatible_version
-        run: echo "::set-output name=version::$(cat projects/mobile/sonar-project.properties | grep sonar.projectVersion | cut -d '=' -f 2- | sed "s/\..*\..*/\.x\.x/")"
+        run: echo "::set-output name=version::$(cat sonar-project.properties | grep sonar.projectVersion | cut -d '=' -f 2- | sed "s/\..*\..*/\.x\.x/")"
 
       - name: Increase Minor Version
         if: startsWith(github.head_ref, 'rc-')
