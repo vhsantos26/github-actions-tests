@@ -28,17 +28,6 @@ jobs:
       - if: "github.event_name == 'push' || (github.event_name == 'pull_request' && (!startsWith(github.head_ref, 'rc-') || !startsWith(github.head_ref, 'hotfix-')))"
         run: echo "build"
 
-#       - name: CodePush Validation
-#         id: codepush-validation
-#         uses: ./.github/github-actions/codepush-validation
-#         with: 
-#           before_commit_sha: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event_name == 'push' && github.event.before }}
-#           after_commit_sha: ${{ github.sha }}
-#           package_json_path: projects/mobile/package.json
-#           android_path: projects/mobile/android/
-#           ios_path: projects/mobile/ios/
-#           yarn_lock_path: projects/mobile/yarn.lock
-      
       - name: Is Backwards Compatible
         id: is_backwards_compatible
         run: echo "::set-output name=condition::true"
