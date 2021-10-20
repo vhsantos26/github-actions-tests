@@ -39,7 +39,7 @@ jobs:
       
       - name: Set CodePush Validation
         id: codepush-validation
-        run: echo "::set-output name=codepush_deployment::false"
+        run: echo "::set-output name=codepush_deployment::true"
 
       - name: Increase Minor Version
         if: startsWith(github.head_ref, 'rc-')
@@ -62,7 +62,7 @@ jobs:
       - if: needs.build.outputs.is_backwards_compatible == 'false'
         run: echo "test"
       
-      - run: echo ${{ env.TARGET_VERSIONS }}
+      - run: echo "${{ env.TARGET_VERSIONS }}"
 
       - run: echo "unit-tests"
 
