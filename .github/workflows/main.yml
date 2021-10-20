@@ -13,9 +13,6 @@ on:
       - rc-*
       - hotfix-*
 
-env:
-  APP_VERSION: ${{ secrets.APP_VERSION }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,10 +24,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          
-      - env:
-          IS_HOTFIX: ${{ 'false' == 'true' && '~' || '' }}
-        run: echo ${{ env.IS_HOTFIX }}${{ env.APP_VERSION }}
 
       - run: echo "build"
 
@@ -50,7 +43,7 @@ jobs:
         env:
           LATEST_HARD_RELEASE_VERSION: ${{ secrets.LATEST_HARD_RELEASE_VERSION }}
           APP_VERSION: ${{ secrets.APP_VERSION }}
-        run: echo "::set-output name=version::>=env.LATEST_HARD_RELEASE_VERSION <=env.APP_VERSION"
+        run: echo "::set-output name=version::>=${{ env.LATEST_HARD_RELEASE_VERSION }} <=${{ env.APP_VERSION }}"
 
       - name: Set CodePush Validation
         id: codepush-validation
