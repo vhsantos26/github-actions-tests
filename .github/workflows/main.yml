@@ -51,7 +51,7 @@ jobs:
 
       - name: Set CodePush Validation
         id: codepush-validation
-        run: echo "::set-output name=codepush_deployment::true"
+        run: echo "::set-output name=codepush_deployment::false"
 
       - name: Increase Minor Version
         if: startsWith(github.head_ref, 'rc-')
