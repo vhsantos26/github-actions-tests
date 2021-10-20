@@ -61,7 +61,7 @@ jobs:
       
       - name: AppCenter Deployment
         env:
-          TARGET_VERSION: ${{ (needs.build.outputs.is_backwards_compatible == 'true' && '>=secrets.LATEST_HARD_RELEASE_VERSION <=secrets.APP_VERSION') || (needs.build.outputs.is_backwards_compatible == 'false' && '2.2.0') }}
+          TARGET_VERSION: ${{ (needs.build.outputs.is_backwards_compatible == 'true' && '>=${{ secrets.LATEST_HARD_RELEASE_VERSION }} <=${{ secrets.APP_VERSION }}') || (needs.build.outputs.is_backwards_compatible == 'false' && '2.2.0') }}
         run: echo "${{ env.TARGET_VERSION }}"
 
       - run: echo "unit-tests"
