@@ -39,7 +39,7 @@ jobs:
       
       - name: Is Backwards Compatible
         id: is_backwards_compatible
-        run: echo "::set-output name=condition::true"
+        run: echo "::set-output name=condition::false"
 
       - name: Increase Minor Version
         if: startsWith(github.head_ref, 'rc-')
