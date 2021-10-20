@@ -25,7 +25,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - if: "github.event_name == 'push' || (github.event_name == 'pull_request' && (!startsWith(github.head_ref, 'rc-') || !startsWith(github.head_ref, 'hotfix-')))"
+      - name: Staging
+        if: "github.event_name == 'push' || (github.event_name == 'pull_request' && (!startsWith(github.head_ref, 'rc-') || !startsWith(github.head_ref, 'hotfix-')))"
+        run: echo "build"
+
+      - name: Production
+        if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-'))
         run: echo "build"
 
       - name: Is Backwards Compatible
