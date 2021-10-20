@@ -43,7 +43,7 @@ jobs:
         env:
           LATEST_HARD_RELEASE_VERSION: ${{ secrets.LATEST_HARD_RELEASE_VERSION }}
           APP_VERSION: ${{ secrets.APP_VERSION }}
-        run: echo "::set-output name=version::>=${{ env.LATEST_HARD_RELEASE_VERSION }} <=${{ env.APP_VERSION }}"
+        run: echo "::set-output name=version::>='${{ env.LATEST_HARD_RELEASE_VERSION }} <=${{ env.APP_VERSION }}'"
 
       - name: Set CodePush Validation
         id: codepush-validation
