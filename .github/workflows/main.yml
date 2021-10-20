@@ -18,7 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       is_backwards_compatible: ${{ steps.codepush-validation.outputs.codepush_deployment }}
-      target_versions: ${{ steps.target_versions.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -37,14 +36,7 @@ jobs:
 #           android_path: projects/mobile/android/
 #           ios_path: projects/mobile/ios/
 #           yarn_lock_path: projects/mobile/yarn.lock
-          
-      - name: Get Target Versions
-        id: target_versions
-        env:
-          LATEST_HARD_RELEASE_VERSION: ${{ secrets.LATEST_HARD_RELEASE_VERSION }}
-          APP_VERSION: ${{ secrets.APP_VERSION }}
-        run: echo "::set-output name=version::>='${{ env.LATEST_HARD_RELEASE_VERSION }} <=${{ env.APP_VERSION }}'"
-
+      
       - name: Set CodePush Validation
         id: codepush-validation
         run: echo "::set-output name=codepush_deployment::false"
@@ -61,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     env:
-      TARGET_VERSIONS: ${{ needs.build.outputs.target_versions }}
+      TARGET_VERSIONS: '>=${{ secrets.LATEST_HARD_RELEASE_VERSION }} <=${{ secrets.APP_VERSION }}'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
