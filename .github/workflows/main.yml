@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     env:
-      APPCENTER_APP_VERSION: ${{ (needs.build.outputs.is_backwards_compatible == 'true' && needs.build.outputs.backwards_compatible_version) || (needs.build.outputs.is_backwards_compatible == 'false' && env.APP_VERSION) }}
+      APPCENTER_APP_VERSION: ${{ (needs.build.outputs.is_backwards_compatible == 'true' && needs.build.outputs.backwards_compatible_version) || (needs.build.outputs.is_backwards_compatible == 'false' && secrets.APP_VERSION) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
