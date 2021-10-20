@@ -13,11 +13,14 @@ on:
       - rc-*
       - hotfix-*
 
+env:
+  APP_VERSION: ${{ secrets.APP_VERSION }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      codepush-deployment: ${{ steps.codepush-validation.outputs.codepush_deployment }}
+      is_backwards_compatible: ${{ steps.codepush-validation.outputs.codepush_deployment }}
       backwards_compatible_version: ${{ steps.backwards_compatible_version.outputs.version }}
     steps:
       - name: Checkout
@@ -26,26 +29,29 @@ jobs:
           fetch-depth: 0
           
       - env:
-          APP_VERSION: ${{ secrets.APP_VERSION }}
           IS_HOTFIX: ${{ 'false' == 'true' && '~' || '' }}
         run: echo ${{ env.IS_HOTFIX }}${{ env.APP_VERSION }}
 
       - run: echo "build"
 
-      - name: CodePush Validation
-        id: codepush-validation
-        uses: ./.github/github-actions/codepush-validation
-        with: 
-          before_commit_sha: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event_name == 'push' && github.event.before }}
-          after_commit_sha: ${{ github.sha }}
-          package_json_path: projects/mobile/package.json
-          android_path: projects/mobile/android/
-          ios_path: projects/mobile/ios/
-          yarn_lock_path: projects/mobile/yarn.lock
+#       - name: CodePush Validation
+#         id: codepush-validation
+#         uses: ./.github/github-actions/codepush-validation
+#         with: 
+#           before_commit_sha: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event_name == 'push' && github.event.before }}
+#           after_commit_sha: ${{ github.sha }}
+#           package_json_path: projects/mobile/package.json
+#           android_path: projects/mobile/android/
+#           ios_path: projects/mobile/ios/
+#           yarn_lock_path: projects/mobile/yarn.lock
           
       - name: Get Backward Version
         id: backwards_compatible_version
         run: echo "::set-output name=version::$(cat sonar-project.properties | grep sonar.projectVersion | cut -d '=' -f 2- | sed "s/\..*\..*/\.x\.x/")"
+
+      - name: Set CodePush Validation
+        id: codepush-validation
+        run: echo "::set-output name=codepush_deployment::true"
 
       - name: Increase Minor Version
         if: startsWith(github.head_ref, 'rc-')
@@ -58,11 +64,13 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     needs: build
+    env:
+      APPCENTER_APP_VERSION: ${{ (needs.build.outputs.is_backwards_compatible == 'true' && needs.build.outputs.backwards_compatible_version) || (needs.build.outputs.is_backwards_compatible == 'false' && env.APP_VERSION) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       
-      - run: echo ${{ needs.build.outputs.backwards_compatible_version }}
+      - run: echo ${{ env.APPCENTER_APP_VERSION }}
 
       - run: echo "unit-tests"
 
