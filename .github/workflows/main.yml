@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       codepush-deployment: ${{ steps.codepush-validation.outputs.codepush_deployment }}
-      is_backwards_compatible_version: ${{ steps.isbackwards_compatible_version.outputs.version }}
+      backwards_compatible_version: ${{ steps.backwards_compatible_version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -44,7 +44,7 @@ jobs:
           yarn_lock_path: projects/mobile/yarn.lock
           
       - name: Get Backward Version
-        id: is_backwards_compatible_version
+        id: backwards_compatible_version
         run: echo "::set-output name=version::$(cat sonar-project.properties | grep sonar.projectVersion | cut -d '=' -f 2- | sed "s/\..*\..*/\.x\.x/")"
 
       - name: Increase Minor Version
@@ -61,6 +61,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - run: echo ${{ needs.build.outputs.backwards_compatible_version }}
 
       - run: echo "unit-tests"
 
