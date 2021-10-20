@@ -17,7 +17,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      is_backwards_compatible: ${{ steps.codepush-validation.outputs.codepush_deployment }}
+      is_backwards_compatible: ${{ steps.is_backwards_compatible.outputs.condition }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -37,9 +37,9 @@ jobs:
 #           ios_path: projects/mobile/ios/
 #           yarn_lock_path: projects/mobile/yarn.lock
       
-      - name: Set CodePush Validation
-        id: codepush-validation
-        run: echo "::set-output name=codepush_deployment::true"
+      - name: Is Backwards Compatible
+        id: is_backwards_compatible
+        run: echo "::set-output name=condition::true"
 
       - name: Increase Minor Version
         if: startsWith(github.head_ref, 'rc-')
@@ -52,9 +52,6 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     needs: build
-    env:
-#      TARGET_VERSIONS: '>=${{ secrets.LATEST_HARD_RELEASE_VERSION }} <=${{ secrets.APP_VERSION }}'
-      TARGET_VERSIONS: '>=2.1.1 <=2.2.0'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -62,7 +59,10 @@ jobs:
       - if: needs.build.outputs.is_backwards_compatible == 'false'
         run: echo "test"
       
-      - run: echo "${{ env.TARGET_VERSIONS }}"
+      - name: AppCenter Deployment
+        env:
+          TARGET_VERSION: ${{ (needs.build.outputs.is_backwards_compatible == 'true' && ">=${{ secrets.LATEST_HARD_RELEASE_VERSION }} <=${{ secrets.APP_VERSION }}") || (needs.build.outputs.is_backwards_compatible == 'false' && '2.2.0')
+        run: echo "${{ env.TARGET_VERSION }}"
 
       - run: echo "unit-tests"
 
