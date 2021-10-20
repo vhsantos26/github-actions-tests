@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - if: "!startsWith(github.event_name, 'pus')"
+      - if: "startsWith(github.event_name, 'pus')"
         run: echo "build"
 
 #       - name: CodePush Validation
