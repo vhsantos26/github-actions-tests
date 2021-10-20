@@ -41,9 +41,6 @@ jobs:
       - name: Bump Sonar Project properties version
         run: sed -i -e 's/^sonar.projectVersion.*$/sonar.projectVersion=${{ github.event.inputs.version }}/' sonar-project.properties
 
-      - name: Bump Build Gradle version
-        run: sed -i -e "s/app_version=\".*\"/app_version=\"${{ github.event.inputs.version }}\"/" android/app/build.gradle
-
       - name: Create Hotfix Pull Request (${{ matrix.base-branch }})
         uses: peter-evans/create-pull-request@v3.10.1
         with:
