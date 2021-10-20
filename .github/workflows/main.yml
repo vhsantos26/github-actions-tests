@@ -25,7 +25,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - run: echo "build"
+      - if: "!contains(github.event_name, 'push')"
+        run: echo "build"
 
 #       - name: CodePush Validation
 #         id: codepush-validation
