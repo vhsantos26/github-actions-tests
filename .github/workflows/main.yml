@@ -28,10 +28,10 @@ jobs:
       - if: "github.event_name == 'push' || (github.event_name == 'pull_request' && (!startsWith(github.head_ref, 'rc-') || !startsWith(github.head_ref, 'hotfix-')))"
         run: echo "build"
 
-      - name: Upload APK file
+      - name: Upload AAB file
         uses: actions/upload-artifact@v2
         with:
-          name: apk_file
+          name: app_aab
           path: ./projects/mobile/android/app/build/outputs/bundle/**/*
           retention-days: 5
 
