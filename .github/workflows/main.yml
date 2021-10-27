@@ -32,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: apk_file
-          path: ./projects/mobile/android/app/build/outputs/bundle/(staging|release)/app-(staging|release).aab
+          path: ./projects/mobile/android/app/build/outputs/bundle/**/*
           retention-days: 5
 
   unit-tests:
@@ -42,6 +42,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
+      - name: Download AAB file
+        uses: actions/download-artifact@v2
+        with:
+          name: app_aab
+
+      - run: ls -la
+
       - if: needs.build.outputs.is_backwards_compatible == 'false'
         run: echo "test"
 
