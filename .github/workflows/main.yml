@@ -32,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: apk_file
-          path: ./projects/mobile/android/app/build/outputs/bundle/**/app-?.aab
+          path: ./projects/mobile/android/app/build/outputs/bundle/**/*
           retention-days: 5
 
   unit-tests:
