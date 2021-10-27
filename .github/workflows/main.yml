@@ -44,7 +44,9 @@ jobs:
         with:
           name: app_aab
 
-      - run: ls -la 
+      - run: | 
+          ls -la staging
+          ls -la release
 
   security-tests:
     runs-on: ubuntu-latest
