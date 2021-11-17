@@ -13,24 +13,9 @@ on:
       - rc-*
       - hotfix-*
 
-env:
-  path_1: /test/1
-  path_2: /test/2
-  path_3: /test/3
-
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        paths: 
-          - ${{ env.path_1 }}
-          - ${{ env.path_1 }}
-          - ${{ env.path_3 }}
-    steps:
-      - run: echo ${{ matrix.paths }}
-
   build:
+    if: "!((startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) && github.base_ref == 'develop')"
     runs-on: ubuntu-latest
     outputs:
       is_backwards_compatible: ${{ steps.is_backwards_compatible.outputs.condition }}
