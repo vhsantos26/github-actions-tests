@@ -1,6 +1,6 @@
 {
   "name": "aljazeera-mobile",
-  "version": "2.6.3",
+  "version": "2.2.0",
   "private": true,
   "workspaces": [
     "projects/*"
