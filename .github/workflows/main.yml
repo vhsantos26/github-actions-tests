@@ -35,6 +35,18 @@ jobs:
           path: ./projects/mobile/android/app/build/outputs/bundle/**/*
           retention-days: 5
 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo ${{ env.GITHUB_CONTEXT }} > github-context.json
+
+      - name: Upload GitHub Context file
+        uses: actions/upload-artifact@v2
+        with:
+          name: github-context
+          path: ./github-context.json
+          retention-days: 5
+
   unit-tests:
     runs-on: ubuntu-latest
     needs: build
