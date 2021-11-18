@@ -38,7 +38,7 @@ jobs:
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "${{ env.GITHUB_CONTEXT }} > github-context.json"
+        run: echo "${{ env.GITHUB_CONTEXT }} >> ./github-context.json"
 
       - name: Upload GitHub Context file
         uses: actions/upload-artifact@v2
