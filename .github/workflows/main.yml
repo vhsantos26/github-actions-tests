@@ -38,7 +38,7 @@ jobs:
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "GITHUB_CONTEXT" >> ./github-context.json
+        run: echo "$GITHUB_CONTEXT" >> ./github-context.json
 
       - run: ls -la ./
 
