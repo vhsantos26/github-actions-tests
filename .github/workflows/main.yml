@@ -11,7 +11,7 @@ on:
       - develop
       
 env:
-  RELEASE: ${{ (startsWith(github.ref, 'main') || startsWith(github.head_ref, 'hotfix-')) && true || false }}
+  RELEASE: ${{ (contains(github.ref, 'main') || startsWith(github.head_ref, 'hotfix-')) && true || false }}
 
 jobs:
   test:
