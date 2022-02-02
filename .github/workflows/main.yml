@@ -19,8 +19,9 @@ jobs:
     steps:
       - run: echo ${{ env.RELEASE }}
       
-      - run: echo "here"
-        if: env.RELEASE
+      - env:
+          TEST: ${{ env.RELEASE == true && 'can run' || 'cannot run' }}
+        run: echo ${{ env.TEST }}
 
       - name: Dump GitHub Context
         env:
