@@ -11,13 +11,16 @@ on:
       - develop
       
 env:
-  RELEASE: ${{ (contains(github.ref, 'main') || startsWith(github.head_ref, 'hotfix-')) && true || false }}
+  RELEASE: ${{ (contains(github.ref, 'develop') || startsWith(github.head_ref, 'hotfix-')) && true || false }}
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - run: echo ${{ env.RELEASE }}
+      
+      - run: echo "here"
+        if: env.RELEASE
 
       - name: Dump GitHub Context
         env:
