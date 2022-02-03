@@ -16,6 +16,7 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: github.base_ref != 'main'
     steps:
       - run: echo ${{ env.RELEASE }}
       
