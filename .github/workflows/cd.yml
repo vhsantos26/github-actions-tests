@@ -1,14 +1,9 @@
 name: Continuous Delivery
 
 on:
-  push:
-    branches:
-      - main
-      - develop
-  pull_request:
-    branches:
-      - main
-      - develop
+  workflow_run:
+    workflows: ['Continuous Integration']
+    type: [completed]
 
 jobs:
   playstore:
