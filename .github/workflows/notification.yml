@@ -1,0 +1,24 @@
+name: Slack Notification
+
+on:
+  workflow_run:
+    workflows: ['Continuous Integration', 'Continuous Delivery']
+    type: [completed]
+
+jobs:
+  slack:
+    name: Slack
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'Slack'
+
+      - env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT" >> ./slack-github-context.json
+
+      - name: Upload GitHub Context
+        uses: actions/upload-artifact@v2
+        with:
+          name: slack-github-context
+          path: ./slack-github-context.json
+          retention-days: 5
