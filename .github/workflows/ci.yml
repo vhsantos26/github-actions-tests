@@ -11,7 +11,7 @@ on:
       - develop
 
 env:
-  IS_RELEASE: ${{ ((contains(github.ref, 'develop') || startsWith(github.head_ref, 'hotfix-') && github.repository_owner == 'test')) && 'true' || 'false' }}
+  IS_RELEASE: ${{ ((contains(github.ref, 'develop') || startsWith(github.head_ref, 'hotfix-')) && github.repository_owner == 'test') && 'true' || 'false' }}
 
 jobs:
   build:
