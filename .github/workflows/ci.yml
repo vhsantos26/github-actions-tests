@@ -17,7 +17,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    if: env.IS_RELEASE == 'true'
+    if: ${{ env.IS_RELEASE == 'true' }}
     steps:
       - run: echo 'build'
 
