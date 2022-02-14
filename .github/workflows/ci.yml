@@ -10,10 +10,14 @@ on:
       - main
       - develop
 
+env:
+  IS_RELEASE: ${{ (contains(github.ref, 'develop') || startsWith(github.head_ref, 'hotfix-')) && 'true' || 'false' }}
+
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    if: env.IS_RELEASE == 'true'
     steps:
       - run: echo 'build'
 
