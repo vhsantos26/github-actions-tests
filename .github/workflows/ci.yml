@@ -10,31 +10,63 @@ on:
       - main
       - develop
 
-env:
-  IS_RELEASE: ${{ ((contains(github.ref, 'develop') || startsWith(github.head_ref, 'hotfix-')) && github.repository_owner == 'test') && 'true' || 'false' }}
-
 jobs:
-  build:
-    name: Build
+  build-and-test:
+    name: |
+      Build and Test
     runs-on: ubuntu-latest
     steps:
       - run: echo 'build'
         if: ${{ env.IS_RELEASE == 'true' }}
 
-  test:
-    name: Test
+  build-ios:
+    name: |
+      Build iOS
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: build-and-test
     steps:
-      - run: echo 'test'
+      - run: echo 'ios'
 
-      - env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT" >> ./ci-github-context.json
+  build-android:
+    name: |
+      Build Android
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - run: echo 'android'
 
-      - name: Upload GitHub Context
-        uses: actions/upload-artifact@v2
-        with:
-          name: ci-github-context
-          path: ./ci-github-context.json
-          retention-days: 5
+  functional-tests:
+    name: |
+      Functional Tests
+    runs-on: ubuntu-latest
+    needs: [build-ios, build-android]
+    strategy:
+      matrix:
+        os: [ios, android]
+    steps:
+      - run: echo ${{ matrix.os }}
+      
+  deploy-to-firebase:
+    name: |
+      Deploy to Firebase
+    runs-on: ubuntu-latest
+    needs: functional-tests
+    strategy:
+      matrix:
+        os: [ios, android]
+    steps:
+      - run: echo ${{ matrix.os }}
+      
+  deploy-to-amazon-appstore:
+    name: |
+      Deploy to Amazon AppStore
+    runs-on: ubuntu-latest
+    needs: deploy-to-firebase
+    environment: 
+      name: release
+    if: contains(github.ref, 'develop')
+    steps:
+      - run: echo 'deploy to amazon appstore'
+
+  
+      
