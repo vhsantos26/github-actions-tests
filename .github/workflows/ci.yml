@@ -89,3 +89,4 @@ jobs:
     if: contains(github.ref, 'develop')
     steps:
       - run: echo 'deploy to amazon appstore'
+
