@@ -56,8 +56,7 @@ jobs:
         os: [ios, android]
     steps:
       - run: echo ${{ matrix.os }}
-      
-      
+
   deploy-to-amazon-appstore:
     name: |
       Deploy to Amazon AppStore
@@ -69,5 +68,24 @@ jobs:
     steps:
       - run: echo 'deploy to amazon appstore'
 
-  
-      
+  deploy-to-google-playstore:
+    name: |
+      Deploy to Google PlayStore
+    runs-on: ubuntu-latest
+    needs: deploy-to-firebase
+    environment: 
+      name: release
+    if: contains(github.ref, 'develop')
+    steps:
+      - run: echo 'deploy to amazon appstore'
+
+  deploy-to-testflight:
+    name: |
+      Deploy to TestFlight
+    runs-on: ubuntu-latest
+    needs: deploy-to-firebase
+    environment: 
+      name: release
+    if: contains(github.ref, 'develop')
+    steps:
+      - run: echo 'deploy to amazon appstore'
