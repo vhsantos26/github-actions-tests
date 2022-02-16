@@ -15,7 +15,7 @@ on:
 jobs:
   build-and-test:
     name: |
-      Build and Test
+      Build & Test React-Native
     runs-on: ubuntu-latest
     steps:
       - run: echo 'build'
