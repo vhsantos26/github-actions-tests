@@ -1,94 +1,11 @@
 name: Continuous Integration
 
-
-
-on:
-  push:
-    branches:
-      - main
-      - develop
-  pull_request:
-    branches:
-      - main
-      - develop
+on: push
 
 jobs:
-  build-and-test:
-    name: |
-      Build & Test React-Native
+  test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'build'
-        if: ${{ env.IS_RELEASE == 'true' }}
-
-  build-ios:
-    name: |
-      Build iOS
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    steps:
-      - run: echo 'ios'
-
-  build-android:
-    name: |
-      Build Android
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    steps:
-      - run: echo 'android'
-
-  functional-tests:
-    name: |
-      Functional Tests
-    runs-on: ubuntu-latest
-    needs: [build-ios, build-android]
-    strategy:
-      matrix:
-        os: [ios, android]
-    steps:
-      - run: echo ${{ matrix.os }}
+      - run: echo ${GITHUB_REF##*/}
       
-  deploy-to-firebase:
-    name: |
-      Deploy to Firebase
-    runs-on: ubuntu-latest
-    needs: functional-tests
-    strategy:
-      matrix:
-        os: [ios, android]
-    steps:
-      - run: echo ${{ matrix.os }}
-
-  deploy-to-amazon-appstore:
-    name: |
-      Deploy to Amazon AppStore
-    runs-on: ubuntu-latest
-    needs: deploy-to-firebase
-    environment: 
-      name: amazon-appstore
-    if: contains(github.ref, 'develop')
-    steps:
-      - run: echo 'deploy to amazon appstore'
-
-  deploy-to-google-playstore:
-    name: |
-      Deploy to Google PlayStore
-    runs-on: ubuntu-latest
-    needs: deploy-to-firebase
-    environment: 
-      name: google-playstore
-    if: contains(github.ref, 'develop')
-    steps:
-      - run: echo 'deploy to amazon appstore'
-
-  deploy-to-testflight:
-    name: |
-      Deploy to TestFlight
-    runs-on: ubuntu-latest
-    needs: deploy-to-firebase
-    environment: 
-      name: testflight
-    if: contains(github.ref, 'develop')
-    steps:
-      - run: echo 'deploy to amazon appstore'
-
+      - run: echo ${{ github.ref }}
