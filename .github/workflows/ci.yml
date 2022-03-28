@@ -6,6 +6,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${GITHUB_REF##*/}
-      
-      - run: echo ${{ github.ref }}
+      - run: exit 1
+        continue-on-error: true
+        
+      - run: echo "the error continues"
