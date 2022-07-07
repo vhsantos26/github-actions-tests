@@ -3,9 +3,13 @@ on: push
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      retention-days: ${{ contains(github.ref, "dev") && 5 || 90 }}
+      
     steps:
       - run: echo '${{ toJSON(github) }}' >> github-context.json
 
       - uses: actions/upload-artifact@v3
         with:
           path: github-context.json
+          retention-days: 5
