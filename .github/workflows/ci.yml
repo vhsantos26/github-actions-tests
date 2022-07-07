@@ -1,14 +1,11 @@
-name: Continuous Integration
-
 on: push
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: exit 1
-        continue-on-error: true
-        
-      - run: echo '${{ toJSON(github) }}'
-      
-      - run: ls -la .
+      - run: echo '${{ toJSON(github) }}' >> github-context.json
+
+      - uses: actions/upload-artifact@v3
+        with:
+          path: github-context.json
