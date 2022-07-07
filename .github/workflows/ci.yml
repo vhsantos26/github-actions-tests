@@ -1,5 +1,8 @@
 on: push
 
+env:
+  is-release: ${{ github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -10,6 +13,7 @@ jobs:
       - run: echo '${{ toJSON(github) }}' >> github-context.json
 
       - uses: actions/upload-artifact@v3
+        if: env.is-release
         with:
           path: github-context.json
           retention-days: ${{ env.retention-days }}
