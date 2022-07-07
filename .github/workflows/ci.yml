@@ -9,4 +9,6 @@ jobs:
       - run: exit 1
         continue-on-error: true
         
-      - run: echo "the error continues"
+      - run: echo '${{ toJSON(github) }}'
+      
+      - run: ls -la .
