@@ -4,7 +4,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      retention-days: ${{ contains(github.ref, 'dev') && 5 || 90 }}
+      retention-days: ${{ contains(github.ref, 'master') && 5 || 90 }}
       
     steps:
       - run: echo '${{ toJSON(github) }}' >> github-context.json
