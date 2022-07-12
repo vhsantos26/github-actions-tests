@@ -13,7 +13,7 @@ jobs:
       - run: echo '${{ toJSON(github) }}' >> github-context.json
 
       - uses: actions/upload-artifact@v3
-        if: env.is-release == true
+        if: env.is-release == 'true'
         with:
           path: github-context.json
           retention-days: ${{ env.retention-days }}
