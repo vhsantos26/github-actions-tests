@@ -1,7 +1,7 @@
 on: push
 
 env:
-  is-release: ${{ contains(github.ref, 'master') && (startsWith(github.actor, 'vhsantos26') || startsWith(github.head_ref, 'hotfix-')) }}
+  is-release: ${{ contains(github.ref, 'dev') && (startsWith(github.actor, 'vhsantos26') || startsWith(github.head_ref, 'hotfix-')) }}
 
 jobs:
   test:
