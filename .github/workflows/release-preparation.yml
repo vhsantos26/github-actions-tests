@@ -1,0 +1,46 @@
+name: Release Preparation
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: The app new version (e.g. 2.6.0).
+        required: true
+      release-type:
+        description: The release type.
+        required: true
+        type: choice
+        options:
+          - rc
+          - hotfix
+
+defaults:
+  run:
+    shell: bash
+    working-directory: projects/mobile
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Bump version
+        run: sh ./scripts/bump-version.sh ${{ inputs.version }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          commit-message: Bump version for ${{ inputs.release-type }}${{ inputs.version }}
+          branch: ${{ inputs.release-type }}-${{ inputs.version }}
+          delete-branch: true
+          base: master
+          title: ${{ inputs.release-type }} ${{ inputs.version }}
+          labels: |
+            ${{ matrix.base-branch }}
+            ${{ inputs.release-type }}
+          body: |
+            ## Summary: 
+            - Version: ${{ inputs.version }}
