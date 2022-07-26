@@ -5,6 +5,7 @@ env:
 
 jobs:
   test:
+    name: Deploy to GitHub Release
     runs-on: ubuntu-latest
     env:
       retention-days: ${{ contains(github.ref, 'dev') && 5 || 90 }}
