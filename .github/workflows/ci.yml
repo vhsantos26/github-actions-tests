@@ -2,10 +2,12 @@ on: push
 
 env:
   is-release: ${{ contains(github.ref, 'dev') && (startsWith(github.actor, 'vhsantos26') || startsWith(github.head_ref, 'hotfix-')) }}
+  os: android
 
 jobs:
   test:
-    name: Deploy to GitHub Release
+    name: |
+      Deploy to GitHub Release ${{ env.os }}
     runs-on: ubuntu-latest
     env:
       retention-days: ${{ contains(github.ref, 'dev') && 5 || 90 }}
