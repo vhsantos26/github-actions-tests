@@ -13,6 +13,8 @@ jobs:
       
     steps:
       - run: echo '${{ toJSON(github) }}' >> github-context.json
+      
+      - run: curl -sL https://firebase.tools | bash
 
       - uses: actions/upload-artifact@v3
         if: env.is-release == 'true'
