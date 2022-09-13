@@ -17,6 +17,14 @@ on:
         options:
           - develop
           - master
+      priority:
+        description: Priority of the tests
+        required: true
+        type: choice
+        options:
+          - critical
+          - blocker
+          - both
 
 defaults:
   run:
@@ -26,22 +34,26 @@ defaults:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
+    env:
+      TESTS_PRIORITY: ${{ ( inputs.priority == 'blocker' && "(?=.*@blocker)" ) || () ( inputs.priority == 'critical' && "(?=.*@critical)" ) || ( inputs.priority == 'both' && "((?=.*@blocker)|(?=.*@critical))" ) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Bump version
         run: yarn --new-version version ${{ inputs.version }} --no-git-tag-version --no-commit-hooks
+        
+      - run: echo ${{ env.TESTS_PRIORITY }}
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-          commit-message: Bump version for ${{ inputs.version }}
-          branch: ${{ inputs.branch-name }}
-          delete-branch: true
-          base: ${{ inputs.base-branch }}
-          title: Bump version for ${{ inputs.version }}
-          body: |
-            ## Summary: 
-            - Version: ${{ inputs.version }}
+#       - name: Create Pull Request
+#         uses: peter-evans/create-pull-request@v4
+#         with:
+#           token: ${{ secrets.ACCESS_TOKEN }}
+#           commit-message: Bump version for ${{ inputs.version }}
+#           branch: ${{ inputs.branch-name }}
+#           delete-branch: true
+#           base: ${{ inputs.base-branch }}
+#           title: Bump version for ${{ inputs.version }}
+#           body: |
+#             ## Summary: 
+#             - Version: ${{ inputs.version }}
