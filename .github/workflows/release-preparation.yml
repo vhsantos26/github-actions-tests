@@ -35,7 +35,7 @@ jobs:
   bump-version:
     runs-on: ubuntu-latest
     env:
-      TESTS_PRIORITY: ${{ ( inputs.priority == 'blocker' && "(?=.*@blocker)" ) || () ( inputs.priority == 'critical' && "(?=.*@critical)" ) || ( inputs.priority == 'both' && "((?=.*@blocker)|(?=.*@critical))" ) }}
+      TESTS_PRIORITY: ${{ ( inputs.priority == 'blocker' && '(?=.*@blocker)' ) || () ( inputs.priority == 'critical' && '(?=.*@critical)' ) || ( inputs.priority == 'both' && '((?=.*@blocker)|(?=.*@critical))' ) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
