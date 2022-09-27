@@ -3,28 +3,10 @@ name: Release Preparation
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: The app new version (e.g. 2.6.0).
-        required: true
-      branch-name:
-        description: The branch name.
-        required: true
-        type: string
-      base-branch:
-        description: The base branch name.
-        required: true
-        type: choice
-        options:
-          - develop
-          - master
-      priority:
+      device-name:
         description: Priority of the tests
-        required: true
-        type: choice
-        options:
-          - critical
-          - blocker
-          - both
+        required: false
+        type: string
       device-id:
         description: Priority of the tests
         required: false
@@ -38,34 +20,11 @@ defaults:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
-    env:
-      TESTS_PRIORITY: ${{ ( inputs.priority == 'blocker' && '(?=.*@blocker)' ) || ( inputs.priority == 'critical' && '(?=.*@critical)' ) || ( inputs.priority == 'both' && '((?=.*@blocker)|(?=.*@critical))' ) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
-      - run: |
-          (${{ inputs.priority == 'critical' }}) && echo "Test"
-          
+
       - run: |
           echo "first command"
-          (${{ inputs.device-id != '' }}) && echo "second command"
+          (${{ inputs.device-id != '' || inputs.device-name != '' }} ) && echo "second command"
           echo "third command"
-
-      - name: Bump version
-        run: yarn --new-version version ${{ inputs.version }} --no-git-tag-version --no-commit-hooks
-        
-      - run: echo ${{ env.TESTS_PRIORITY }}
-
-#       - name: Create Pull Request
-#         uses: peter-evans/create-pull-request@v4
-#         with:
-#           token: ${{ secrets.ACCESS_TOKEN }}
-#           commit-message: Bump version for ${{ inputs.version }}
-#           branch: ${{ inputs.branch-name }}
-#           delete-branch: true
-#           base: ${{ inputs.base-branch }}
-#           title: Bump version for ${{ inputs.version }}
-#           body: |
-#             ## Summary: 
-#             - Version: ${{ inputs.version }}
