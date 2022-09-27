@@ -48,7 +48,9 @@ jobs:
           (${{ inputs.priority == 'critical' }}) && echo "Test"
           
       - run: |
-          (${{ inputs.device-id == '' }}) && echo "True" || echo "Falso"
+          echo "first command"
+          (${{ inputs.device-id != '' }}) && echo "second command"
+          echo "third command"
 
       - name: Bump version
         run: yarn --new-version version ${{ inputs.version }} --no-git-tag-version --no-commit-hooks
