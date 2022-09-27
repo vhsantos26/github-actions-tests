@@ -25,6 +25,10 @@ on:
           - critical
           - blocker
           - both
+      device-id:
+        description: Priority of the tests
+        required: false
+        type: string
 
 defaults:
   run:
@@ -42,6 +46,9 @@ jobs:
         
       - run: |
           (${{ inputs.priority == 'critical' }}) && echo "Test"
+          
+      - run: |
+          (${{ inputs.device-id == '' }}) && echo "True" || echo "Falso"
 
       - name: Bump version
         run: yarn --new-version version ${{ inputs.version }} --no-git-tag-version --no-commit-hooks
