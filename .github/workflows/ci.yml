@@ -14,3 +14,5 @@ jobs:
         
       - name: Post deployment
         run: rm -rf "${{ github.workspace }}/al-jazeera-mobile-platform.json"
+        
+      - run: ls -la .
