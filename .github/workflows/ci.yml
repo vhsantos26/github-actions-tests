@@ -10,9 +10,11 @@ jobs:
       
       - env:
           GOOGLE_APPLICATION_CREDENTIALS: "${{ github.workspace }}/al-jazeera-mobile-platform.json"
+        if: false
         run: echo ${{ env.GOOGLE_APPLICATION_CREDENTIALS }}
         
       - name: Post deployment
+        if: always()
         run: rm -rf "${{ github.workspace }}/al-jazeera-mobile-platform.json"
         
       - run: ls -la .
