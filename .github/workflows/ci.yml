@@ -6,6 +6,6 @@ jobs:
       Test
     runs-on: ubuntu-latest
     steps:
-      - run: echo '${{ toJSON(secrets.GOOGLE_APPLICATION_CREDENTIALS) }}'
+      - run: echo '${{ toJSON(secrets.GOOGLE_APPLICATION_CREDENTIALS) }}' > al-jazeera-mobile-platform.json
       
-      - run: ls -la .
+      - run: vi al-jazeera-mobile-platform.json
