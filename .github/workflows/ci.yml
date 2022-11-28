@@ -6,8 +6,7 @@ jobs:
       Test
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo '${{ toJSON(secrets.GOOGLE_APPLICATION_CREDENTIALS) }}' > al-jazeera-mobile-platform.json
+      - run: echo '${{ toJSON(secrets.GOOGLE_APPLICATION_CREDENTIALS) }}' > al-jazeera-mobile-platform.json
       
       - env:
           GOOGLE_APPLICATION_CREDENTIALS: "${{ github.workspace }}/al-jazeera-mobile-platform.json"
