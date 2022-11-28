@@ -8,4 +8,4 @@ jobs:
     steps:
       - run: echo '${{ toJSON(secrets.GOOGLE_APPLICATION_CREDENTIALS) }}' > al-jazeera-mobile-platform.json
       
-      - run: ls -la .
+      - run: cat al-jazeera-mobile-platform.json
