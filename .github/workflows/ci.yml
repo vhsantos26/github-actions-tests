@@ -8,6 +8,6 @@ jobs:
     steps:
       - run: |
           echo '${{ toJSON(secrets.GOOGLE_APPLICATION_CREDENTIALS) }}' > al-jazeera-mobile-platform.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$(${{.github.workspace }}/al-jazeera-mobile-platform.json) >> $GITHUB_ENV
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$(${{ github.workspace }}/al-jazeera-mobile-platform.json) >> $GITHUB_ENV
       
       - run: echo ${{ env.GOOGLE_APPLICATION_CREDENTIALS }}
