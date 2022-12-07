@@ -8,6 +8,13 @@ jobs:
     steps:
       - run: echo '${{ toJSON(secrets.GOOGLE_APPLICATION_CREDENTIALS) }}' > al-jazeera-mobile-platform.json
       
+      
+      - name: Setup Node Version
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ secrets.NODE_VERSION }}
+          check-latest: true
+      
       - run: cat al-jazeera-mobile-platform.json
       
       - env:
