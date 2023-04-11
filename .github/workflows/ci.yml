@@ -15,11 +15,18 @@ jobs:
           name: github-context
           path: github_context.json
           
-      - name: Save job context to a file
-        run: echo '${{ toJson(jobs) }}' > job_context.json
+      - name: Install jq
+        run: sudo apt-get install -y jq
         
-      - name: Upload JSON context as an artifact
+      - name: Get jobs context as JSON
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          jobs_context=$(curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs")
+          echo "$jobs_context" > jobs_context.json
+          
+      - name: Upload jobs context as an artifact
         uses: actions/upload-artifact@v2
         with:
-          name: job-context
-          path: job_context.json
+          name: jobs-context
+          path: jobs_context.json
