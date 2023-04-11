@@ -16,14 +16,9 @@ jobs:
           path: github_context.json
           
       - name: Save job context to a file
-        run: |
-          echo '{
-            "status": "${{ job.status }}",
-            "container": "${{ toJson(job.container) }}",
-            "services": "${{ toJson(job.services) }}"
-          }' > job_context.json
-
-      - name: Upload job context as an artifact
+        run: echo '${{ toJson(job) }}' > github_context.json
+        
+      - name: Upload JSON context as an artifact
         uses: actions/upload-artifact@v2
         with:
           name: job-context
