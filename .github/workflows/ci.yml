@@ -30,3 +30,19 @@ jobs:
         with:
           name: jobs-context
           path: jobs_context.json
+
+  deploy-google-playstore:
+    name: Deploy to Google PlayStore
+    runs-on: [self-hosted, linux, ump-mobile]
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: ["mobile", "tv"]
+    steps:
+      - if: matrix.type == 'mobile'
+        uses: actions/checkout@v3
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
