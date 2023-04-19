@@ -33,7 +33,7 @@ jobs:
 
   deploy-google-playstore:
     name: Deploy to Google PlayStore
-    runs-on: [self-hosted, linux, ump-mobile]
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
