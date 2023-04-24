@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        platform: ["mobile", "tv"]
+        platform: ${{ vars.STORE_DEPLOYMENT }}
     steps:
       - if: matrix.type == 'mobile'
         uses: actions/checkout@v3
