@@ -6,18 +6,6 @@ jobs:
       Test
     runs-on: ubuntu-latest
     steps:
-      - name: Save JSON context to a file
-        run: echo '${{ toJson(github) }}' > github_context.json
-
-      - name: Upload JSON context as an artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: github-context
-          path: github_context.json
-          
-      - name: Install jq
-        run: sudo apt-get install -y jq
-        
       - name: Get jobs context as JSON
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -33,7 +21,9 @@ jobs:
 
   deploy-google-playstore:
     name: Deploy to Google PlayStore
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNNER }}
+    needs: test
+    if: vars.ENABLE_JOB == 'true'
     strategy:
       fail-fast: true
       matrix:
