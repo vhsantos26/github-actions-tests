@@ -22,3 +22,4 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           generateReleaseNotes: true
           allowUpdates: true
+          omitDraftDuringUpdate: true
