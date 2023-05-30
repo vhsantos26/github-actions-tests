@@ -20,3 +20,4 @@ jobs:
         with:
           tag: v${{ env.TAG }}
           token: ${{ secrets.ACCESS_TOKEN }}
+          generateReleaseNotes: true
