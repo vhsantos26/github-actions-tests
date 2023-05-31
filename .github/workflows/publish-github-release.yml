@@ -15,10 +15,10 @@ jobs:
         id: get_project_version
 
       - uses: ncipollo/release-action@v1.12.0
-         env:
-           TAG: ${{ steps.get_project_version.outputs.version }}
-         with:
-           tag: v${{ env.TAG }}
-           token: ${{ secrets.ACCESS_TOKEN }}
-           generateReleaseNotes: true
-           allowUpdates: true
+        env:
+          TAG: ${{ steps.get_project_version.outputs.version }}
+        with:
+          tag: v${{ env.TAG }}
+          token: ${{ secrets.ACCESS_TOKEN }}
+          generateReleaseNotes: true
+          allowUpdates: true
