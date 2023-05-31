@@ -25,4 +25,3 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           generateReleaseNotes: true
           allowUpdates: true
-          commit: master
