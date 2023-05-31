@@ -27,7 +27,7 @@ jobs:
           generateReleaseNotes: true
           allowUpdates: true
 
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@vfix-draft-update
         env: 
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           TAG: ${{ steps.get_project_version.outputs.version }}
