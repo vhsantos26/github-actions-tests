@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   publish-github-release:
     runs-on: ${{ vars.LINUX_RUNNER }}
@@ -22,3 +25,4 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           generateReleaseNotes: true
           allowUpdates: true
+          commit: master
