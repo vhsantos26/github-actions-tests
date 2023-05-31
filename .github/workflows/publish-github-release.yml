@@ -5,9 +5,6 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
-
 jobs:
   publish-github-release:
     runs-on: ${{ vars.LINUX_RUNNER }}
@@ -17,10 +14,11 @@ jobs:
       - run: echo "version=$(cat sonar-project.properties | grep sonar.projectVersion | cut -d '=' -f 2-)" >> $GITHUB_OUTPUT
         id: get_project_version
 
-      - uses: softprops/action-gh-release@v1
-        env:
-          TAG: ${{ steps.get_project_version.outputs.version }}
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        with:
-          tag_name: v${{ env.TAG }}
-          generate_release_notes: true
+      - uses: ncipollo/release-action@v1.12.0
+         env:
+           TAG: ${{ steps.get_project_version.outputs.version }}
+         with:
+           tag: v${{ env.TAG }}
+           token: ${{ secrets.ACCESS_TOKEN }}
+           generateReleaseNotes: true
+           allowUpdates: true
