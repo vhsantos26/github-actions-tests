@@ -14,11 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: echo "version=2.9.0" >> $GITHUB_OUTPUT
+      - run: echo "version=2.10.0" >> $GITHUB_OUTPUT
         id: get_project_version
 
       - uses: ncipollo/release-action@v1.12.0
-        if: true
+        if: false
         env:
           TAG: ${{ steps.get_project_version.outputs.version }}
         with:
@@ -28,7 +28,7 @@ jobs:
           allowUpdates: true
 
       - uses: softprops/action-gh-release@v1
-        if: false
+        if: true
         env: 
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           TAG: ${{ steps.get_project_version.outputs.version }}
