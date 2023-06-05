@@ -27,7 +27,7 @@ jobs:
           generateReleaseNotes: true
           allowUpdates: true
 
-      - uses: softprops/action-gh-release@fix-draft-update
+      - uses: softprops/action-gh-release@v1
         if: false
         env: 
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
