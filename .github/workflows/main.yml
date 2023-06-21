@@ -1,9 +1,6 @@
-name: Publish GitHub Release
+name: Test
 
 on:
-  push:
-    branches:
-      - develop
   workflow_dispatch:
     inputs:
       duration:
