@@ -20,4 +20,5 @@ jobs:
       - run: |
           echo ${{ inputs.duration }}
           test=${{ inputs.duration }}
-          echo test * 5
+          result=test * 5
+          echo $result
