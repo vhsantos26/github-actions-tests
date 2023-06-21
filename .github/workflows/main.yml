@@ -19,9 +19,7 @@ jobs:
     steps:
       - id: convert
         run: |
-          number_string="${{ inputs.duration }}"
-          number_int=$(( ${{ inputs.duration }} ))
-          result=$((number_int * 60))
+          echo "FOO=$((${{ inputs.duration }} * 60))" >> $GITHUB_OUTPUT
           
       - run: |
-          echo "Duratin result $(( ${{ steps.convert.outputs.result}} ))"
+          echo "Duratin result ${{ steps.convert.outputs.result }}"
