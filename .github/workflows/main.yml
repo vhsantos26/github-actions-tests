@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ vars.LINUX_RUNNER }}
     steps:
       - run: |
-          echo ${{ inputs.duration }}
-          test=${{ inputs.duration }}
-          result=test * 5
+          number_string="${{ inputs.duration }}"
+          number_int=$((number_string))
+          result=$((number_int*3))
           echo $result
