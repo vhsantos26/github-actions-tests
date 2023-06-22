@@ -12,6 +12,9 @@ jobs:
       - name: External workflow step
         run: echo "This is an external workflow."
 
+      - name: Replace Workflow Name
+        run: echo "WORKFLOW_NAME=${{ github.event.client_payload.branch-name }} - ${{ github.event.client_payload.device-capabilities.platform-name }} End-to-end Workflow" >> $GITHUB_ENV
+
       - name: Run Functional Tests
         env:
           APP_FILE_ID: ${{ github.event.client_payload.sauce-labs-options.file-id }}
