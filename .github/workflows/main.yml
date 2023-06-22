@@ -41,12 +41,12 @@ jobs:
           repository: vhsantos26/github-actions-tests
           event-type: start-end-to-end-workflow
           client-payload: >
-            {
+            '{
               "sauce-labs-options": {
                 "username": "${{ secrets.SAUCE_LABS_USERNAME }}",
                 "access-key": "${{ secrets.SAUCE_LABS_ACCESS_KEY }}",
                 "file-id": "${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['file-id'] }}",
-                "appium-version": "${{ vars.APPIUM_VERSION }}"
+                "appium-version": "${{ vars.APPIUM_VERSION }}",
               },
               "device-capabilities": {
                 "platform-name": "${{ matrix.platform-name }}",
@@ -55,4 +55,4 @@ jobs:
                 "phoneonly": true
               },
               "branch-name": "${{ github.ref_name }}"
-            }
+            }'
