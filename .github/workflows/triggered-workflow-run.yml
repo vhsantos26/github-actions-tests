@@ -7,14 +7,14 @@ on:
 jobs:
   job-b:
     runs-on: ubuntu-latest
-    needs: workflow-trigger
     steps:
-      - name: Display input value
-        run: |
-          echo "Input Value: ${{ needs.workflow-trigger.outputs.device-name }}"
+      - name: Placeholder job with no dependencies
+        run: echo toJson(${{ github.event }}) >> $GITHUB_ENV
 
   job-c:
     runs-on: ubuntu-latest
+    needs: job-a
     steps:
-      - name: Placeholder job with no dependencies
-        run: echo "This job has no dependencies"
+      - name: Display input value
+        run: |
+          echo "Input Value: ${{ needs.job-a.outputs.device-name }}"
