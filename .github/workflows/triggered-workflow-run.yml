@@ -12,3 +12,9 @@ jobs:
       - name: Display input value
         run: |
           echo "Input Value: ${{ needs.workflow-trigger.outputs.device-name }}"
+
+  job-c:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder job with no dependencies
+        run: echo "This job has no dependencies"
