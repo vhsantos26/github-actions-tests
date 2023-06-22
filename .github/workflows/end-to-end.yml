@@ -12,17 +12,6 @@ jobs:
       - name: External workflow step
         run: echo "This is an external workflow."
 
-      - run: |
-          APP_FILE_ID=${{ github.event.client_payload.sauce-labs-options.file-id }} \
-          SAUCE_USERNAME="${{ github.event.client_payload.sauce-labs-options.username }}" \
-          SAUCE_ACCESS_KEY=${{ github.event.client_payload.sauce-labs-options.access-key }} \
-          APPIUM_VERSION=${{ github.event.client_payload.sauce-labs-options.access-key }} \
-          DEVICE_NAME=".*" \
-          PHONEONLY=true \
-          PLATFORM_VERSION="11" \
-          PLATFORM_NAME="android" \
-          yarn run test:remote-e2e
-
       - name: Run Functional Tests
         env:
           APP_FILE_ID: ${{ github.event.client_payload.sauce-labs-options.file-id }}
