@@ -21,14 +21,14 @@ jobs:
       - run: echo "Deploy to Sauce Labs"
 
       - if: ${{ matrix.platform-name == 'ios' }}
-        id: sauce-labs-upload
+        id: ${{ matrix.platform-name }}-sauce-labs-upload
         run: |
           echo "file-id='86757a2d-f222-48a5-b4c9-422d4811ef6a'" >> $GITHUB_OUTPUT
           echo "device-name='iPhone 12 Simulator'" >> $GITHUB_OUTPUT
           echo "platform-version='14.5'" >> $GITHUB_OUTPUT
 
       - if: ${{ matrix.platform-name == 'android' }}
-        id: sauce-labs-upload
+        id: ${{ matrix.platform-name }}-sauce-labs-upload
         run: |
           echo "file-id='bad03d3a-ef5b-40fe-b200-139872a2606a'" >> $GITHUB_OUTPUT
           echo "device-name='Samsung Galaxy S20 Ultra GoogleAPI Emulator'" >> $GITHUB_OUTPUT
@@ -45,13 +45,13 @@ jobs:
               "sauce-labs-options": {
                 "username": ${{ secrets.SAUCE_LABS_USERNAME }},
                 "access-key": ${{ secrets.SAUCE_LABS_ACCESS_KEY }},
-                "file-id": ${{ steps.sauce-labs-upload.outputs.file-id }},
+                "file-id": ${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['file-id'] }}
                 "appium-version": ${{ vars.APPIUM_VERSION }},
               }
               "device-capabilities": {
                 "platform-name": "${{ matrix.platform-name }}",
-                "platform-version": ${{ steps.sauce-labs-upload.outputs.platform-version }},
-                "device-name": ${{ steps.sauce-labs-upload.outputs.device-name }},
+                "platform-version": ${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['platform-version'] }}
+                "device-name": ${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['device-name'] }}
                 "phoneonly": true,
               }
               "branch-name": "${{ github.ref_name }}",
