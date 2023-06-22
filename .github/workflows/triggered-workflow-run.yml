@@ -1,0 +1,14 @@
+on:
+  workflow_run:
+    workflows: ["main-trigger-workflow-run"]
+    types:
+      - completed
+
+jobs:
+  job-b:
+    runs-on: ubuntu-latest
+    needs: main-trigger-workflow-run
+    steps:
+      - name: Display input value
+        run: |
+          echo "Input Value: ${{ needs.main-trigger-workflow-run.outputs.device-name }}"
