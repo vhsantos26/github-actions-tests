@@ -45,14 +45,14 @@ jobs:
               "sauce-labs-options": {
                 "username": ${{ secrets.SAUCE_LABS_USERNAME }},
                 "access-key": ${{ secrets.SAUCE_LABS_ACCESS_KEY }},
-                "file-id": ${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['file-id'] }}
-                "appium-version": ${{ vars.APPIUM_VERSION }},
-              }
+                "file-id": ${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['file-id'] }},
+                "appium-version": ${{ vars.APPIUM_VERSION }}
+              },
               "device-capabilities": {
                 "platform-name": "${{ matrix.platform-name }}",
-                "platform-version": ${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['platform-version'] }}
-                "device-name": ${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['device-name'] }}
-                "phoneonly": true,
-              }
-              "branch-name": "${{ github.ref_name }}",
+                "platform-version": ${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['platform-version'] }},
+                "device-name": ${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['device-name'] }},
+                "phoneonly": true
+              },
+              "branch-name": "${{ github.ref_name }}"
             }
