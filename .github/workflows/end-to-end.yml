@@ -12,5 +12,5 @@ jobs:
         run: echo "This is an external workflow."
 
       - env:
-          MESSAGE: ${{ github.event.client_payload.message }}
+          MESSAGE: ${{ github.event.client_payload }}
         run: echo $MESSAGE

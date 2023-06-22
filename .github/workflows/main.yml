@@ -18,7 +18,7 @@ jobs:
       - run: echo "Unit Test"
 
       - name: Dispatch end-to-ed workflow
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: vhsantos26/github-actions-tests
