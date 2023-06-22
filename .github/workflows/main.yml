@@ -1,25 +1,25 @@
-name: Test
+name: Main Workflow
 
 on:
-  workflow_dispatch:
-    inputs:
-      duration:
-        type: number
-        description: "Load Test Duration (in Minutes)"
-        options:
-          - '1'
-          - '3'
-          - '10'
-        required: true
-    
+  push:
+    branches:
+      - develop
 
 jobs:
-  test:
-    runs-on: ${{ vars.LINUX_RUNNER }}
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - id: convert
-        run: |
-          echo "result=$((${{ inputs.duration }} * 60))" >> $GITHUB_OUTPUT
-          
-      - run: |
-          echo "Duratin result ${{ steps.convert.outputs.result }}"
+      - run: echo "Build"
+
+  trigger-end-to-end-workflow:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - run: echo "Unit Test"
+
+      - name: Dispatch end-to-ed workflow
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: vhsantos26/github-actions-tests
+          event-type: start-end-to-end-workflow

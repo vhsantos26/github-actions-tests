@@ -1,0 +1,14 @@
+on:
+  repository_dispatch:
+    types: [start-end-to-end-workflow]
+
+jobs:
+  external-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: External workflow step
+        run: echo "This is an external workflow."
+
+      - env:
+          MESSAGE: ${{ github.event.client_payload.message }}
+        run: echo $MESSAGE

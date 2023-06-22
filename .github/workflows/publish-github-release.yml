@@ -4,13 +4,14 @@ on:
   push:
     branches:
       - develop
-      
+
 permissions:
   contents: write
-  
+
 jobs:
   publish-github-release:
     runs-on: ${{ vars.LINUX_RUNNER }}
+    if: false
     steps:
       - uses: actions/checkout@v3
 
@@ -29,11 +30,9 @@ jobs:
 
       - uses: softprops/action-gh-release@v1
         if: true
-        env: 
+        env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           TAG: ${{ steps.get_project_version.outputs.version }}
-        with: 
+        with:
           tag_name: v${{ env.TAG }}
           generate_release_notes: true
-          
-          
