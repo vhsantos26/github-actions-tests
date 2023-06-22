@@ -5,12 +5,34 @@ on:
     types: [start-end-to-end-workflow]
 
 jobs:
-  external-job:
+  end-to-end-execution:
     runs-on: ubuntu-latest
+    name: ${{ github.event.client_payload.device-capabilities.platform-name }} execution
     steps:
       - name: External workflow step
         run: echo "This is an external workflow."
 
-      - env:
-          MESSAGE: ${{ github.event.client_payload }}
-        run: echo $MESSAGE
+      - run: |
+          APP_FILE_ID=${{ github.event.client_payload.sauce-labs-options.file-id }} \
+          SAUCE_USERNAME="${{ github.event.client_payload.sauce-labs-options.username }}" \
+          SAUCE_ACCESS_KEY=${{ github.event.client_payload.sauce-labs-options.access-key }} \
+          APPIUM_VERSION=${{ github.event.client_payload.sauce-labs-options.access-key }} \
+          DEVICE_NAME=".*" \
+          PHONEONLY=true \
+          PLATFORM_VERSION="11" \
+          PLATFORM_NAME="android" \
+          yarn run test:remote-e2e
+
+      - name: Run Functional Tests
+        env:
+          APP_FILE_ID: ${{ github.event.client_payload.sauce-labs-options.file-id }}
+          SAUCE_USERNAME: ${{ github.event.client_payload.sauce-labs-options.username }}
+          SAUCE_ACCESS_KEY: ${{ github.event.client_payload.sauce-labs-options.access-key }}
+          APPIUM_VERSION: ${{ github.event.client_payload.sauce-labs-options.access-key }}
+          PLATFORM_NAME: ${{ github.event.client_payload.device-capabilities.platform-name }}
+          PLATFORM_VERSION: ${{ github.event.client_payload.device-capabilities.platform-version }}
+          DEVICE_NAME: ${{ github.event.client_payload.device-capabilities.device-name }}
+          PHONEONLY: ${{ github.event.client_payload.device-capabilities.phoneonly }}
+          BRANCH_NAME: ${{ github.event.client_payload.branch-name }}
+        run: echo "running test"
+        id: remote-e2e
