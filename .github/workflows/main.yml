@@ -36,23 +36,26 @@ jobs:
 
       - name: Dispatch end-to-ed workflow
         uses: peter-evans/repository-dispatch@v2
+        env:
+          FILE-ID: ${{ matrix.platform-name == 'ios' && steps.ios-sauce-labs-upload.outputs.file-id || steps.android-sauce-labs-upload.outputs.file-id }}
+          PLATFORM-VERSION: ${{ matrix.platform-name == 'ios' && steps.ios-sauce-labs-upload.outputs.platform-version || steps.android-sauce-labs-upload.outputs.platform-version }}
+          DEVICE-NAME: ${{ matrix.platform-name == 'ios' && steps.ios-sauce-labs-upload.outputs.device-name || steps.android-sauce-labs-upload.outputs.device-name }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: vhsantos26/github-actions-tests
           event-type: start-end-to-end-workflow
-          client-payload: >-
-            {
-              "sauce-labs-options": {
-                "username": "${{ secrets.SAUCE_LABS_USERNAME }}",
-                "access-key": "${{ secrets.SAUCE_LABS_ACCESS_KEY }}",
-                "file-id": "${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['file-id'] }}",
-                "appium-version": "${{ vars.APPIUM_VERSION }}",
-              },
-              "device-capabilities": {
-                "platform-name": "${{ matrix.platform-name }}",
-                "platform-version": "${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['platform-version'] }}",
-                "device-name": "${{ fromJson(steps[format('{0}-sauce-labs-upload.outputs', matrix.platform-name)].outputs)['device-name'] }}",
-                "phoneonly": true
-              },
-              "branch-name": "${{ github.ref_name }}"
-            }
+          client-payload: '{
+            "sauce-labs-options": {
+            "username": "${{ secrets.SAUCE_LABS_USERNAME }}",
+            "access-key": "${{ secrets.SAUCE_LABS_ACCESS_KEY }}",
+            "file-id": "${{ env.FILE-ID }}",
+            "appium-version": "${{ vars.APPIUM_VERSION }}",
+            },
+            "device-capabilities": {
+            "platform-name": "${{ matrix.platform-name }}",
+            "platform-version": "${{ env.PLATFORM-VERSION }}",
+            "device-name": "${{ env.DEVICE-NAME }}",
+            "phoneonly": true
+            },
+            "branch-name": "${{ github.ref_name }}"
+            }'
