@@ -12,7 +12,7 @@ jobs:
     steps:
       - run: echo "Build"
 
-      - if: env.is-release == true
+      - if: env.is-release == 'true'
         run: echo "It's a release"
 
   deploy-sauce-labs:
