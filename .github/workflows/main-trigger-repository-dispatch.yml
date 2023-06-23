@@ -40,7 +40,7 @@ jobs:
           echo "device-name='Samsung Galaxy S20 Ultra GoogleAPI Emulator'" >> $GITHUB_OUTPUT
           echo "platform-version='11.0'" >> $GITHUB_OUTPUT
 
-      - run: echo ${{ toJSON(github.event) }} > github-event.json
+      - run: echo "${{ toJSON(github.event) }}" >> github-event.json
 
       - name: Upload GitHub Event Detail
         uses: actions/upload-artifact@v2
