@@ -2,7 +2,9 @@ on:
   push:
     branches:
       - develop
-
+  pull_request:
+    branches:
+      - develop
 env:
   is-release: ${{ github.base_ref == 'develop' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) || contains(github.ref, 'develop') }}
 
