@@ -1,3 +1,5 @@
+name: End-to-end Test Execution
+
 on:
   push:
     branches:
