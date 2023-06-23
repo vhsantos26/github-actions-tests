@@ -3,11 +3,17 @@ on:
     branches:
       - develop
 
+env:
+  is-release: ${{ github.base_ref == 'dev' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Build"
+
+      - if: env.is-release == true
+        run: echo "It's a release"
 
   deploy-sauce-labs:
     runs-on: ubuntu-latest
