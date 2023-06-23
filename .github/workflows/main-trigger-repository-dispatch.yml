@@ -38,7 +38,15 @@ jobs:
           echo "device-name='Samsung Galaxy S20 Ultra GoogleAPI Emulator'" >> $GITHUB_OUTPUT
           echo "platform-version='11.0'" >> $GITHUB_OUTPUT
 
-      - name: Dispatch end-to-ed workflow
+      - run: echo ${{ toJSON(github.event) }} > github-event.json
+
+      - name: Upload GitHub Event Detail
+        uses: actions/upload-artifact@v2
+        with:
+          name: github-event-detail
+          path: github-event.json
+
+      - name: Dispatch end-to-end workflow
         uses: peter-evans/repository-dispatch@v2
         env:
           FILE-ID: ${{ matrix.platform-name == 'ios' && steps.ios-sauce-labs-upload.outputs.file-id || steps.android-sauce-labs-upload.outputs.file-id }}
@@ -48,4 +56,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: vhsantos26/github-actions-tests
           event-type: start-end-to-end-workflow
-          client-payload: '{"workflow_name": "Test", "sauce-labs-options":{"username":"${{ secrets.SAUCE_LABS_USERNAME }}","access-key":"${{ secrets.SAUCE_LABS_ACCESS_KEY }}","file-id":"${{ env.FILE-ID }}","appium-version":"${{ vars.APPIUM_VERSION }}"},"device-capabilities":{"platform-name":"${{ matrix.platform-name }}","platform-version":"${{ env.PLATFORM-VERSION }}","device-name":"${{ env.DEVICE-NAME }}","phoneonly":true},"branch-name":"${{ github.ref_name }}"}'
+          client-payload: '{"sauce-labs-options":{"username":"${{ secrets.SAUCE_LABS_USERNAME }}","access-key":"${{ secrets.SAUCE_LABS_ACCESS_KEY }}","file-id":"${{ env.FILE-ID }}","appium-version":"${{ vars.APPIUM_VERSION }}"},"device-capabilities":{"platform-name":"${{ matrix.platform-name }}","platform-version":"${{ env.PLATFORM-VERSION }}","device-name":"${{ env.DEVICE-NAME }}","phoneonly":true},"branch-name":"${{ github.ref_name }}"}'
