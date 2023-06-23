@@ -58,4 +58,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: vhsantos26/github-actions-tests
           event-type: start-end-to-end-workflow
-          client-payload: '{"sauce-labs-options":{"username":"${{ secrets.SAUCE_LABS_USERNAME }}","access-key":"${{ secrets.SAUCE_LABS_ACCESS_KEY }}","file-id":"${{ env.FILE-ID }}","appium-version":"${{ vars.APPIUM_VERSION }}"},"device-capabilities":{"platform-name":"${{ matrix.platform-name }}","platform-version":"${{ env.PLATFORM-VERSION }}","device-name":"${{ env.DEVICE-NAME }}","phoneonly":true},"branch-name":"${{ github.ref_name }}"}'
+          client-payload: '{"event-name": "${{ github.event_name }}","sauce-labs-options":{"username":"${{ secrets.SAUCE_LABS_USERNAME }}","access-key":"${{ secrets.SAUCE_LABS_ACCESS_KEY }}","file-id":"${{ env.FILE-ID }}","appium-version":"${{ vars.APPIUM_VERSION }}"},"device-capabilities":{"platform-name":"${{ matrix.platform-name }}","platform-version":"${{ env.PLATFORM-VERSION }}","device-name":"${{ env.DEVICE-NAME }}","phoneonly":true},"branch-name":"${{ github.ref_name }}"}'

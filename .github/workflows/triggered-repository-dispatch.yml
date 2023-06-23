@@ -33,7 +33,7 @@ jobs:
   link-execution-to-pr:
     runs-on: ubuntu-latest
     needs: [end-to-end-execution]
-    if: false
+    if: always() && github.event.client_payload.event-name == 'pull_request'
     steps:
       - name: Adicionar check ao PR
         env:
@@ -41,7 +41,7 @@ jobs:
         run: |
           check_name="End-to-end ${{ github.event.client_payload.device-capabilities.platform-name }} execution"
           check_status="completed"
-          conclusion="success"
+          conclusion="${{ needs.end-to-end-execution.outcome}}"
           check_message="O check foi concluído com sucesso!"
 
           curl -sX POST "https://api.github.com/repos/${{ github.repository }}/check-runs" \
