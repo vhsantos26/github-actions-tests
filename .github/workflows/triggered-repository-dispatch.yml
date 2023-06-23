@@ -47,15 +47,4 @@ jobs:
           curl -sX POST "https://api.github.com/repos/${{ github.repository }}/check-runs" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d '{
-              "name": "'"$check_name"'",
-              "head_sha": "'"$GITHUB_SHA"'",
-              "status": "'"$check_status"'",
-              "conclusion": "'"$conclusion"'",
-              "output": {
-                "title": "'"$check_name"'",
-                "summary": "'"$check_message"'"
-              },
-              "external_id": "'${{ github.event.client_payload.pr_number }}'",
-              "started_at": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"
-            }'
+            -d "{\"name\": \"$check_name\", \"head_sha\": \"$GITHUB_SHA\", \"status\": \"$check_status\", \"conclusion\": \"$conclusion\", \"output\": {\"title\": \"$check_name\", \"summary\": \"$check_message\"}, \"external_id\": \"${{ github.event.client_payload.pr-number }}\", \"started_at\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}"
