@@ -4,7 +4,7 @@ on:
       - develop
 
 env:
-  is-release: ${{ github.base_ref == 'dev' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) }}
+  is-release: ${{ github.base_ref == 'develop' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) }}
 
 jobs:
   build:
