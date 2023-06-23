@@ -6,6 +6,6 @@
     "projects/*"
   ],
   "scripts": {
-    "mobile:tests": "yarn workspace mobile-platform tests"
+    "mobile:tests": "yarn workspace mobile-platform testss"
   }
 }
