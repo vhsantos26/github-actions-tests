@@ -1,3 +1,5 @@
+name: End-to-end Test Execution
+
 on:
   repository_dispatch:
     types: [start-end-to-end-workflow]
