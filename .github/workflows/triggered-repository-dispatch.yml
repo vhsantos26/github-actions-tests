@@ -10,12 +10,6 @@ jobs:
       name: reportportal
       url: https://www.google.com/
     steps:
-      - name: External workflow step
-        run: echo "This is an external workflow."
-
-      - name: Replace Workflow Name
-        run: echo "WORKFLOW_NAME=${{ github.event.client_payload.branch-name }} - ${{ github.event.client_payload.device-capabilities.platform-name }} End-to-end Workflow" >> $GITHUB_ENV
-
       - name: Run Functional Tests
         env:
           APP_FILE_ID: ${{ github.event.client_payload.sauce-labs-options.file-id }}
@@ -29,18 +23,3 @@ jobs:
           BRANCH_NAME: ${{ github.event.client_payload.branch-name }}
         run: echo "running test"
         id: remote-e2e
-
-      - name: Adicionar check ao PR
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: always()
-        run: |
-          check_name="End-to-end ${{ github.event.client_payload.device-capabilities.platform-name }} execution"
-          check_status="completed"
-          conclusion="${{ steps.remote-e2e.outcome }}"
-          check_message="O check foi concluído com sucesso!"
-
-          curl -sX POST "https://api.github.com/repos/${{ github.repository }}/check-runs" \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -d "{\"name\": \"$check_name\", \"head_sha\": \"$GITHUB_SHA\", \"status\": \"$check_status\", \"conclusion\": \"$conclusion\", \"output\": {\"title\": \"$check_name\", \"summary\": \"$check_message\"}, \"external_id\": \"${{ github.event.client_payload.pr-number }}\", \"started_at\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}"
