@@ -30,6 +30,7 @@ jobs:
   deploy-sauce-labs:
     runs-on: ubuntu-latest
     needs: build
+    name: Deploy to ${{ matrix.platform-name }}
     strategy:
       matrix:
         platform-name: [android, ios]
