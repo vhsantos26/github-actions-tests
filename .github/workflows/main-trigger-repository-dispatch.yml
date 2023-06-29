@@ -1,12 +1,12 @@
 on:
   push:
     branches:
-      - develop
+      - main
   pull_request:
     branches:
-      - develop
+      - main
 env:
-  is-release: ${{ github.base_ref == 'develop' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) || contains(github.ref, 'develop') }}
+  is-release: ${{ github.base_ref == 'main' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) || contains(github.ref, 'main') }}
 
 jobs:
   build:
