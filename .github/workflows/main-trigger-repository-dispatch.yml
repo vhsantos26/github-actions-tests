@@ -17,16 +17,6 @@ jobs:
       - if: env.is-release == 'true'
         run: echo "It's a release"
 
-  build-release:
-    runs-on: ubuntu-latest
-    environment:
-      name: production
-    steps:
-      - run: echo "Build"
-
-      - if: env.is-release == 'true'
-        run: echo "It's a release"
-
   deploy-sauce-labs:
     runs-on: ubuntu-latest
     needs: build

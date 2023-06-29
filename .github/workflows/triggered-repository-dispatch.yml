@@ -23,3 +23,12 @@ jobs:
           BRANCH_NAME: ${{ github.event.client_payload.branch-name }}
         run: echo "running test"
         id: remote-e2e
+
+      - name: Run the action
+        uses: Sibz/github-status-action@v1
+        with:
+          authToken: ${{secrets.GITHUB_TOKEN}}
+          context: "Test run"
+          description: "Passed"
+          state: "success"
+          sha: ${{github.event.pull_request.head.sha || github.sha}}
