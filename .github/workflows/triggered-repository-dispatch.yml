@@ -24,11 +24,11 @@ jobs:
         run: echo "running test"
         id: remote-e2e
 
-      - name: Run the action
-        uses: Sibz/github-status-action@v1
+      - uses: Sibz/github-status-action@v1
+        if: always()
         with:
           authToken: ${{secrets.GITHUB_TOKEN}}
-          context: "Test run ${{ github.event.client_payload.device-capabilities.platform-name }}"
-          description: "Passed"
-          state: "success"
+          context: "End-to-end ${{ github.event.client_payload.device-capabilities.platform-name }} execution"
+          description: ${{ steps.remote-e2e.outcome == 'success' && 'Success' || 'Failed' }}
+          state: ${{ steps.remote-e2e.outcome }}
           sha: ${{github.event.pull_request.head.sha || github.sha}}
