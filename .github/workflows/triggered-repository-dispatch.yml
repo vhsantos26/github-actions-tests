@@ -21,7 +21,7 @@ jobs:
           DEVICE_NAME: ${{ github.event.client_payload.device-capabilities.device-name }}
           PHONEONLY: ${{ github.event.client_payload.device-capabilities.phoneonly }}
           BRANCH_NAME: ${{ github.event.client_payload.branch-name }}
-        run: echo "running test"
+        run: exit 1
         id: remote-e2e
 
       - uses: Sibz/github-status-action@v1
