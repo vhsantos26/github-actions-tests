@@ -26,6 +26,9 @@ jobs:
         platform-name: [android, ios]
     steps:
       - run: echo "Deploy to Sauce Labs"
+      
+      - run: |
+          echo "test" > ${{ env.is-release }}.keystore.asc
 
       - if: ${{ matrix.platform-name == 'ios' }}
         id: ios-sauce-labs-upload
