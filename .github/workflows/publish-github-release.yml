@@ -20,7 +20,7 @@ jobs:
         env:
           TAG: ${{ steps.get_project_version.outputs.version }}
         with:
-          name: Mobile {{ env.TAG }}
+          name: Mobile ${{ env.TAG }}
           tag: v${{ env.TAG }}
           token: ${{ secrets.ACCESS_TOKEN }}
           generateReleaseNotes: true
