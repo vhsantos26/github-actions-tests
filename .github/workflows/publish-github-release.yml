@@ -70,6 +70,7 @@ jobs:
       - uses: actions/checkout@v3
 
   build-tv-ios:
+    runs-on: ${{ vars.LINUX_RUNNER }}
     name: Build Dev
     needs: [build-mobile, build-tv]
     if: vars.ENABLED_TV == 'true'
@@ -179,6 +180,7 @@ jobs:
         deploy-google-playstore,
         deploy-testflight,
         deploy-dsym-from-appstore,
+        end-to-end-execution,
       ]
     if: always()
     steps:
