@@ -128,8 +128,9 @@ jobs:
 
   deploy-to-firebase:
     name: Deploy to Firebase
-    needs: end-to-end-execution
+    needs: [end-to-end-execution, build-mobile-android, build-mobile-ios]
     runs-on: ${{ vars.LINUX_RUNNER }}
+    if: always() && needs.build-mobile-android.result == 'success' && needs.build-mobile-ios.result == 'success'
     strategy:
       matrix:
         platform: [android, ios]
@@ -141,6 +142,7 @@ jobs:
     name: Deploy to Amazon AppStore
     runs-on: ${{ vars.LINUX_RUNNER }}
     needs: [build-mobile-android-release, build-mobile-ios-release, end-to-end-execution]
+    if: always() && needs.build-mobile-android-release.result == 'success' && needs.build-mobile-ios-release.result == 'success'
     environment:
       name: amazon-appstore
     steps:
@@ -151,6 +153,7 @@ jobs:
     name: Deploy to Google PlayStore
     runs-on: ${{ vars.LINUX_RUNNER }}
     needs: [build-mobile-android-release, build-mobile-ios-release, end-to-end-execution]
+    if: always() && needs.build-mobile-android-release.result == 'success' && needs.build-mobile-ios-release.result == 'success'
     environment:
       name: google-playstore
     steps:
@@ -161,16 +164,9 @@ jobs:
     name: Deploy to TestFlight
     runs-on: ${{ vars.LINUX_RUNNER }}
     needs: [build-mobile-android-release, build-mobile-ios-release, end-to-end-execution]
+    if: always() && needs.build-mobile-android-release.result == 'success' && needs.build-mobile-ios-release.result == 'success'
     environment:
       name: testflight
-    steps:
-      - uses: actions/checkout@v3
-
-  deploy-dsym-from-appstore:
-    name: Upload Debug Symbols To Firebase Crashlytics
-    runs-on: ${{ vars.LINUX_RUNNER }}
-    needs: [build-mobile-android-release, build-mobile-ios-release, end-to-end-execution]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v3
 
@@ -182,7 +178,6 @@ jobs:
         deploy-amazon-appstore,
         deploy-google-playstore,
         deploy-testflight,
-        deploy-dsym-from-appstore,
         end-to-end-execution,
       ]
     if: always()
