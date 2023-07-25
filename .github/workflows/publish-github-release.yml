@@ -7,22 +7,180 @@ permissions:
   contents: write
 
 jobs:
-  publish-github-release:
+#   publish-github-release:
+#     runs-on: ${{ vars.LINUX_RUNNER }}
+#     if: true
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - run: echo "version=2.13.0" >> $GITHUB_OUTPUT
+#         id: get_project_version
+
+#       - uses: ncipollo/release-action@v1.12.0
+#         env:
+#           TAG: ${{ steps.get_project_version.outputs.version }}
+#         with:
+#           name: Mobile ${{ env.TAG }}
+#           tag: v${{ env.TAG }}
+#           token: ${{ secrets.ACCESS_TOKEN }}
+#           generateReleaseNotes: true
+#           allowUpdates: true
+#           skipIfReleaseExists: true
+
+  build-common:
     runs-on: ${{ vars.LINUX_RUNNER }}
-    if: true
+    name: Build & Test Common
     steps:
       - uses: actions/checkout@v3
 
-      - run: echo "version=2.13.0" >> $GITHUB_OUTPUT
-        id: get_project_version
+  build-mobile:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    needs: build-common
+    name: Build & Test Mobile
+    steps:
+      - uses: actions/checkout@v3
 
-      - uses: ncipollo/release-action@v1.12.0
-        env:
-          TAG: ${{ steps.get_project_version.outputs.version }}
-        with:
-          name: Mobile ${{ env.TAG }}
-          tag: v${{ env.TAG }}
-          token: ${{ secrets.ACCESS_TOKEN }}
-          generateReleaseNotes: true
-          allowUpdates: true
-          skipIfReleaseExists: true
+  build-tv:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    needs: build-common
+    name: Build & Test TV
+    steps:
+      - uses: actions/checkout@v3
+
+  build-mobile-android:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    name: Build Dev
+    needs: [build-mobile, build-tv]
+    steps:
+      - uses: actions/checkout@v3
+
+  build-mobile-ios:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    name: Build Dev
+    needs: [build-mobile, build-tv]
+    steps:
+      - uses: actions/checkout@v3
+
+  build-tv-android:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    name: Build Dev
+    needs: [build-mobile, build-tv]
+    if: vars.ENABLED_TV == 'true'
+    steps:
+      - uses: actions/checkout@v3
+
+  build-tv-ios:
+    name: Build Dev
+    needs: [build-mobile, build-tv]
+    if: vars.ENABLED_TV == 'true'
+    steps:
+      - uses: actions/checkout@v3
+
+  build-tv-android-release:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    name: Build Release
+    needs: [build-mobile, build-tv]
+    if: ${{ github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) && vars.ENABLED_TV == 'true' }}
+    steps:
+      - uses: actions/checkout@v3
+
+  build-tv-ios-release:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    name: Build Release
+    needs: [build-mobile, build-tv]
+    if: ${{ github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) && vars.ENABLED_TV == 'true' }}
+    steps:
+      - uses: actions/checkout@v3
+
+  end-to-end-execution:
+    name: End-to-end Execution
+    needs: [build-mobile-android, build-mobile-ios]
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    strategy:
+      matrix:
+        platform-name: [android, ios]
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+  deploy-to-firebase:
+    name: Deploy to Firebase
+    needs: [build-mobile-android, build-mobile-ios]
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    strategy:
+      matrix:
+        platform: [android, ios]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+  build-mobile-android-release:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    name: Build Release
+    needs: [deploy-to-firebase]
+    if: ${{ github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+  build-mobile-ios-release:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    name: Build Release
+    needs: [deploy-to-firebase]
+    if: ${{ github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+  deploy-amazon-appstore:
+    name: Deploy to Amazon AppStore
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    needs: [build-mobile-android-release, build-mobile-ios-release]
+    environment:
+      name: amazon-appstore
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+  deploy-google-playstore:
+    name: Deploy to Google PlayStore
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    needs: [build-mobile-android-release, build-mobile-ios-release]
+    environment:
+      name: google-playstore
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+  deploy-testflight:
+    name: Deploy to TestFlight
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    needs: [build-mobile-android-release, build-mobile-ios-release]
+    environment:
+      name: testflight
+    steps:
+      - uses: actions/checkout@v3
+
+  deploy-dsym-from-appstore:
+    name: Upload Debug Symbols To Firebase Crashlytics
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    needs: [build-mobile-android-release, build-mobile-ios-release]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v3
+
+  slack:
+    name: Slack Notification
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    needs:
+      [
+        deploy-amazon-appstore,
+        deploy-google-playstore,
+        deploy-testflight,
+        deploy-dsym-from-appstore,
+      ]
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
