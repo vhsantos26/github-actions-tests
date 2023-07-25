@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: echo "version=2.12.0" >> $GITHUB_OUTPUT
+      - run: echo "version=2.13.0" >> $GITHUB_OUTPUT
         id: get_project_version
 
       - uses: ncipollo/release-action@v1.12.0
