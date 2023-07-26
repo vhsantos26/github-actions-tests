@@ -60,8 +60,6 @@ jobs:
     needs: [build-mobile, build-tv]
     steps:
       - uses: actions/checkout@v3
-      
-      - run: exit 1
 
   build-tv-android:
     runs-on: ${{ vars.LINUX_RUNNER }}
@@ -110,7 +108,7 @@ jobs:
     runs-on: ${{ vars.LINUX_RUNNER }}
     name: Build Release Mobile Android
     needs: [deploy-to-firebase, end-to-end-execution]
-    if: always() && false && (needs.deploy-to-firebase.result == 'success')
+    if: always() && (github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-'))) && needs.deploy-to-firebase.result == 'success'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
