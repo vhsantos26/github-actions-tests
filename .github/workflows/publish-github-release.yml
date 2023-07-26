@@ -117,7 +117,7 @@ jobs:
     runs-on: ${{ vars.LINUX_RUNNER }}
     name: Build Release Mobile iOS
     needs: [deploy-to-firebase, end-to-end-execution]
-    if: always() && false && (needs.deploy-to-firebase.result == 'success')
+    if: always() && true && (needs.deploy-to-firebase.result == 'success')
     steps:
       - name: Checkout
         uses: actions/checkout@v3
