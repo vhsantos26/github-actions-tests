@@ -61,24 +61,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-  build-mobile-android-release:
-    runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Release
-    needs: [build-mobile, build-tv]
-    if: ${{ github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-  build-mobile-ios-release:
-    runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Release
-    needs: [build-mobile, build-tv]
-    if: ${{ github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
   build-tv-android:
     runs-on: ${{ vars.LINUX_RUNNER }}
     name: Build Dev
@@ -92,22 +74,6 @@ jobs:
     name: Build Dev
     needs: [build-mobile, build-tv]
     if: vars.ENABLED_TV == 'true'
-    steps:
-      - uses: actions/checkout@v3
-
-  build-tv-android-release:
-    runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Release
-    needs: [build-mobile, build-tv]
-    if: ${{ github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) && vars.ENABLED_TV == 'true' }}
-    steps:
-      - uses: actions/checkout@v3
-
-  build-tv-ios-release:
-    runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Release
-    needs: [build-mobile, build-tv]
-    if: ${{ github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')) && vars.ENABLED_TV == 'true' }}
     steps:
       - uses: actions/checkout@v3
 
@@ -138,10 +104,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+  build-mobile-android-release:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    name: Build Release
+    needs: [deploy-to-firebase, end-to-end-execution]
+    if: always() && (needs.deploy-to-firebase.result == 'success')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+  build-mobile-ios-release:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    name: Build Release
+    needs: [deploy-to-firebase, end-to-end-execution]
+    if: always() && (needs.deploy-to-firebase.result == 'success')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+  build-tv-android-release:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    name: Build Release
+    needs: [deploy-to-firebase, end-to-end-execution]
+    if: false
+    steps:
+      - uses: actions/checkout@v3
+
+  build-tv-ios-release:
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    name: Build Release
+    needs: [deploy-to-firebase, end-to-end-execution]
+    if: false
+    steps:
+      - uses: actions/checkout@v3
+
   deploy-amazon-appstore:
     name: Deploy to Amazon AppStore
     runs-on: ${{ vars.LINUX_RUNNER }}
-    needs: [build-mobile-android-release, build-mobile-ios-release, end-to-end-execution]
+    needs: [build-mobile-android-release, build-mobile-ios-release]
     if: always() && needs.build-mobile-android-release.result == 'success' && needs.build-mobile-ios-release.result == 'success'
     environment:
       name: amazon-appstore
@@ -152,7 +152,7 @@ jobs:
   deploy-google-playstore:
     name: Deploy to Google PlayStore
     runs-on: ${{ vars.LINUX_RUNNER }}
-    needs: [build-mobile-android-release, build-mobile-ios-release, end-to-end-execution]
+    needs: [build-mobile-android-release, build-mobile-ios-release]
     if: always() && needs.build-mobile-android-release.result == 'success' && needs.build-mobile-ios-release.result == 'success'
     environment:
       name: google-playstore
@@ -163,7 +163,7 @@ jobs:
   deploy-testflight:
     name: Deploy to TestFlight
     runs-on: ${{ vars.LINUX_RUNNER }}
-    needs: [build-mobile-android-release, build-mobile-ios-release, end-to-end-execution]
+    needs: [build-mobile-android-release, build-mobile-ios-release]
     if: always() && needs.build-mobile-android-release.result == 'success' && needs.build-mobile-ios-release.result == 'success'
     environment:
       name: testflight
@@ -173,13 +173,7 @@ jobs:
   slack:
     name: Slack Notification
     runs-on: ${{ vars.LINUX_RUNNER }}
-    needs:
-      [
-        deploy-amazon-appstore,
-        deploy-google-playstore,
-        deploy-testflight,
-        end-to-end-execution,
-      ]
+    needs: [deploy-amazon-appstore, deploy-google-playstore, deploy-testflight]
     if: always()
     steps:
       - name: Checkout
