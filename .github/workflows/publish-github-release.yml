@@ -49,21 +49,23 @@ jobs:
 
   build-mobile-android:
     runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Dev
+    name: Build Dev Mobile Android
     needs: [build-mobile, build-tv]
     steps:
       - uses: actions/checkout@v3
 
   build-mobile-ios:
     runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Dev
+    name: Build Dev Mobile iOS
     needs: [build-mobile, build-tv]
     steps:
       - uses: actions/checkout@v3
+      
+      - run: exit 1
 
   build-tv-android:
     runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Dev
+    name: Build Dev TV Android
     needs: [build-mobile, build-tv]
     if: vars.ENABLED_TV == 'true'
     steps:
@@ -71,7 +73,7 @@ jobs:
 
   build-tv-ios:
     runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Dev
+    name: Build Dev TV iOS 
     needs: [build-mobile, build-tv]
     if: vars.ENABLED_TV == 'true'
     steps:
@@ -106,25 +108,25 @@ jobs:
 
   build-mobile-android-release:
     runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Release
+    name: Build Release Mobile Android
     needs: [deploy-to-firebase, end-to-end-execution]
-    if: always() && (needs.deploy-to-firebase.result == 'success')
+    if: always() && false && (needs.deploy-to-firebase.result == 'success')
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
   build-mobile-ios-release:
     runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Release
+    name: Build Release Mobile iOS
     needs: [deploy-to-firebase, end-to-end-execution]
-    if: always() && (needs.deploy-to-firebase.result == 'success')
+    if: always() && false && (needs.deploy-to-firebase.result == 'success')
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
   build-tv-android-release:
     runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Release
+    name: Build Release TV Android 
     needs: [deploy-to-firebase, end-to-end-execution]
     if: false
     steps:
@@ -132,7 +134,7 @@ jobs:
 
   build-tv-ios-release:
     runs-on: ${{ vars.LINUX_RUNNER }}
-    name: Build Release
+    name: Build Release TV iOS
     needs: [deploy-to-firebase, end-to-end-execution]
     if: false
     steps:
