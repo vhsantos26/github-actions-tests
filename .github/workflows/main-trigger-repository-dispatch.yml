@@ -53,6 +53,7 @@ jobs:
           path: github-event.json
 
       - name: Dispatch end-to-end workflow
+        if: matrix.platform-name == 'ios'
         uses: peter-evans/repository-dispatch@v2
         env:
           FILE-ID: ${{ matrix.platform-name == 'ios' && steps.ios-sauce-labs-upload.outputs.file-id || steps.android-sauce-labs-upload.outputs.file-id }}

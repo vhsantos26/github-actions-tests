@@ -11,10 +11,10 @@ on:
         description: 'Spec file to run'
         required: false
         default: ''
-  schedule:
-    - cron:  '*/5 * * * *' 
-  repository_dispatch:
-    types: [start-end-to-end-workflow]
+  # schedule:
+  #   - cron:  '*/5 * * * *' 
+  # repository_dispatch:
+  #   types: [start-end-to-end-workflow]
 
 jobs:
   end-to-end-rdc-execution:
