@@ -21,7 +21,6 @@ class SetupScreen extends Screen {
   };
   iosLocators = {
     header: '~channelSelectionHeader',
-    groupSwitch: '~channelGroupSwitch',
     arabicLabel: '~channel_عربي',
     arabicSwitch: '~switch_عربي',
     mubasherLabel: '~channel_مباشر',
@@ -41,10 +40,6 @@ class SetupScreen extends Screen {
 
   get header() {
     return $(this.locators.header);
-  }
-
-  get groupSwitch() {
-    return $(this.locators.groupSwitch);
   }
 
   get arabicLabel() {
@@ -119,7 +114,7 @@ class SetupScreen extends Screen {
     return 'You can update your selection at any time in settings.';
   }
 
-  getChannelSwitch(channel: string) {
+  getChannelSwitch(channel: string): Promise<WebdriverIO.Element> {
     switch (channel.toLowerCase()) {
       case 'aja':
         return this.arabicSwitch;
@@ -136,6 +131,27 @@ class SetupScreen extends Screen {
       default:
         throw new Error(`Channel ${channel} is not supported`);
     }
+  }
+
+  getScreenElements(): Promise<WebdriverIO.Element>[] {
+    return [
+      this.header,
+      this.arabicLabel,
+      this.arabicSwitch,
+      this.mubasherLabel,
+      this.mubasherSwitch,
+      this.documentaryLabel,
+      this.documentarySwitch,
+      this.englishLabel,
+      this.englishSwitch,
+      this.balkansLabel,
+      this.balkansSwitch,
+      this.chineseLabel,
+      this.chineseSwitch,
+      this.agreementPrivacyPolicy,
+      this.updateSelectionInfo,
+      this.getStartedBtn,
+    ];
   }
 }
 
