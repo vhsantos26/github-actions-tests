@@ -2,6 +2,15 @@ name: End-to-End Workflow
 
 on:
   workflow_dispatch:
+    inputs:
+      filter:
+        description: 'Filter to run specific tests'
+        required: false
+        default: ''
+      spec-file:
+        description: 'Spec file to run'
+        required: false
+        default: ''
   # schedule:
   #   - cron:  '0 0 * * *' 
 
@@ -59,4 +68,4 @@ jobs:
         REMOTE_PLATFORM_NAME: ${{ matrix.platform }}
         REMOTE_APP_FILE_ID: ${{ matrix.platform == 'ios' && 'c361e8c2-13dd-4291-b36f-8ced6d17c6f9' || '6014f031-804a-4653-9145-7aacf280955a' }}
       run: |
-        yarn run remote:rdc:test
+        yarn run remote:rdc:test ${{ inputs.filter != '' && '--mochaOpts.grep=' || '' }}${{ inputs.filter }}
