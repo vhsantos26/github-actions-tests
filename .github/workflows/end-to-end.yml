@@ -1,0 +1,61 @@
+name: End-to-End Workflow
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron:  '0 0 * * *' 
+
+jobs:
+  end-to-end-rdc-execution:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ios, android]
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Save GitHub Event JSON
+      run: echo "$GITHUB_EVENT_PATH" > event.json
+
+    - name: Upload Event JSON
+      uses: actions/upload-artifact@v2
+      with:
+        name: event.json
+        path: event.json
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ vars.NODE_VERSION }}
+
+    # - name: Connect OpenVPN
+    #   uses: ALJAZEERAPLUS/github-actions/open-vpn@master
+    #   id: connect_vpn
+    #   with:
+    #     ca-crt: "${{ secrets.CA_CRT}}"
+    #     user-crt: "${{ secrets.USER_CRT }}"
+    #     user-key: "${{ secrets.USER_KEY }}"
+    #     tls-key: "${{ secrets.TLS_KEY }}"
+    #     ping-url: 192.0.66.2
+    #     opvn-config-file: "${{ github.workspace }}/security/aj.ovpn"
+
+    - name: Install dependencies
+      # working-directory: ./projects/mobile/__tests__/ui
+      run: yarn install
+
+    - name: Run E2E Tests
+      # working-directory: ./projects/mobile/__tests__/ui
+      env:
+        SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+        SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+        RP_TOKEN: ${{ secrets.RP_TOKEN }}
+        RP_GITHUB_ACTOR: ${{ github.actor }}
+        BRANCH_NAME: ${{ github.ref }}
+        APPIUM_VERSION: ${{ vars.APPIUM_VERSION }}
+        REMOTE_DEVICE_NAME: ${{ matrix.platform == 'ios' && vars.IOS_DEVICE_NAME || vars.ANDROID_DEVICE_NAME }}
+        REMOTE_PLATFORM_VERSION: ${{ matrix.platform == 'ios' && vars.IOS_PLATFORM_VERSION || vars.ANDROID_PLATFORM_VERSION }}
+        REMOTE_PLATFORM_NAME: ${{ matrix.platform }}
+        REMOTE_APP_FILE_ID: ${{ matrix.platform == 'ios' && 'c361e8c2-13dd-4291-b36f-8ced6d17c6f9' || '6014f031-804a-4653-9145-7aacf280955a' }}
+      run: |
+        yarn run remote:rdc:test
