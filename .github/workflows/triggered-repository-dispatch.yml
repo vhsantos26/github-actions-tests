@@ -6,9 +6,6 @@ jobs:
   end-to-end-execution:
     runs-on: ubuntu-latest
     name: ${{ github.event.client_payload.device-capabilities.platform-name }} execution
-    environment:
-      name: reportportal
-      url: https://www.google.com/
     steps:
       - name: Run Functional Tests
         env:

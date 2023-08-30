@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         platform: [ios, android]
+      fail-fast: false
     steps:
     - uses: actions/checkout@v3
 
@@ -19,7 +20,7 @@ jobs:
       run: echo "$GITHUB_EVENT_PATH" > event.json
 
     - name: Upload Event JSON
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: event.json
         path: event.json
