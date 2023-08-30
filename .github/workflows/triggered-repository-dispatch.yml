@@ -1,6 +1,6 @@
 on:
   repository_dispatch:
-    types: [start-end-to-end-workflow]
+    types: [start-end-to-end-workflow-desactivated]
 
 jobs:
   end-to-end-execution:
