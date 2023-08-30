@@ -23,7 +23,7 @@ config.capabilities = [
     'appium:shouldUseSingletonTestManager': false,
     'appium:autoDismissAlerts': true,
     platformName: process.env.REMOTE_PLATFORM_NAME,
-    deviceOrientation: 'portrait',
+    'appium:orientation': 'portrait',
     'sauce:options': {
       appiumVersion: process.env.APPIUM_VERSION ?? '2.0.0',
       build: process.env.BRANCH_NAME ?? 'develop',

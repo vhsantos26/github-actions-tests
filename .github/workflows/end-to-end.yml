@@ -16,14 +16,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Save GitHub Event JSON
-      run: echo "$GITHUB_EVENT_PATH" > event.json
+    - name: Generate JSON
+      run: echo '${{ toJson(github.event) }}' > event.json
 
-    - name: Upload Event JSON
-      uses: actions/upload-artifact@v3
+    - name: Upload JSON as artifact
+      uses: actions/upload-artifact@v2
       with:
-        name: event.json
-        path: event.json
+        name: GitHub-Event-JSON
+        path: ./event.json
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
