@@ -51,6 +51,15 @@ jobs:
     #     ping-url: 192.0.66.2
     #     opvn-config-file: "${{ github.workspace }}/security/aj.ovpn"
 
+    - uses: ALJAZEERAPLUS/sauce-labs-storage-action@main
+      id: sauce-storage
+      with:
+        endpoint-action: get-file-id
+        sauce-labs-username: ${{ secrets.SAUCE_USERNAME }}
+        sauce-labs-access-key: ${{ secrets.SAUCE_ACCESS_KEY }}
+        get-file-id-platform: ${{ matrix.platform }}
+        get-file-id-description: 'refs/heads/develop'
+
     - name: Install dependencies
       # working-directory: ./projects/mobile/__tests__/ui
       run: yarn install
@@ -67,6 +76,6 @@ jobs:
         REMOTE_DEVICE_NAME: ${{ matrix.platform == 'ios' && vars.IOS_DEVICE_NAME || vars.ANDROID_DEVICE_NAME }}
         REMOTE_PLATFORM_VERSION: ${{ matrix.platform == 'ios' && vars.IOS_PLATFORM_VERSION || vars.ANDROID_PLATFORM_VERSION }}
         REMOTE_PLATFORM_NAME: ${{ matrix.platform }}
-        REMOTE_APP_FILE_ID: ${{ matrix.platform == 'ios' && 'c361e8c2-13dd-4291-b36f-8ced6d17c6f9' || '6014f031-804a-4653-9145-7aacf280955a' }}
+        REMOTE_APP_FILE_ID: ${{ steps.sauce-storage.outputs.file-id }}
       run: |
         yarn run remote:rdc:test 
