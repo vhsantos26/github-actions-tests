@@ -19,7 +19,7 @@ on:
 jobs:
   end-to-end-rdc-execution:
     name: |
-      ${{ (github.event_name == 'workflow_dispatch' && 'Manual') || (github.event_name == 'schedule' && 'Nightly') }} End-to-End Tests Execution
+      ${{ (github.event_name == 'workflow_dispatch' && 'Manual') || (github.event_name == 'schedule' && 'Nightly') }} E2E Tests Execution
     runs-on: ubuntu-latest
     strategy:
       matrix:
