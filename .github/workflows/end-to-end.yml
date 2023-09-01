@@ -54,6 +54,10 @@ on:
 concurrency:
   group: ${{ github.workflow }}
 
+defaults:
+  run:
+    working-directory: projects/mobile/__tests__/ui
+
 jobs:
   end-to-end-execution:
     runs-on: ubuntu-latest
