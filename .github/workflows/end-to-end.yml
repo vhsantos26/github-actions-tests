@@ -49,7 +49,7 @@ on:
   schedule:
     - cron:  '0 2 * * *' 
   repository_dispatch:
-    types: [start-end-to-end-workflow]
+    types: [start-end-to-end-workflow-ignore]
 
 concurrency:
   group: ${{ github.workflow }}
@@ -73,15 +73,15 @@ jobs:
       with:
         node-version: ${{ vars.NODE_VERSION }}
 
-    - uses: ALJAZEERAPLUS/github-actions/open-vpn@master
-      id: connect_vpn
-      with:
-        ca-crt: "${{ secrets.CA_CRT}}"
-        user-crt: "${{ secrets.USER_CRT }}"
-        user-key: "${{ secrets.USER_KEY }}"
-        tls-key: "${{ secrets.TLS_KEY }}"
-        ping-url: 192.0.66.2
-        opvn-config-file: "${{ github.workspace }}/security/aj.ovpn"
+    # - uses: ALJAZEERAPLUS/github-actions/open-vpn@master
+    #   id: connect_vpn
+    #   with:
+    #     ca-crt: "${{ secrets.CA_CRT}}"
+    #     user-crt: "${{ secrets.USER_CRT }}"
+    #     user-key: "${{ secrets.USER_KEY }}"
+    #     tls-key: "${{ secrets.TLS_KEY }}"
+    #     ping-url: 192.0.66.2
+    #     opvn-config-file: "${{ github.workspace }}/security/aj.ovpn"
 
     - uses: ALJAZEERAPLUS/sauce-labs-storage-action@v2
       if: ${{ github.event.inputs.app-file-id == '' }}
