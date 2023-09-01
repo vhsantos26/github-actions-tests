@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       filter-by-text:
-        description: 'Filter by text'
+        description: 'Filter by text (e.g. "@smoke")'
         required: false
         default: ''
         type: string
       filter-by-spec:
-        description: 'Filter by spec'
+        description: 'Filter by spec (e.g. "setup")'
         required: false
         default: ''
         type: string
@@ -61,6 +61,8 @@ defaults:
 jobs:
   end-to-end-execution:
     runs-on: ubuntu-latest
+    name: |
+      ${{ (github.event_name == 'workflow_dispatch' && 'Manual') || (github.event_name == 'schedule' && 'Schedule') }} Execution
     strategy:
       matrix:
         platform: [ios, android]
@@ -76,6 +78,7 @@ jobs:
     - run: |
         echo "Current path: $PWD"
         echo "Current files: $(ls -la)"
+        echo "Is the security folder available? $(ls -la ${{ github.workspace }})"
 
     - uses: actions/setup-node@v3
       with:
@@ -92,7 +95,6 @@ jobs:
     #     opvn-config-file: "${{ github.workspace }}/security/aj.ovpn"
 
     - uses: ALJAZEERAPLUS/sauce-labs-storage-action@main
-      if: ${{ github.event.inputs.app-file-id == '' }}
       id: sauce-storage
       with:
         endpoint-action: get-file-id
