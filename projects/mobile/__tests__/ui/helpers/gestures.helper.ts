@@ -45,23 +45,12 @@ class Gestures {
     element: WebdriverIO.Element,
     maxScrolls: number,
     amount = 0,
-    direction = 'up',
   ) {
     // If the element is not displayed and we haven't scrolled the max amount of scrolls
     // then scroll and execute the method again
     if (!(await element.isDisplayed()) && amount <= maxScrolls) {
-      if (direction.toLowerCase().trim() === 'up') {
-        await this.swipeUp();
-        await this.swipeUntilElementPresent(element, maxScrolls, amount + 1);
-      } else {
-        await this.swipeDown();
-        await this.swipeUntilElementPresent(
-          element,
-          maxScrolls,
-          amount + 1,
-          'down',
-        );
-      }
+      await this.swipeUp();
+      await this.swipeUntilElementPresent(element, maxScrolls, amount + 1);
     } else if (amount > maxScrolls) {
       // If the element is still not visible after the max amount of scroll let it fail
       throw new Error(

@@ -19,13 +19,11 @@
     "wdio-wait-for": "3.0.6"
   },
   "scripts": {
-    "wdio": "wdio run ./config/wdio.conf.ts",
     "ios:local:test": "wdio run ./config/wdio.ios.conf.ts",
-    "ios:remote:test": "wdio run ./config/saucelabs/wdio.ios.rdc.conf.ts",
     "android:local:test": "wdio run ./config/wdio.android.conf.ts",
-    "android:remote:test": "wdio run ./config/saucelabs/wdio.android.rdc.conf.ts"
+    "remote:rdc:test": "wdio run ./config/saucelabs/wdio.rdc.conf.ts"
   },
-  "dependencies": {
-    "dotenv": "16.3.1"
+  "resolutions": {
+    "jackspeak": "2.1.1"
   }
 }

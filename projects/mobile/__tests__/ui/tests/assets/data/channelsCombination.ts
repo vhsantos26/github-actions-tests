@@ -1,12 +1,9 @@
-interface ChannelCombination {
-  enabled: string[];
-  disabled: string[];
-}
+import {IChannelCombination} from '../../../utils/types/interfaces';
 
 const channels = ['aja', 'ajm', 'ajd', 'aje', 'ajc', 'ajb'];
 
-function generateCombinations(inputChannels: string[]): ChannelCombination[] {
-  const combinations: ChannelCombination[] = [];
+function generateCombinations(inputChannels: string[]): IChannelCombination[] {
+  const combinations: IChannelCombination[] = [];
   const n = inputChannels.length;
 
   for (let i = 1; i < Math.pow(2, n); i++) {

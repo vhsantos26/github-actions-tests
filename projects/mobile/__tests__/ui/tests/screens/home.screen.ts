@@ -1,6 +1,5 @@
 // import { getElementText } from '../../helpers/elements.helper';
 import Screen from './base/screen';
-import Gestures from '../../helpers/gestures.helper';
 
 class HomeScreen extends Screen {
   androidLocators = {
@@ -38,26 +37,13 @@ class HomeScreen extends Screen {
     return $(this.locators.latestStoriesLabel);
   }
 
-  get postImage() {
-    return $(this.locators.postImage);
-  }
-
   get postImages() {
     return $$(this.locators.postImage);
-  }
-
-  get postTitle() {
-    return $(this.locators.postTitle);
   }
 
   get postTitles() {
     return $$(this.locators.postTitle);
   }
-
-  get postDate() {
-    return $(this.locators.postDate);
-  }
-
   get postDates() {
     return $$(this.locators.postDate);
   }
@@ -70,47 +56,6 @@ class HomeScreen extends Screen {
   }
   get nativeAdMediaView() {
     return $(this.locators.nativeAdMediaView);
-  }
-
-  async getNumberOfTopStoriesInHomepage() {
-    let isLatestStoriesLabelVisible =
-      await this.latestStoriesLabel.isDisplayed();
-
-    let postTitleArray = [''];
-    let postTitlesCounter = 0;
-
-    // setting max number of iterations to 20 which are more than enough for reaching the "Latest Stories" label
-    for (let i = 0; i < 20; i++) {
-      // swiping if it's not the first iteration
-      if (i !== 0) {
-        await Gestures.swipeUp(0.5);
-      }
-
-      let numOfPostTitlesInViewPort = (await this.postTitles).length;
-
-      for (let j = 0; j < numOfPostTitlesInViewPort; j++) {
-        postTitleArray[postTitlesCounter] = (
-          await (await this.postTitles)[j].getText()
-        ).toString();
-        postTitlesCounter++;
-      }
-
-      isLatestStoriesLabelVisible = await (
-        await this.latestStoriesLabel
-      ).isDisplayed();
-
-      // stop fetching post titles when "Latest Stories" label is visible on the screen
-      if (isLatestStoriesLabelVisible) {
-        break;
-      }
-    }
-
-    // removing duplicate titles from array
-    let uniquePostTitlesArray = postTitleArray.filter(
-      (value, index, array) => array.indexOf(value) === index,
-    );
-
-    return uniquePostTitlesArray;
   }
 }
 

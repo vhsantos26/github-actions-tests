@@ -1,5 +1,3 @@
-import {ChainablePromiseElement} from 'webdriverio';
-
 class ElementHelper {
   /**
    * The isSwitchEnabled() function takes an element as an argument and returns a
@@ -12,7 +10,7 @@ class ElementHelper {
   static async isSwitchEnabled({
     element,
   }: {
-    element: ChainablePromiseElement<WebdriverIO.Element>;
+    element: WebdriverIO.Element;
   }): Promise<boolean> {
     if (driver.isAndroid) {
       return (await element.getAttribute('checked')) === 'true';
@@ -35,7 +33,7 @@ class ElementHelper {
     element,
     state,
   }: {
-    element: ChainablePromiseElement<WebdriverIO.Element>;
+    element: WebdriverIO.Element;
     state: boolean;
   }) {
     const switchState = await this.isSwitchEnabled({element});
@@ -56,15 +54,54 @@ class ElementHelper {
    * @param element
    * @returns string
    */
-  static getElementText({
+  static async getElementText({
     element,
   }: {
-    element: ChainablePromiseElement<WebdriverIO.Element>;
+    element: WebdriverIO.Element;
   }): Promise<string> {
     if (driver.isAndroid) {
-      return element.getText();
+      return (
+        (await element.getText()) ??
+        (await element.getAttribute('content-desc'))
+      );
     } else {
-      return element.getAttribute('label');
+      return await element.getAttribute('label');
+    }
+  }
+
+  /**
+   * The isButtonEnabled method checks whether an element is enabled, with the check
+   * varying based on the platform. For iOS, it directly checks if the element is enabled.
+   * For other platforms (e.g., Android), it checks if the 'index' attribute of the element is '1'.
+   *
+   * @param element - The element whose enabled status is to be checked.
+   * @returns boolean - The enabled status of the element.
+   */
+  static async isButtonEnabled({
+    element,
+  }: {
+    element: WebdriverIO.Element;
+  }): Promise<boolean> {
+    if (driver.isIOS) {
+      return await element.isEnabled();
+    } else {
+      return (await element.getAttribute('index')) === '1';
+    }
+  }
+
+  /**
+   * The isSwitch method checks whether an element is a switch, with the check varying
+   * based on the platform. For iOS, it checks if the element has a type attribute with
+   * the value 'XCUIElementTypeSwitch'. For other platforms (e.g., Android), it checks
+   * if the element has a class attribute with the value 'android.widget.Switch'.
+   * @param element - The element whose type is to be checked.
+   * @returns boolean - The type of the element.
+   */
+  static async isSwitch(element: WebdriverIO.Element): Promise<boolean> {
+    if (driver.isIOS) {
+      return (await element.getAttribute('type')) === 'XCUIElementTypeSwitch';
+    } else {
+      return (await element.getAttribute('class')) === 'android.widget.Switch';
     }
   }
 }

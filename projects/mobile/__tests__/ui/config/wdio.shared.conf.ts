@@ -6,7 +6,6 @@ import {
   saveScreenshot,
   sendScreenshotToReport,
 } from '../helpers/config.helper';
-import 'dotenv/config';
 
 export const conf = {
   reportPortalClientConfig: {
@@ -17,7 +16,7 @@ export const conf = {
     debug: false,
     attributes: [{key: 'branch', value: process.env.BRANCH_NAME ?? 'develop'}],
     reportSeleniumCommands: true,
-    seleniumCommandsLogLevel: 'info',
+    seleniumCommandsLogLevel: 'debug',
     autoAttachScreenshots: false,
     screenshotsLogLevel: 'info',
     parseTagsFromTestTitle: false,

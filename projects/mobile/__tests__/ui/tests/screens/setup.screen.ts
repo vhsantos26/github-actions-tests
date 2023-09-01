@@ -1,5 +1,4 @@
 import Screen from './base/screen';
-import ElementHelper from '../../helpers/elements.helper';
 
 class SetupScreen extends Screen {
   androidLocators = {
@@ -22,7 +21,6 @@ class SetupScreen extends Screen {
   };
   iosLocators = {
     header: '~channelSelectionHeader',
-    groupSwitch: '~channelGroupSwitch',
     arabicLabel: '~channel_عربي',
     arabicSwitch: '~switch_عربي',
     mubasherLabel: '~channel_مباشر',
@@ -42,10 +40,6 @@ class SetupScreen extends Screen {
 
   get header() {
     return $(this.locators.header);
-  }
-
-  get groupSwitch() {
-    return $(this.locators.groupSwitch);
   }
 
   get arabicLabel() {
@@ -120,7 +114,7 @@ class SetupScreen extends Screen {
     return 'You can update your selection at any time in settings.';
   }
 
-  getChannelSwitch(channel: string) {
+  getChannelSwitch(channel: string): Promise<WebdriverIO.Element> {
     switch (channel.toLowerCase()) {
       case 'aja':
         return this.arabicSwitch;
@@ -139,46 +133,25 @@ class SetupScreen extends Screen {
     }
   }
 
-  async enableChannel(channelToEnable: string) {
-    // getting switch element to enable based on channel (string)
-    const switchElement = this.getChannelSwitch(channelToEnable);
-
-    // enabling switch
-    await ElementHelper.changeSwitchState({
-      element: switchElement,
-      state: true,
-    });
-
-    // validating that switch has been enabled
-    const isChannelEnabled = await ElementHelper.isSwitchEnabled({
-      element: switchElement,
-    });
-
-    // throw error if channel has not been enabled
-    if (!isChannelEnabled) {
-      throw `"${await channelToEnable}" has NOT been enabled`;
-    }
-  }
-
-  async disableChannel(channelToDisable: string) {
-    // getting switch element to enable based on channel (string)
-    const switchElement = this.getChannelSwitch(channelToDisable);
-
-    // enabling switch
-    await ElementHelper.changeSwitchState({
-      element: switchElement,
-      state: false,
-    });
-
-    // validating that switch has been disabled
-    const isChannelDisabled = await ElementHelper.isSwitchEnabled({
-      element: switchElement,
-    });
-
-    // throw error if channel has not been disabled
-    if (isChannelDisabled) {
-      throw `"${await channelToDisable}" has NOT been enabled`;
-    }
+  getScreenElements(): Promise<WebdriverIO.Element>[] {
+    return [
+      this.header,
+      this.arabicLabel,
+      this.arabicSwitch,
+      this.mubasherLabel,
+      this.mubasherSwitch,
+      this.documentaryLabel,
+      this.documentarySwitch,
+      this.englishLabel,
+      this.englishSwitch,
+      this.balkansLabel,
+      this.balkansSwitch,
+      this.chineseLabel,
+      this.chineseSwitch,
+      this.agreementPrivacyPolicy,
+      this.updateSelectionInfo,
+      this.getStartedBtn,
+    ];
   }
 }
 
