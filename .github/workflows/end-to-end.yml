@@ -115,4 +115,4 @@ jobs:
         REMOTE_APP_FILE_ID: ${{ steps.sauce-storage.outputs.file-id }}
       run: |
         yarn run remote:rdc:test \
-        $( (( ${{ inputs.filter-by-text != '' }} )) &&  --mochaOpts.grep="${{ inputs.filter-by-text }}") \
+        ${{ (inputs.filter-by-text != '') && format('--mochaOpts.grep="{0}"', inputs.filter-by-text) }} 
