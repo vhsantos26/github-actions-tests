@@ -75,11 +75,6 @@ jobs:
           security
         sparse-checkout-cone-mode: false
 
-    - run: |
-        echo "Current path: $PWD"
-        echo "Current files: $(ls -la)"
-        echo "Is the security folder available? $(ls -la ${{ github.workspace }})"
-
     - uses: actions/setup-node@v3
       with:
         node-version: ${{ vars.NODE_VERSION }}
@@ -119,4 +114,5 @@ jobs:
         REMOTE_PLATFORM_NAME: ${{ matrix.platform }}
         REMOTE_APP_FILE_ID: ${{ steps.sauce-storage.outputs.file-id }}
       run: |
-        yarn run remote:rdc:test 
+        yarn run remote:rdc:test \
+        $( (( ${{ inputs.filter-by-text != '' }} )) &&  --mochaOpts.grep="${{ inputs.filter-by-text }}") \
