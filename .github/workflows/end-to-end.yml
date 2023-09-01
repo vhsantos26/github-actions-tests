@@ -3,23 +3,59 @@ name: End-to-End Workflow
 on:
   workflow_dispatch:
     inputs:
-      filter:
-        description: 'Filter to run specific tests'
+      filter-by-text:
+        description: 'Filter by text'
         required: false
         default: ''
-      spec-file:
-        description: 'Spec file to run'
+        type: string
+      filter-by-spec:
+        description: 'Filter by spec'
         required: false
         default: ''
-  # schedule:
-  #   - cron:  '*/5 * * * *' 
-  # repository_dispatch:
-  #   types: [start-end-to-end-workflow]
+        type: string
+      ios-version:
+        description: 'iOS Version'
+        required: false
+        type: string
+      ios-device-name:
+        description: 'Device Name'
+        required: false
+        type: string
+      android-version:
+        description: 'Android Version'
+        required: false
+        type: string
+      android-device-name:
+        description: 'Device Name'
+        required: false
+        type: string
+      app-version:
+        description: 'App Version'
+        required: false
+        type: string
+      app-build-number:
+        description: 'App Build Number'
+        required: false
+        type: string
+      build-description:
+        description: 'Build Description'
+        required: false
+        type: string
+        default: 'refs/heads/develop'
+      app-file-id:
+        description: 'App File ID'
+        required: false
+        type: string
+  schedule:
+    - cron:  '0 2 * * *' 
+  repository_dispatch:
+    types: [start-end-to-end-workflow]
+
+concurrency:
+  group: ${{ github.workflow }}
 
 jobs:
-  end-to-end-rdc-execution:
-    name: |
-      ${{ (github.event_name == 'workflow_dispatch' && 'Manual') || (github.event_name == 'schedule' && 'Nightly') }} E2E Tests Execution
+  end-to-end-execution:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,32 +63,28 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v3
-
-    - name: Generate JSON
-      run: echo '${{ toJson(github) }}' > github.json
-
-    - name: Upload JSON as artifact
-      uses: actions/upload-artifact@v3
       with:
-        path: ./github.json
+        sparse-checkout: |
+          projects/mobile/__tests__/ui
+          security
+        sparse-checkout-cone-mode: false
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ vars.NODE_VERSION }}
 
-    # - name: Connect OpenVPN
-    #   uses: ALJAZEERAPLUS/github-actions/open-vpn@master
-    #   id: connect_vpn
-    #   with:
-    #     ca-crt: "${{ secrets.CA_CRT}}"
-    #     user-crt: "${{ secrets.USER_CRT }}"
-    #     user-key: "${{ secrets.USER_KEY }}"
-    #     tls-key: "${{ secrets.TLS_KEY }}"
-    #     ping-url: 192.0.66.2
-    #     opvn-config-file: "${{ github.workspace }}/security/aj.ovpn"
+    - uses: ALJAZEERAPLUS/github-actions/open-vpn@master
+      id: connect_vpn
+      with:
+        ca-crt: "${{ secrets.CA_CRT}}"
+        user-crt: "${{ secrets.USER_CRT }}"
+        user-key: "${{ secrets.USER_KEY }}"
+        tls-key: "${{ secrets.TLS_KEY }}"
+        ping-url: 192.0.66.2
+        opvn-config-file: "${{ github.workspace }}/security/aj.ovpn"
 
-    - uses: ALJAZEERAPLUS/sauce-labs-storage-action@main
+    - uses: ALJAZEERAPLUS/sauce-labs-storage-action@v2
+      if: ${{ github.event.inputs.app-file-id == '' }}
       id: sauce-storage
       with:
         endpoint-action: get-file-id
@@ -62,11 +94,9 @@ jobs:
         get-file-id-description: 'refs/heads/develop'
 
     - name: Install dependencies
-      # working-directory: ./projects/mobile/__tests__/ui
       run: yarn install
 
     - name: Run E2E Tests
-      # working-directory: ./projects/mobile/__tests__/ui
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
