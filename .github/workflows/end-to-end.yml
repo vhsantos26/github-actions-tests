@@ -91,7 +91,7 @@ jobs:
     #     ping-url: 192.0.66.2
     #     opvn-config-file: "${{ github.workspace }}/security/aj.ovpn"
 
-    - uses: ALJAZEERAPLUS/sauce-labs-storage-action@v2
+    - uses: ALJAZEERAPLUS/sauce-labs-storage-action@main
       if: ${{ github.event.inputs.app-file-id == '' }}
       id: sauce-storage
       with:
