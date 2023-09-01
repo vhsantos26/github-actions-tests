@@ -62,7 +62,7 @@ jobs:
   end-to-end-execution:
     runs-on: ubuntu-latest
     name: |
-      ${{ (github.event_name == 'workflow_dispatch' && 'Manual') || (github.event_name == 'schedule' && 'Schedule') }} Execution
+      ${{ (github.event_name == 'workflow_dispatch' && 'Manual') || (github.event_name == 'schedule' && 'Schedule') }} Execution (${{ matrix.platform }})
     strategy:
       matrix:
         platform: [ios, android]
