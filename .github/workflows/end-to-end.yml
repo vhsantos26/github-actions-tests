@@ -101,18 +101,26 @@ jobs:
     - name: Install dependencies
       run: yarn install
 
+    - name: Set Device Info
+      id: set-device-info
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        echo "device-name=${{ ((matrix.platform == 'ios') && (inputs.ios-device-name != '') && inputs.ios-device-name) || vars.IOS_DEVICE_NAME }}" >> $GITHUB_OUTPUT
+
     - name: Run E2E Tests
       env:
+        TEST: ${{ steps.set-device-info.outputs.device-name }}
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
         RP_TOKEN: ${{ secrets.RP_TOKEN }}
         RP_GITHUB_ACTOR: ${{ github.actor }}
         BRANCH_NAME: ${{ github.ref }}
         APPIUM_VERSION: ${{ vars.APPIUM_VERSION }}
-        REMOTE_DEVICE_NAME: ${{ matrix.platform == 'ios' && vars.IOS_DEVICE_NAME || vars.ANDROID_DEVICE_NAME }}
+        REMOTE_DEVICE_NAME: ${{ github.event_name == 'workflow_dispatch' && (inputs.ios-device-name != '' && inputs.ios-device-name) }}
         REMOTE_PLATFORM_VERSION: ${{ matrix.platform == 'ios' && vars.IOS_PLATFORM_VERSION || vars.ANDROID_PLATFORM_VERSION }}
         REMOTE_PLATFORM_NAME: ${{ matrix.platform }}
         REMOTE_APP_FILE_ID: ${{ steps.sauce-storage.outputs.file-id }}
       run: |
         yarn run remote:rdc:test \
-        ${{ (inputs.filter-by-text != '') && format('--mochaOpts.grep="{0}"', inputs.filter-by-text) }} 
+        ${{ (inputs.filter-by-text != '') && format('--mochaOpts.grep="{0}"', inputs.filter-by-text) }} \
+        ${{ (inputs.filter-by-spec != '') && format('--spec ="{0}"', inputs.filter-by-spec) }}  
