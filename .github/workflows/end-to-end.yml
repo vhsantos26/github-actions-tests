@@ -69,6 +69,10 @@ jobs:
           security
         sparse-checkout-cone-mode: false
 
+    - run: |
+        echo "Current path: $PWD"
+        echo "Current files: $(ls -la)"
+
     - uses: actions/setup-node@v3
       with:
         node-version: ${{ vars.NODE_VERSION }}
