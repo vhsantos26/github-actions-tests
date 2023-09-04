@@ -88,6 +88,11 @@ jobs:
     #     ping-url: 192.0.66.2
     #     opvn-config-file: "${{ github.workspace }}/security/aj.ovpn"
 
+    - run: |
+        echo ${{ github.event_name}}
+        echo ${{ github.event_name == 'workflow_dispatch' }}
+        echo ${{ github.event_name == 'workflow_dispatch' && (inputs.build-description != inputs.build-description || '') || 'refs/heads/develop' }}
+
     - uses: ALJAZEERAPLUS/sauce-labs-storage-action@main
       id: sauce-storage
       with:
