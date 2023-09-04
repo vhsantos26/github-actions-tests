@@ -116,8 +116,8 @@ jobs:
         RP_GITHUB_ACTOR: ${{ github.actor }}
         BRANCH_NAME: ${{ github.ref }}
         APPIUM_VERSION: ${{ vars.APPIUM_VERSION }}
-        REMOTE_DEVICE_NAME: ${{ github.event_name == 'workflow_dispatch' && (inputs.ios-device-name != '' && inputs.ios-device-name) }}
-        REMOTE_PLATFORM_VERSION: ${{ matrix.platform == 'ios' && vars.IOS_PLATFORM_VERSION || vars.ANDROID_PLATFORM_VERSION }}
+        REMOTE_DEVICE_NAME: ${{ matrix.platform == 'ios' && (inputs.ios-device-name != '' && inputs.ios-device-name || vars.IOS_DEVICE_NAME) || (inputs.android-device-name != '' && inputs.android-device-name || vars.ANDROID_DEVICE_NAME) }}
+        REMOTE_PLATFORM_VERSION: ${{ matrix.platform == 'ios' && (inputs.ios-version != '' && inputs.ios-version || vars.IOS_PLATFORM_VERSION) || (inputs.android-version != '' && inputs.android-version || vars.ANDROID_PLATFORM_VERSION) }}
         REMOTE_PLATFORM_NAME: ${{ matrix.platform }}
         REMOTE_APP_FILE_ID: ${{ steps.sauce-storage.outputs.file-id }}
       run: |
