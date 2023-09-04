@@ -41,10 +41,7 @@ on:
         description: 'Build Description'
         required: false
         type: string
-      app-file-id:
-        description: 'App File ID'
-        required: false
-        type: string
+        default: 'refs/heads/develop'
   schedule:
     - cron:  '0 2 * * *' 
   repository_dispatch:
@@ -88,11 +85,6 @@ jobs:
     #     ping-url: 192.0.66.2
     #     opvn-config-file: "${{ github.workspace }}/security/aj.ovpn"
 
-    - run: |
-        echo ${{ github.event_name}}
-        echo ${{ github.event_name == 'workflow_dispatch' }}
-        echo ${{ github.event_name == 'workflow_dispatch' && (inputs.build-description != inputs.build-description || '') || 'refs/heads/develop' }}
-
     - uses: ALJAZEERAPLUS/sauce-labs-storage-action@main
       id: sauce-storage
       with:
@@ -102,7 +94,7 @@ jobs:
         get-file-id-platform: ${{ matrix.platform }}
         get-file-id-app-version: ${{ inputs.app-version != '' && inputs.app-version || '' }}
         get-file-id-app-build-number: ${{ inputs.app-build-number != '' && inputs.app-build-number || '' }}
-        get-file-id-app-description: ${{ github.event_name != 'workflow_dispatch' && 'refs/heads/develop' || (inputs.build-description != inputs.build-description || '') }}
+        get-file-id-app-description: ${{ github.event_name == 'schedule' && 'refs/heads/develop' || inputs.build-description }}
 
     - name: Install dependencies
       run: yarn install
