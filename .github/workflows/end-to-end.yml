@@ -102,7 +102,7 @@ jobs:
         get-file-id-platform: ${{ matrix.platform }}
         get-file-id-app-version: ${{ inputs.app-version != '' && inputs.app-version || '' }}
         get-file-id-app-build-number: ${{ inputs.app-build-number != '' && inputs.app-build-number || '' }}
-        get-file-id-app-description: ${{ github.event_name == 'workflow_dispatch' && (inputs.build-description != inputs.build-description || '') || 'refs/heads/develop' }}
+        get-file-id-app-description: ${{ github.event_name != 'workflow_dispatch' && 'refs/heads/develop' || (inputs.build-description != inputs.build-description || '') }}
 
     - name: Install dependencies
       run: yarn install
