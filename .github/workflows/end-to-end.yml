@@ -93,7 +93,7 @@ jobs:
         echo ${{ github.event_name == 'workflow_dispatch' }}
         echo ${{ github.event_name == 'workflow_dispatch' && (inputs.build-description != inputs.build-description || '') || 'refs/heads/develop' }}
 
-    - uses: ALJAZEERAPLUS/sauce-labs-storage-action@v2
+    - uses: ALJAZEERAPLUS/sauce-labs-storage-action@main
       id: sauce-storage
       with:
         endpoint-action: get-file-id
