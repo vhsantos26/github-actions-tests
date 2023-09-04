@@ -41,7 +41,6 @@ on:
         description: 'Build Description'
         required: false
         type: string
-        default: 'refs/heads/develop'
   schedule:
     - cron:  '0 2 * * *' 
   repository_dispatch:
@@ -84,6 +83,9 @@ jobs:
     #     tls-key: "${{ secrets.TLS_KEY }}"
     #     ping-url: 192.0.66.2
     #     opvn-config-file: "${{ github.workspace }}/security/aj.ovpn"
+
+    - run: |
+        echo ${{ github.event_name == 'schedule' && 'refs/heads/develop' || inputs.build-description }}
 
     - uses: ALJAZEERAPLUS/sauce-labs-storage-action@main
       id: sauce-storage
