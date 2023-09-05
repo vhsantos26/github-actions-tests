@@ -8,8 +8,12 @@ on:
       trigger-ucms-tests:
         description: 'Run the uCMS automated tests.'
         required: false
-        default: false
-        type: boolean
+        default: 'none'
+        type: choice
+        options:
+          - none
+          - staging
+          - production
       filter-by-text:
         description: 'Filter by text (e.g. "@smoke")'
         required: false
@@ -106,6 +110,13 @@ jobs:
 
     - name: Install dependencies
       run: yarn install
+
+    - name: Dispatch uCMS Tests
+      if: inputs.trigger-ucms-tests != 'none'
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
+        event-type: ${{ inputs.trigger-ucms-tests == 'production' && 'start-production-ucms-tests-workflow' || 'start-staging-ucms-tests-workflow' }}
 
     - name: Run E2E Tests
       env:
