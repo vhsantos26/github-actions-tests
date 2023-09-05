@@ -1,15 +1,15 @@
 name: UI Tests Execution
 
- run-name: ${{ (github.event_name == 'workflow_dispatch' && format('Manual Execution by @{0}', github.actor)) || (github.event_name == 'schedule' && 'Nightly Execution') }}
+run-name: ${{ (github.event_name == 'workflow_dispatch' && format('Manual Execution by @{0}', github.actor)) || (github.event_name == 'schedule' && 'Nightly Execution') }}
 
- on:
-   workflow_dispatch:
-     inputs:
-       trigger-ucms-tests:
-         description: 'Run the uCMS automated tests.'
-         required: false
-         default: false
-         type: boolean
+on:
+  workflow_dispatch:
+    inputs:
+      trigger-ucms-tests:
+        description: 'Run the uCMS automated tests.'
+        required: false
+        default: false
+        type: boolean
       filter-by-text:
         description: 'Filter by text (e.g. "@smoke")'
         required: false
@@ -20,10 +20,6 @@ name: UI Tests Execution
         required: false
         default: ''
         type: string
-      trigger-ucms-tests:
-        description: 'Flag to run the uCMS automated tests.'
-        type: boolean
-        default: false
       ios-version:
         description: 'iOS Version'
         required: false
