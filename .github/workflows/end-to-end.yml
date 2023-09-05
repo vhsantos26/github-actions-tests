@@ -13,6 +13,10 @@ on:
         required: false
         default: ''
         type: string
+      trigger-ucms-tests:
+        description: 'Flag to run the uCMS automated tests.'
+        type: boolean
+        default: false
       ios-version:
         description: 'iOS Version'
         required: false
