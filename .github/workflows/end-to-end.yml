@@ -1,8 +1,15 @@
-name: End-to-End Workflow
+name: UI Tests Execution
 
-on:
-  workflow_dispatch:
-    inputs:
+ run-name: ${{ (github.event_name == 'workflow_dispatch' && format('Manual Execution by @{0}', github.actor)) || (github.event_name == 'schedule' && 'Nightly Execution') }}
+
+ on:
+   workflow_dispatch:
+     inputs:
+       trigger-ucms-tests:
+         description: 'Run the uCMS automated tests.'
+         required: false
+         default: false
+         type: boolean
       filter-by-text:
         description: 'Filter by text (e.g. "@smoke")'
         required: false
@@ -60,8 +67,7 @@ defaults:
 jobs:
   end-to-end-execution:
     runs-on: ubuntu-latest
-    name: |
-      ${{ (github.event_name == 'workflow_dispatch' && 'Manual') || (github.event_name == 'schedule' && 'Schedule') }} Execution (${{ matrix.platform }})
+    name: Execute with ${{ matrix.platform }} platform
     strategy:
       matrix:
         platform: [ios, android]
