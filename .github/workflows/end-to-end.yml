@@ -63,6 +63,17 @@ defaults:
     working-directory: projects/mobile/__tests__/ui
 
 jobs:
+  trigger-ucms-tests:
+    runs-on: ubuntu-latest
+    if: inputs.trigger-ucms-tests != 'none'
+    steps:
+      - name: Dispatch uCMS Tests
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          repository: ALJAZEERAPLUS/ucms
+          event-type: ${{ inputs.trigger-ucms-tests == 'production' && 'start-production-ucms-tests-workflow' || 'start-staging-ucms-tests-workflow' }}
+
   ui-test-execution:
     runs-on: ubuntu-latest
     permissions: 
@@ -96,14 +107,6 @@ jobs:
         get-file-id-app-description: ${{ github.event_name == 'schedule' && 'refs/heads/develop' || inputs.build-description }}
 
     - run: yarn install
-
-    - name: Dispatch uCMS Tests
-      if: inputs.trigger-ucms-tests != 'none'
-      uses: peter-evans/repository-dispatch@v2
-      with:
-        token: ${{ secrets.ACCESS_TOKEN }}
-        repository: ALJAZEERAPLUS/ucms
-        event-type: ${{ inputs.trigger-ucms-tests == 'production' && 'start-production-ucms-tests-workflow' || 'start-staging-ucms-tests-workflow' }}
 
     - name: Run E2E Tests
       continue-on-error: true
