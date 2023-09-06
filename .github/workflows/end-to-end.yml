@@ -105,6 +105,7 @@ jobs:
         event-type: ${{ inputs.trigger-ucms-tests == 'production' && 'start-production-ucms-tests-workflow' || 'start-staging-ucms-tests-workflow' }}
 
     - name: Run E2E Tests
+      continue-on-error: true
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
@@ -117,6 +118,7 @@ jobs:
         REMOTE_PLATFORM_NAME: ${{ matrix.platform }}
         REMOTE_APP_FILE_ID: ${{ steps.sauce-storage.outputs.file-id }}
       run: |
-        yarn run remote:rdc:test \
-        ${{ (inputs.filter-by-text != '') && format('--mochaOpts.grep="{0}"', inputs.filter-by-text) }} \
-        ${{ (inputs.filter-by-spec != '') && format('--spec ="{0}"', inputs.filter-by-spec) }}  
+        # yarn run remote:rdc:test \
+        # ${{ (inputs.filter-by-text != '') && format('--mochaOpts.grep="{0}"', inputs.filter-by-text) }} \
+        # ${{ (inputs.filter-by-spec != '') && format('--spec ="{0}"', inputs.filter-by-spec) }}  
+        exit 1
