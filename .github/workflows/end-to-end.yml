@@ -64,7 +64,7 @@ defaults:
 
 jobs:
   ui-test-execution:
-    runs-on: ${{ vars.LINUX_RUNNER }}
+    runs-on: ubuntu-latest
     permissions: {}
     name: Execute ${{ matrix.platform }} platform
     strategy:
