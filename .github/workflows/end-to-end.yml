@@ -65,7 +65,8 @@ defaults:
 jobs:
   ui-test-execution:
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions: 
+      contents: read
     name: Execute ${{ matrix.platform }} platform
     strategy:
       matrix:
@@ -82,9 +83,6 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: ${{ vars.NODE_VERSION }}
-
-    - run: |
-        echo ${{ github.event_name == 'schedule' && 'refs/heads/develop' || inputs.build-description }}
 
     - uses: ALJAZEERAPLUS/sauce-labs-storage-action@main
       id: sauce-storage
