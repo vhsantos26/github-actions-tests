@@ -78,6 +78,7 @@ jobs:
   ui-test-execution:
     runs-on: ubuntu-latest
     needs: trigger-ucms-tests
+    if: always()
     permissions: 
       contents: read
     name: Execute ${{ matrix.platform }} platform
