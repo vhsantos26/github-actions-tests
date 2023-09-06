@@ -65,7 +65,7 @@ defaults:
 jobs:
   trigger-ucms-tests:
     runs-on: ubuntu-latest
-    name: ${{ format('Trigger uCMS {0} Tests', inputs.trigger-ucms-tests) }}
+    name: ${{ format('Trigger uCMS {0} tests', inputs.trigger-ucms-tests || '') }}
     if: inputs.trigger-ucms-tests != 'none'
     steps:
       - name: Dispatch uCMS Tests
