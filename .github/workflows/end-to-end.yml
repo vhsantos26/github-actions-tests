@@ -126,7 +126,7 @@ jobs:
         REMOTE_APP_FILE_ID: ${{ steps.sauce-storage.outputs.file-id }}
       run: |
         echo 'yarn run test' \
-        ${{ (inputs.filter-by-text == '@smoke') && '--suite smoke' }} \
-        ${{ (inputs.filter-by-text != '' && inputs.filter-by-text != '@regression') && format('--mochaOpts.grep="{0}"', inputs.filter-by-text) }} \
-        ${{ (inputs.filter-by-spec != '') && format('--spec ="{0}"', inputs.filter-by-spec) }} \
-        ${{ (github.event_name == 'schedule' || inputs.filter-by-text == '@regression') && '--suite regression' }}
+        ${{ (inputs.filter-by-text == '@smoke') && '--suite smoke' || '' }} \
+        ${{ (inputs.filter-by-text != '' && inputs.filter-by-text != '@regression') && format('--mochaOpts.grep="{0}"', inputs.filter-by-text) || '' }} \
+        ${{ (inputs.filter-by-spec != '') && format('--spec ="{0}"', inputs.filter-by-spec) || '' }} \
+        ${{ (github.event_name == 'schedule' || inputs.filter-by-text == '@regression') && '--suite regression' || '' }}
