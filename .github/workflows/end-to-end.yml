@@ -127,6 +127,6 @@ jobs:
       run: |
         echo 'yarn run test' \
         ${{ (inputs.filter-by-text == '@smoke') && '--suite smoke --mochaOpts.grep="@blocker|@critical"' || '' }} \
-        ${{ (inputs.filter-by-text != '' && (inputs.filter-by-text != '@regression') || (inputs.filter-by-text != '@smoke')) && format('--mochaOpts.grep="{0}"', inputs.filter-by-text) || '' }} \
+        ${{ (inputs.filter-by-text != '' && (inputs.filter-by-text != '@regression') && (inputs.filter-by-text != '@smoke')) && format('--mochaOpts.grep="{0}"', inputs.filter-by-text) || '' }} \
         ${{ (inputs.filter-by-spec != '') && format('--spec ="{0}"', inputs.filter-by-spec) || '' }} \
         ${{ (github.event_name == 'schedule' || inputs.filter-by-text == '@regression') && '--suite regression' || '' }}
