@@ -52,6 +52,7 @@ on:
         description: 'Build Description'
         required: false
         type: string
+        default: refs/heads/develop
   schedule:
     - cron:  '0 2 * * *'
 
