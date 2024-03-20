@@ -92,7 +92,10 @@ jobs:
         sparse-checkout: |
           projects/mobile/__tests__/ui
           security
+          ${{ env.RELEASE_NOTES }}
         sparse-checkout-cone-mode: false
+      env:
+        RELEASE_NOTES: "Built from Branch: ${{ (github.event_name == 'push' && github.ref) || (github.event_name == 'pull_request' && github.head_ref) }}. CI Build URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}"
 
     - uses: actions/setup-node@v3
       with:
