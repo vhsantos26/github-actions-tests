@@ -1,0 +1,13 @@
+on:
+  pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ github.event }} >> github.event.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          path: ./github.event.json
+          name: pull-request-event
