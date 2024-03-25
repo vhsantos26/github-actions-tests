@@ -35,7 +35,12 @@ jobs:
       - name: Print WebHook ID env
         if: steps.set-webhook-id.outcome == 'success'
         run: echo $WEBHOOK_ID
-
+        
+  slack:
+    runs-on: ubuntu-latest
+    needs: build
+    if: always()
+    steps:
       - run: echo ${{ job.status }} 
 
       
