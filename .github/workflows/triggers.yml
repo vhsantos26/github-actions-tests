@@ -1,5 +1,15 @@
 on:
-  pull_request
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        default: 'none'
+        type: choice
+        options:
+          - none
+          - staging
+          - production
 
 jobs:
   build:
@@ -14,7 +24,11 @@ jobs:
           path: ./github.event.json
           name: pull-request-event
 
-  hello-world:
-    uses: ./.github/workflows/reusables/android
-    with:
-      message: 'Hello world, Hugo'
+      - id: set-webhook-id
+        if: github.event_name == 'manually' && inputs.environment != 'none'
+        run: echo "WEBHOOK_ID=${{ format("start-{0}-ucms-tests-workflow", inputs.environment) }}" >> $GITHUB_ENV
+
+      - if: steps.set-webhook-id.outcome == success
+        run: echo $WEBHOOK_ID
+
+      
