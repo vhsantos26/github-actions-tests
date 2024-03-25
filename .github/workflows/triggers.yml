@@ -13,3 +13,8 @@ jobs:
         with:
           path: ./github.event.json
           name: pull-request-event
+
+  hello-world:
+    uses: ./.github/workflows/reusables/android
+    with:
+      message: 'Hello world, Hugo'
