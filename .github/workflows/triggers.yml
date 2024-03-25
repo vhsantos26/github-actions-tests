@@ -41,7 +41,7 @@ jobs:
     needs: build
     if: always()
     steps:
-      - uses: martialonline/workflow-status@v3
+      - uses: martialonline/workflow-status@v4
         id: check
 
       - run: echo ${{ steps.check.outputs.status }}
