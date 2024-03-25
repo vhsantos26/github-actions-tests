@@ -25,7 +25,7 @@ jobs:
           name: pull-request-event
 
       - id: set-webhook-id
-        if: github.event_name == 'manually' && inputs.environment != 'none'
+        if: github.event_name == 'workflow_dispatch' && inputs.environment != 'none'
         run: echo "WEBHOOK_ID=${{ format('start-{0}-ucms-tests-workflow', inputs.environment) }}" >> $GITHUB_ENV
 
       - if: steps.set-webhook-id.outcome == 'success'
