@@ -35,4 +35,6 @@ jobs:
         if: steps.set-webhook-id.outcome == 'success'
         run: echo $WEBHOOK_ID
 
+      - run: echo ${{ job.status }} 
+
       
