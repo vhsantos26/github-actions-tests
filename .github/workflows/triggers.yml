@@ -1,15 +1,38 @@
 on:
-  pull_request
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        default: 'none'
+        type: choice
+        options:
+          - none
+          - staging
+          - production
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - env:
+      - name: Create Context Json file
+        env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo $GITHUB_CONTEXT >> github.event.json
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           path: ./github.event.json
           name: pull-request-event
+
+      - name: Set WebHook ID env
+        id: set-webhook-id
+        if: github.event_name == 'workflow_dispatch' && inputs.environment != 'none'
+        run: echo "WEBHOOK_ID=${{ format('start-{0}-ucms-tests-workflow', inputs.environment) }}" >> $GITHUB_ENV
+
+      - name: Print WebHook ID env
+        if: steps.set-webhook-id.outcome == 'success'
+        run: echo $WEBHOOK_ID
+
+      
