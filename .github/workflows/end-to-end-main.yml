@@ -25,4 +25,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: ./github.json
-          name: e2e-workflow
+          name: ${{ matrix.platform }}-e2e-workflow
