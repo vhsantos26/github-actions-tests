@@ -106,7 +106,7 @@ jobs:
       - name: Create Context Json file
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo $GITHUB_CONTEXT >> github.event.json
+        run: echo $GITHUB_CONTEXT >> github.json
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
