@@ -1,0 +1,104 @@
+name: Continuous Integration/Delivery
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  build-common:
+    runs-on: ubuntu-latest
+    name: Build & Test Common
+    steps:
+      - run: echo "Build & Test Common"
+
+  build-mobile:
+    needs: build-common
+    runs-on: ubuntu-latest
+    name: Build & Test Mobile
+    steps:
+      - run: echo "Build & Test Mobile"
+
+  build-dev-native-android:
+    needs: build-mobile
+    runs-on: ubuntu-latest
+    name: Build Dev / Native Android
+    steps:
+      - run: echo "Build Dev / Native Android"
+
+  build-dev-native-ios:
+    needs: build-mobile
+    runs-on: ubuntu-latest
+    name: Build Dev / Native iOS
+    steps:
+      - run: echo "Build Dev / Native iOS"
+
+  build-release-native-android:
+    needs: build-mobile
+    runs-on: ubuntu-latest
+    name: Build Release / Native Android
+    steps:
+      - run: echo "Build Release / Native Android"
+
+  build-release-native-ios:
+    needs: build-mobile
+    runs-on: ubuntu-latest
+    name: Build Release / Native iOS
+    steps:
+      - run: echo "Build Release / Native iOS"
+
+  deploy-sauce-labs:
+    needs: [build-dev-native-android, build-dev-native-ios]
+    runs-on: ubuntu-latest
+    name: Sauce Labs Deployment
+    strategy:
+      matrix: 
+        platform: [android, ios]
+    steps:
+      - run: echo "Sauce Labs Deployment ${{ matrix.platform }}"
+
+  deploy-firebase:
+    needs: [build-dev-native-android, build-dev-native-ios]
+    runs-on: ubuntu-latest
+    name: Firebase Deployment
+    strategy:
+      matrix: 
+        platform: [android, ios]
+    steps:
+      - run: echo "Firebase Deployment ${{ matrix.platform }}"
+
+  deploy-testflight:
+    needs: [build-release-native-android, build-release-native-ios]
+    runs-on: ubuntu-latest
+    name: TestFlight Deployment
+    steps:
+      - run: echo "TestFlight Deployment"
+
+  deploy-google-play-console:
+    needs: [build-release-native-android, build-release-native-ios]
+    runs-on: ubuntu-latest
+    name: Google Play Console Deployment
+    steps:
+      - run: echo "Google Play Console Deployment"
+
+  deploy-amazon-appstore:
+    needs: [build-release-native-android, build-release-native-ios]
+    runs-on: ubuntu-latest
+    name: Amazon AppStore Deployment
+    steps:
+      - run: echo "Amazon AppStore Deployment"
+
+  deploy-debug-symbols:
+    needs: [build-release-native-android, build-release-native-ios]
+    runs-on: ubuntu-latest
+    name: DSYM  Deployment
+    steps:
+      - run: echo "DSYM Deployment"
+      
+  slack-notification:
+    needs: [deploy-sauce-labs,deploy-firebase, deploy-testflight, deploy-google-play-console, deploy-amazon-appstore, deploy-debug-symbols]
+    runs-on: ubuntu-latest
+    name: Slack Notification
+    steps:
+      - run: echo "Slack Notification"
