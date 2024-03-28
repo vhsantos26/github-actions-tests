@@ -1,0 +1,17 @@
+name: End-to-end Execution
+
+on:
+  workflow_run:
+    workflows: [Continuous Integration/Delivery]
+    types: [completed]
+
+jobs:
+  end-to-end-execution:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    name: End-to-end Execution 
+    strategy:
+      matrix:
+        platform: [ios, android]
+    steps:
+      - run: echo "End-to-end Execution (${{ matrix.platform }})"
