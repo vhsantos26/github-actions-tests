@@ -60,6 +60,16 @@ jobs:
     steps:
       - run: echo "Sauce Labs Deployment ${{ matrix.platform }}"
 
+  end-to-end:
+    needs: [deploy-sauce-labs]
+    runs-on: ubuntu-latest
+    name: End-to-end Execution
+    strategy:
+      matrix:
+        platform: [ios, android]
+    steps:  
+      - run: echo "End-to-end Execution"
+  
   deploy-firebase:
     needs: [build-dev-native-android, build-dev-native-ios]
     runs-on: ubuntu-latest
@@ -99,7 +109,7 @@ jobs:
       - run: echo "DSYM Deployment"
       
   slack-notification:
-    needs: [deploy-sauce-labs,deploy-firebase, deploy-testflight, deploy-google-play-console, deploy-amazon-appstore, deploy-debug-symbols]
+    needs: [deploy-sauce-labs,deploy-firebase, deploy-testflight, deploy-google-play-console, deploy-amazon-appstore, deploy-debug-symbols, end-to-end]
     if: always()
     runs-on: ubuntu-latest
     name: Slack Notification
