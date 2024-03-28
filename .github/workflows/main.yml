@@ -113,3 +113,5 @@ jobs:
         with:
           path: ./github.json
           name: main-workflow
+
+      - run: exit 0
