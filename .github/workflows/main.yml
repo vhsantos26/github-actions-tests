@@ -34,7 +34,7 @@ jobs:
     steps:
       - run: echo "Build Dev / Native iOS"
 
-      - run: exit 1
+      - run: exit 0
 
   build-release-native-android:
     needs: build-mobile
