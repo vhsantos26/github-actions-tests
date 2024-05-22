@@ -7,42 +7,35 @@ on:
     branches: [main]
 
 jobs:
-  build-common:
+  continuous-integration:
     runs-on: ubuntu-latest
-    name: Build & Test Common
+    name: Continuous Integration
     steps:
       - run: echo "Build & Test Common"
 
-  build-mobile:
-    needs: build-common
-    runs-on: ubuntu-latest
-    name: Build & Test Mobile
-    steps:
-      - run: echo "Build & Test Mobile"
-
   build-dev-native-android:
-    needs: build-mobile
+    needs: continuous-integration
     runs-on: ubuntu-latest
     name: Build Dev / Native Android
     steps:
       - run: echo "Build Dev / Native Android"
 
   build-dev-native-ios:
-    needs: build-mobile
+    needs: continuous-integration
     runs-on: ubuntu-latest
     name: Build Dev / Native iOS
     steps:
       - run: echo "Build Dev / Native iOS"
 
   build-release-native-android:
-    needs: build-mobile
+    needs: continuous-integration
     runs-on: ubuntu-latest
     name: Build Release / Native Android
     steps:
       - run: echo "Build Release / Native Android"
 
   build-release-native-ios:
-    needs: build-mobile
+    needs: continuous-integration
     runs-on: ubuntu-latest
     name: Build Release / Native iOS
     steps:
