@@ -26,21 +26,21 @@ jobs:
       - run: echo "Build Dev / Native iOS"
 
   build-release-native-android:
-    if: always() && (github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')))' 
+    if: always() && (github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')))
     runs-on: ubuntu-latest
     name: Build Release / Native Android
     steps:
       - run: echo "Build Release / Native Android"
 
   build-release-native-ios:
-    if: always() && (github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')))' 
+    if: always() && (github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')))
     runs-on: ubuntu-latest
     name: Build Release / Native iOS
     steps:
       - run: echo "Build Release / Native iOS"
 
   deploy-sauce-labs:
-    needs: [build-dev-native-android, build-dev-native-ios]
+    needs: [continuous-integration, build-dev-native-android, build-dev-native-ios]
     runs-on: ubuntu-latest
     name: Sauce Labs Deployment
     strategy:
@@ -50,7 +50,7 @@ jobs:
       - run: echo "Sauce Labs Deployment ${{ matrix.platform }}"
 
   deploy-firebase:
-    needs: [build-dev-native-android, build-dev-native-ios]
+    needs: [continuous-integration, build-dev-native-android, build-dev-native-ios]
     runs-on: ubuntu-latest
     name: Firebase Deployment
     strategy:
@@ -60,28 +60,28 @@ jobs:
       - run: echo "Firebase Deployment ${{ matrix.platform }}"
 
   deploy-testflight:
-    needs: [build-release-native-android, build-release-native-ios]
+    needs: [continuous-integration, build-release-native-android, build-release-native-ios]
     runs-on: ubuntu-latest
     name: TestFlight Deployment
     steps:
       - run: echo "TestFlight Deployment"
 
   deploy-google-play-console:
-    needs: [build-release-native-android, build-release-native-ios]
+    needs: [continuous-integration, build-release-native-android, build-release-native-ios]
     runs-on: ubuntu-latest
     name: Google Play Console Deployment
     steps:
       - run: echo "Google Play Console Deployment"
 
   deploy-amazon-appstore:
-    needs: [build-release-native-android, build-release-native-ios]
+    needs: [continuous-integration, build-release-native-android, build-release-native-ios]
     runs-on: ubuntu-latest
     name: Amazon AppStore Deployment
     steps:
       - run: echo "Amazon AppStore Deployment"
 
   deploy-debug-symbols:
-    needs: [build-release-native-android, build-release-native-ios]
+    needs: [continuous-integration, build-release-native-android, build-release-native-ios]
     runs-on: ubuntu-latest
     name: DSYM  Deployment
     steps:
