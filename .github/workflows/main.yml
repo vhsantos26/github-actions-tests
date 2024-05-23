@@ -14,28 +14,26 @@ jobs:
       - run: echo "Build & Test Common"
 
   build-dev-native-android:
-    needs: continuous-integration
     runs-on: ubuntu-latest
     name: Build Dev / Native Android
     steps:
       - run: echo "Build Dev / Native Android"
 
   build-dev-native-ios:
-    needs: continuous-integration
     runs-on: ubuntu-latest
     name: Build Dev / Native iOS
     steps:
       - run: echo "Build Dev / Native iOS"
 
   build-release-native-android:
-    needs: continuous-integration
+    if: always() && (github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')))' 
     runs-on: ubuntu-latest
     name: Build Release / Native Android
     steps:
       - run: echo "Build Release / Native Android"
 
   build-release-native-ios:
-    needs: continuous-integration
+    if: always() && (github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')))' 
     runs-on: ubuntu-latest
     name: Build Release / Native iOS
     steps:
@@ -88,9 +86,21 @@ jobs:
     name: DSYM  Deployment
     steps:
       - run: echo "DSYM Deployment"
+
+  end-to-end-execution:
+    needs: [deploy-sauce-labs]
+    runs-on: ubuntu-latest
+    name: End-to-End Execution
+    strategy:
+      matrix:
+        platform: 
+          - android
+          - ios
+    steps:
+      - run: echo "End-to-end execution"
       
   slack-notification:
-    needs: [deploy-sauce-labs,deploy-firebase, deploy-testflight, deploy-google-play-console, deploy-amazon-appstore, deploy-debug-symbols]
+    needs: [end-to-end-execution, deploy-sauce-labs,deploy-firebase, deploy-testflight, deploy-google-play-console, deploy-amazon-appstore, deploy-debug-symbols]
     runs-on: ubuntu-latest
     name: Slack Notification
     steps:
