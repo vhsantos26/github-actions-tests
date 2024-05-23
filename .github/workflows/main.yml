@@ -14,18 +14,21 @@ jobs:
       - run: echo "Build & Test Common"
 
   build-dev-native-android:
+    needs: [continuous-integration]
     runs-on: ubuntu-latest
     name: Build Dev / Native Android
     steps:
       - run: echo "Build Dev / Native Android"
 
   build-dev-native-ios:
+    needs: [continuous-integration]
     runs-on: ubuntu-latest
     name: Build Dev / Native iOS
     steps:
       - run: echo "Build Dev / Native iOS"
 
   build-release-native-android:
+    needs: [continuous-integration]
     if: always() && (github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')))
     runs-on: ubuntu-latest
     name: Build Release / Native Android
@@ -33,6 +36,7 @@ jobs:
       - run: echo "Build Release / Native Android"
 
   build-release-native-ios:
+    needs: [continuous-integration]
     if: always() && (github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')))
     runs-on: ubuntu-latest
     name: Build Release / Native iOS
@@ -40,7 +44,7 @@ jobs:
       - run: echo "Build Release / Native iOS"
 
   deploy-sauce-labs:
-    needs: [continuous-integration, build-dev-native-android, build-dev-native-ios]
+    needs: [build-dev-native-android, build-dev-native-ios]
     runs-on: ubuntu-latest
     name: Sauce Labs Deployment
     strategy:
@@ -50,7 +54,7 @@ jobs:
       - run: echo "Sauce Labs Deployment ${{ matrix.platform }}"
 
   deploy-firebase:
-    needs: [continuous-integration, build-dev-native-android, build-dev-native-ios]
+    needs: [build-dev-native-android, build-dev-native-ios]
     runs-on: ubuntu-latest
     name: Firebase Deployment
     strategy:
@@ -60,28 +64,28 @@ jobs:
       - run: echo "Firebase Deployment ${{ matrix.platform }}"
 
   deploy-testflight:
-    needs: [continuous-integration, build-release-native-android, build-release-native-ios]
+    needs: [build-release-native-android, build-release-native-ios]
     runs-on: ubuntu-latest
     name: TestFlight Deployment
     steps:
       - run: echo "TestFlight Deployment"
 
   deploy-google-play-console:
-    needs: [continuous-integration, build-release-native-android, build-release-native-ios]
+    needs: [build-release-native-android, build-release-native-ios]
     runs-on: ubuntu-latest
     name: Google Play Console Deployment
     steps:
       - run: echo "Google Play Console Deployment"
 
   deploy-amazon-appstore:
-    needs: [continuous-integration, build-release-native-android, build-release-native-ios]
+    needs: [build-release-native-android, build-release-native-ios]
     runs-on: ubuntu-latest
     name: Amazon AppStore Deployment
     steps:
       - run: echo "Amazon AppStore Deployment"
 
   deploy-debug-symbols:
-    needs: [continuous-integration, build-release-native-android, build-release-native-ios]
+    needs: [build-release-native-android, build-release-native-ios]
     runs-on: ubuntu-latest
     name: DSYM  Deployment
     steps:
