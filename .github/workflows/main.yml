@@ -7,28 +7,31 @@ on:
     branches: [main]
 
 jobs:
-  continuous-integration:
+  build-common:
+    runs-on: ubuntu-latest
+    name: Continuous Integration
+    steps:
+      - run: echo "Build & Test Common"
+
+  build-mobile:
     runs-on: ubuntu-latest
     name: Continuous Integration
     steps:
       - run: echo "Build & Test Common"
 
   build-dev-native-android:
-    needs: [continuous-integration]
     runs-on: ubuntu-latest
     name: Build Dev / Native Android
     steps:
       - run: echo "Build Dev / Native Android"
 
   build-dev-native-ios:
-    needs: [continuous-integration]
     runs-on: ubuntu-latest
     name: Build Dev / Native iOS
     steps:
       - run: echo "Build Dev / Native iOS"
 
   build-release-native-android:
-    needs: [continuous-integration]
     if: always() && (github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')))
     runs-on: ubuntu-latest
     name: Build Release / Native Android
@@ -36,7 +39,6 @@ jobs:
       - run: echo "Build Release / Native Android"
 
   build-release-native-ios:
-    needs: [continuous-integration]
     if: always() && (github.base_ref == 'master' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-')))
     runs-on: ubuntu-latest
     name: Build Release / Native iOS
