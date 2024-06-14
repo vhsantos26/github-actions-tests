@@ -9,13 +9,13 @@ on:
 jobs:
   build-common:
     runs-on: ubuntu-latest
-    name: Continuous Integration
+    name: Build Common
     steps:
       - run: echo "Build & Test Common"
 
   build-mobile:
     runs-on: ubuntu-latest
-    name: Continuous Integration
+    name: Build Mobile
     steps:
       - run: echo "Build & Test Common"
 
