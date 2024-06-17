@@ -27,3 +27,19 @@ jobs:
               issue_number: context.issue.number,
               labels: ['draft']
             })
+
+  label-ready-for-review-pr:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false && (github.event.action == 'opened' || github.event.action == 'reopened' || github.event.action == 'ready_for_review' || github.event.action == 'synchronize')
+    steps:
+      - name: Label PR as Ready for Review
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['ready-for-review']
+            })
