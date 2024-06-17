@@ -6,10 +6,10 @@ on:
         type: string
 
 jobs:
-  share-context:
+  upload-context:
     runs-on: ubuntu-latest
     steps:
-      - name: Create Context Json file
+      - name: Create Context JSON file
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo $GITHUB_CONTEXT >> github.json
