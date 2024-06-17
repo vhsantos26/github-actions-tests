@@ -8,7 +8,7 @@ on:
 
 jobs:
   share-context:
-    uses: ./.github/workflows/share-context.yml
+    uses: ./.github/workflows/upload-context.yml
     with:
       file-name: pr-transition
         
