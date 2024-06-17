@@ -64,7 +64,7 @@ jobs:
 
   label-review-approved-pr:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false && github.event.action == 'submitted'
+    if: github.event_name == 'pull_request_review_comment'
     steps:
       - name: Label PR as Review Approved
         uses: actions/github-script@v7
