@@ -26,25 +26,6 @@ jobs:
           path: ./github.json
           name: github-context
 
-  context-upload:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Context JSON file
-        env:
-          GITHUB_CONTEXT: ${{ toJson(context) }}
-        run: echo $GITHUB_CONTEXT >> github.json
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          path: ./github.json
-          name: context
-
-      - name: Show Context
-      uses: actions/github-script@v7
-      with:
-        script: console.log(context)
-
   label-draft-pr:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == true
