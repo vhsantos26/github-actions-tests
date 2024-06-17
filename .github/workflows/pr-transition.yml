@@ -1,0 +1,22 @@
+on: 
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+
+jobs:
+  pr_transition:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Context Json file
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo $GITHUB_CONTEXT >> github.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./github.json
+          name: main-workflow
+        
