@@ -9,7 +9,7 @@ jobs:
   pr_transition:
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/share-context
+      - uses: .github/workflows/share-context@master
         with:
           file-name: pr-transition
         
