@@ -4,6 +4,7 @@ on:
       - opened
       - reopened
       - ready_for_review
+      - synchronize
   issue_comment: 
   pull_request_review: 
   pull_request_review_comment: 
@@ -38,7 +39,11 @@ jobs:
   pr-ready-for-review:
     name: PR Ready for Review
     runs-on: ubuntu-latest
-    if: ${{ !github.event.pull_request.draft && contains(fromJson('["opened", "reopened", "ready_for_review"]'), github.event.action) }}
+    if: >-
+      ${{ 
+        !github.event.pull_request.draft && 
+        contains(fromJson('["opened", "reopened", "ready_for_review"]'), github.event.action) 
+      }}
     steps:
       - name: "Pull Request: Remove 'draft' label"
         if: contains(github.event.pull_request.labels.*.name, 'draft')
@@ -76,7 +81,11 @@ jobs:
 
   pr-jira-sync:
     runs-on: ubuntu-latest
-    if: ${{ !github.event.pull_request.draft && contains(fromJson('["opened", "reopened", "ready_for_review", "submitted", "edited"]'), github.event.action) }}
+    if: >-
+      ${{ 
+        !github.event.pull_request.draft && 
+        contains(fromJson('["opened", "reopened", "ready_for_review", "submitted", "edited"]'), github.event.action) 
+      }}
     steps:
       - name: "Check PR Status"
         id: pr_status
@@ -97,17 +106,23 @@ jobs:
               pull_number: context.issue.number,
             });
             const isMergeable = prDetails.data.mergeable;
-            return { approvals, changesRequested, isMergeable };
+
+            core.setOutput("approvals", approvals);
+            core.setOutput("changesRequested", changesRequested);
+            core.setOutput("isMergeable", isMergeable);
 
       - name: "Conditional Steps Based on PR Status"
         run: |
-          echo "Proceed with label changes and Jira transition"
-          # Place the steps for label changes and Jira transition here
+          echo ${{ steps.pr_status.outputs.approvals }} 
 
   pr-reviewed:
     name: PR Reviewed
     runs-on: ubuntu-latest
-    if: ${{ !github.event.pull_request.draft && contains(fromJson('["submitted", "edited"]'), github.event.action) }} 
+    if: >-
+      ${{ 
+        !github.event.pull_request.draft && 
+        contains(fromJson('["submitted", "edited"]'), github.event.action) 
+      }} 
     steps:
       - name: "Pull Request: Remove 'ready-for-review' label"
         if: contains(github.event.pull_request.labels.*.name, 'ready-for-review')
