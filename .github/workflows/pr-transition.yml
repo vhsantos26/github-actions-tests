@@ -41,6 +41,12 @@ jobs:
             core.setOutput("changesRequested", changesRequested);
             core.setOutput("isMergeable", isMergeable);
 
+      - name: Show PR Data
+        run: |
+          echo "Approvals: ${{ steps.pr_status.outputs.approvals }}"
+          echo "Changes Requested: ${{ steps.pr_status.outputs.changesRequested }}"
+          echo "Is Mergeable: ${{ steps.pr_status.outputs.isMergeable }}"
+
   pr-opened-as-draft:
     name: PR Opened as Draft
     runs-on: ubuntu-latest
@@ -152,7 +158,7 @@ jobs:
     name: PR Reviewed - Change Requested
     runs-on: ubuntu-latest
     needs: get-pr-data
-    if: ${{ !github.event.pull_request.draft && contains(fromJson('["opened", "reopened", "ready_for_review"]'), github.event.action) && needs.get-pr-data.outputs.changesRequested }}
+    if: github.event_name == 'pull_request_review' && needs.get-pr-data.outputs.changesRequested
     steps:
       - name: "Pull Request: Remove 'ready-for-review' label"
         if: contains(github.event.pull_request.labels.*.name, 'ready-for-review')
