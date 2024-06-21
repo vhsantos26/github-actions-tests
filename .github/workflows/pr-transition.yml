@@ -26,6 +26,31 @@ jobs:
           path: ./github.json
           name: github-context
 
+  pr-jira-sync:
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft && contains(fromJson('["opened", "reopened", "ready_for_review", "submitted", "edited"]'), github.event.action) }}
+    steps:
+      - name: "Check PR Status"
+        id: pr_status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const reviews = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            const approvals = reviews.data.filter(review => review.state === 'APPROVED').length;
+            const changesRequested = reviews.data.some(review => review.state === 'CHANGES_REQUESTED');
+            const prDetails = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            const isMergeable = prDetails.data.mergeable;
+            return { approvals, changesRequested, isMergeable };
+
   label-draft-pr:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == true
