@@ -4,27 +4,75 @@ on:
       - opened
       - reopened
       - ready_for_review
-      - synchronize
-  pull_request_review_comment:
-    types:
-      - created
-      - edited
-      - deleted
+  issue_comment: 
+  pull_request_review: 
+  pull_request_review_comment: 
 
 jobs:
-  gthub-context-upload:
+  pr-opened-as-draft:
+    name: PR Opened as Draft
     runs-on: ubuntu-latest
-    steps: 
-      - name: Create Context JSON file
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo $GITHUB_CONTEXT >> github.json
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+    if: github.event.pull_request.draft == true
+    steps:
+      - name: "Pull Request: Add 'draft' label"
+        uses: actions/github-script@v7
         with:
-          path: ./github.json
-          name: github-context
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['draft']
+            })
+
+      # - name: "Jira: Transition PR to 'In Progress'"
+      #   env: 
+      #     ISSUE_ID: ${{ github.head_ref }}
+      #     JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
+      #   run: |
+      #     curl -X POST -H 'Content-type: application/json' \
+      #     --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "In Progress"}}' \
+      #     ${{ env.JIRA_INCOMING_WEBHOOK }}
+
+  pr-ready-for-review:
+    name: PR Ready for Review
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft && contains(fromJson('["opened", "reopened", "ready_for_review"]'), github.event.action) }}
+    steps:
+      - name: "Pull Request: Remove 'draft' label"
+        if: contains(github.event.pull_request.labels.*.name, 'draft')
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              name: 'draft'
+            })
+
+      - name: "Pull Request: Add 'ready-for-review' label"
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['ready-for-review']
+            })
+
+      # - name: "Jira: Transition PR to 'Code Review'"
+      #   env: 
+      #     ISSUE_ID: ${{ github.head_ref }}
+      #     JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
+      #   run: |
+      #     curl -X POST -H 'Content-type: application/json' \
+      #     --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "Code Review"}}' \
+      #     ${{ env.JIRA_INCOMING_WEBHOOK }}
 
   pr-jira-sync:
     runs-on: ubuntu-latest
@@ -51,69 +99,18 @@ jobs:
             const isMergeable = prDetails.data.mergeable;
             return { approvals, changesRequested, isMergeable };
 
-  label-draft-pr:
+      - name: "Conditional Steps Based on PR Status"
+        run: |
+          echo "Proceed with label changes and Jira transition"
+          # Place the steps for label changes and Jira transition here
+
+  pr-reviewed:
+    name: PR Reviewed
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == true
+    if: ${{ !github.event.pull_request.draft && contains(fromJson('["submitted", "edited"]'), github.event.action) }} 
     steps:
-      - name: Label PR as Draft
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['draft']
-            })
-
-  label-ready-for-review-pr:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false && github.event.action == 'review_requested'
-    steps:
-      - name: Label PR as Ready for Review
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['ready-for-review']
-            })
-
-      - name: Remove Draft Label
-        if: github.event.pull_request.labels.*.name == 'draft'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.removeLabel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              name: 'draft'
-            })
-
-  label-review-approved-pr:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request_review_comment'
-    steps:
-      - name: Label PR as Review Approved
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['review-approved']
-            })
-
-      - name: Remove Ready for Review Label
-        if: github.event.pull_request.labels.*.name == 'ready-for-review'
+      - name: "Pull Request: Remove 'ready-for-review' label"
+        if: contains(github.event.pull_request.labels.*.name, 'ready-for-review')
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -124,3 +121,40 @@ jobs:
               issue_number: context.issue.number,
               name: 'ready-for-review'
             })
+
+      - name: "Pull Request: Add 'reviewed' label"
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['reviewed']
+            })
+
+      # - name: "Jira: Transition PR to 'Done'"
+      #   env: 
+      #     ISSUE_ID: ${{ github.head_ref }}
+      #     JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
+      #   run: |
+      #     curl -X POST -H 'Content-type: application/json' \
+      #     --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "Done"}}' \
+      #     ${{ env.JIRA_INCOMING_WEBHOOK }}
+
+  gthub-context-upload:
+    runs-on: ubuntu-latest
+    needs: [pr-opened-as-draft, pr-ready-for-review, pr-jira-sync, pr-reviewed]
+    steps: 
+      - name: Create Context JSON file
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo $GITHUB_CONTEXT >> github.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./github.json
+          name: github-context
+          
