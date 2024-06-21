@@ -99,14 +99,14 @@ jobs:
               labels: ['ready-for-review']
             })
 
-      - name: "Jira: Transition PR to 'Code Review'"
-        env: 
-          ISSUE_ID: ${{ github.head_ref }}
-          JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "Code Review"}}' \
-          ${{ env.JIRA_INCOMING_WEBHOOK }}
+      # - name: "Jira: Transition PR to 'Code Review'"
+      #   env: 
+      #     ISSUE_ID: ${{ github.head_ref }}
+      #     JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
+      #   run: |
+      #     curl -X POST -H 'Content-type: application/json' \
+      #     --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "Code Review"}}' \
+      #     ${{ env.JIRA_INCOMING_WEBHOOK }}
 
   pr-approved:
     name: PR Approved
@@ -139,14 +139,14 @@ jobs:
               labels: ['reviewed']
             })
 
-      - name: "Jira: Transition PR to 'Awaiting QA'"
-        env: 
-          ISSUE_ID: ${{ github.head_ref }}
-          JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "Awaiting QA"}}' \
-          ${{ env.JIRA_INCOMING_WEBHOOK }}
+      # - name: "Jira: Transition PR to 'Awaiting QA'"
+      #   env: 
+      #     ISSUE_ID: ${{ github.head_ref }}
+      #     JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
+      #   run: |
+      #     curl -X POST -H 'Content-type: application/json' \
+      #     --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "Awaiting QA"}}' \
+      #     ${{ env.JIRA_INCOMING_WEBHOOK }}
 
   gthub-context-upload:
     runs-on: ubuntu-latest
