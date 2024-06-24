@@ -1,23 +1,33 @@
+name: PR ~ Jira Sync
+
 on: 
   pull_request:
     types:
       - opened
       - reopened
       - ready_for_review
-  issue_comment: 
+      
   pull_request_review: 
-  pull_request_review_comment: 
+    types:
+      - submitted
+
+  repository_dispatch: 
+    types: [jira-issue-updated]
+
+  schedule:
+    - cron: '*/5 * * * *'
 
 jobs:
   get-pr-data:
     runs-on: ubuntu-latest
+    name: Get PR Data
     if: always()
     outputs:
       approvals: ${{ steps.pr_status.outputs.approvals }}
       changesRequested: ${{ steps.pr_status.outputs.changesRequested }}
       isMergeable: ${{ steps.pr_status.outputs.isMergeable }}
     steps:
-      - name: "Check PR Status"
+      - name: Get PR Status
         id: pr_status
         uses: actions/github-script@v7
         with:
@@ -40,6 +50,17 @@ jobs:
             core.setOutput("approvals", approvals);
             core.setOutput("changesRequested", changesRequested);
             core.setOutput("isMergeable", isMergeable);
+
+      - name: Show PR Data
+        run: |
+          echo "Approvals: ${{ steps.pr_status.outputs.approvals }}"
+          echo "Changes Requested: ${{ steps.pr_status.outputs.changesRequested }}"
+          echo "Is Mergeable: ${{ steps.pr_status.outputs.isMergeable }}"
+
+      - name: Show Issue Data
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          echo "Paylow: ${{ github.event.client_payload }}"
 
   pr-opened-as-draft:
     name: PR Opened as Draft
@@ -72,7 +93,7 @@ jobs:
     name: PR Ready for Review
     runs-on: ubuntu-latest
     needs: get-pr-data
-    if: ${{ !github.event.pull_request.draft && contains(fromJson('["opened", "reopened", "ready_for_review"]'), github.event.action) }} 
+    if: ${{ !github.event.pull_request.draft && contains(fromJson('["opened", "reopened", "ready_for_review"]'), github.event.action) }}
     steps:
       - name: "Pull Request: Remove 'draft' label"
         if: contains(github.event.pull_request.labels.*.name, 'draft')
@@ -99,20 +120,60 @@ jobs:
               labels: ['ready-for-review']
             })
 
-      - name: "Jira: Transition PR to 'Code Review'"
-        env: 
-          ISSUE_ID: ${{ github.head_ref }}
-          JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "Code Review"}}' \
-          ${{ env.JIRA_INCOMING_WEBHOOK }}
+      # - name: "Jira: Transition PR to 'Code Review'"
+      #   env: 
+      #     ISSUE_ID: ${{ github.head_ref }}
+      #     JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
+      #   run: |
+      #     curl -X POST -H 'Content-type: application/json' \
+      #     --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "Code Review"}}' \
+      #     ${{ env.JIRA_INCOMING_WEBHOOK }}
+
+  pr-reviewed-change-requested:
+    name: PR Reviewed - Change Requested
+    runs-on: ubuntu-latest
+    needs: get-pr-data
+    if: github.event_name == 'pull_request_review' && needs.get-pr-data.outputs.changesRequested
+    steps:
+      - name: "Pull Request: Remove 'ready-for-review' label"
+        if: contains(github.event.pull_request.labels.*.name, 'ready-for-review')
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              name: 'ready-for-review'
+            })
+
+      - name: "Pull Request: Add 'changes-requested' label"
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['changes-requested']
+            })
+
+      # - name: "Jira: Transition PR to 'In Progress'"
+      #   env: 
+      #     ISSUE_ID: ${{ github.head_ref }}
+      #     JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
+      #   run: |
+      #     curl -X POST -H 'Content-type: application/json' \
+      #     --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "In Progress"}}' \
+      #     ${{ env.JIRA_INCOMING_WEBHOOK }}
 
   pr-approved:
     name: PR Approved
     runs-on: ubuntu-latest
     needs: get-pr-data
-    if: ${{ !github.event.pull_request.draft && contains(fromJson('["opened", "reopened", "ready_for_review"]'), github.event.action) && (needs.get-pr-data.outputs.approvals >= 2 && !needs.get-pr-data.outputs.changesRequested) }}
+    if: github.event_name == 'pull_request_review' && (needs.get-pr-data.outputs.approvals >= 2 && !needs.get-pr-data.outputs.changesRequested)
     steps:
       - name: "Pull Request: Remove 'ready-for-review' label"
         if: contains(github.event.pull_request.labels.*.name, 'ready-for-review')
@@ -136,21 +197,111 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              labels: ['reviewed']
+              labels: ['approved']
             })
 
-      - name: "Jira: Transition PR to 'Awaiting QA'"
-        env: 
-          ISSUE_ID: ${{ github.head_ref }}
-          JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "Awaiting QA"}}' \
-          ${{ env.JIRA_INCOMING_WEBHOOK }}
+      # - name: "Jira: Transition PR to 'Awaiting QA'"
+      #   env: 
+      #     ISSUE_ID: ${{ github.head_ref }}
+      #     JIRA_INCOMING_WEBHOOK: ${{ secrets.JIRA_INCOMING_WEBHOOK }}
+      #   run: |
+      #     curl -X POST -H 'Content-type: application/json' \
+      #     --data '{"issues":["${{ env.ISSUE_ID }}"], "data": {"status": "Awaiting QA"}}' \
+      #     ${{ env.JIRA_INCOMING_WEBHOOK }}
+  
+    # -----------------------------------------------------------------------------------------------
+    
+    # This section of code contains jobs related to the Jira actions that trigger it.
 
-  gthub-context-upload:
+    # The jobs defined below are responsible for handling various Jira-related tasks, such as updating issue status, and retrieving issue details. These jobs are triggered by specific actions in Jira, such as issue creation or status change.
+
+    # Please note that in order for these jobs to work properly, you need to configure the necessary Jira credentials and webhook settings.
+
+  jira-issue-status:
+    name: Jira Issue Status - Reviewing
     runs-on: ubuntu-latest
     needs: get-pr-data
+    if: github.event_name == 'repository_dispatch'
+    steps:
+      - name: "Pull Request: Add 'approved-by-qe' label"
+        if: github.event.client_payload.status == 'approved-by-qe'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pullRequestUrl = "${{ github.event.client_payload.pull_request_url }}";
+            const pullRequestId = pullRequestUrl.split('/').pop();
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: parseInt(pullRequestId, 10),
+              labels: ['approved-by-qe']
+            });
+
+      - name: "Pull Request: Add 'approved-by-po' label"
+        if: github.event.client_payload.status == 'approved-by-po'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pullRequestUrl = "${{ github.event.client_payload.pull_request_url }}";
+            const pullRequestId = pullRequestUrl.split('/').pop();
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: parseInt(pullRequestId, 10),
+              labels: ['approved-by-po']
+            });
+
+  # ----------------------------------
+
+  update-and-merge-prs:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+    
+      - name: Fetch PRs with 'approved-by-po' label
+        id: get-prs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'approved-by-po'
+            });
+            return prs.data.map(pr => ({ number: pr.number, mergeable_state: pr.mergeable_state }));
+    
+      - name: Update or Merge PRs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prs = ${{ steps.get-prs.outputs.result }};
+            for (const pr of prs) {
+              if (pr.mergeable_state === 'clean' || pr.mergeable_state === 'unstable') {
+                // Attempt to merge PR
+                await github.rest.pulls.merge({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  merge_method: 'squash' // or 'merge' or 'rebase'
+                });
+              } else {
+                // Update PR by merging base branch into PR branch
+                // Note: This requires a more complex script to handle merge conflicts, etc.
+                console.log(`PR #${pr.number} is not up-to-date and needs manual intervention.`);
+              }
+            }
+        
+  gthub-context-upload:
+    runs-on: ubuntu-latest
+    name: Upload GitHub Context
+    needs: [pr-opened-as-draft, pr-ready-for-review, pr-reviewed-change-requested, pr-approved]
     steps: 
       - name: Create Context JSON file
         env:
