@@ -14,8 +14,11 @@ on:
   repository_dispatch: 
     types: [jira-issue-updated]
 
-  schedule:
-    - cron: '*/5 * * * *'
+  release:
+    type: [created]
+
+  # schedule:
+  #   - cron: '*/5 * * * *'
 
 jobs:
   get-pr-data:
@@ -297,11 +300,17 @@ jobs:
                 console.log(`PR #${pr.number} is not up-to-date and needs manual intervention.`);
               }
             }
-        
+
+  create-release:
+    runs-on: ubuntu-latest
+    if: github.event_type == 'release'
+    steps:
+      - run: echo "Creating release"
+  
   gthub-context-upload:
     runs-on: ubuntu-latest
     name: Upload GitHub Context
-    needs: [pr-opened-as-draft, pr-ready-for-review, pr-reviewed-change-requested, pr-approved]
+    needs: [pr-opened-as-draft, pr-ready-for-review, pr-reviewed-change-requested, pr-approved, create-release]
     steps: 
       - name: Create Context JSON file
         env:
