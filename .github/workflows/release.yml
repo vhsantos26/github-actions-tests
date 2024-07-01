@@ -1,0 +1,17 @@
+on: 
+  release:
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Context JSON file
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo $GITHUB_CONTEXT >> github.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./github.json
+          name: github-context
