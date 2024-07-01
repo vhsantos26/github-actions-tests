@@ -9,7 +9,7 @@ on:
       
   pull_request_review: 
     types:
-      - submitted
+      - prereleased
 
   repository_dispatch: 
     types: [jira-issue-updated]
@@ -303,7 +303,7 @@ jobs:
 
   create-release:
     runs-on: ubuntu-latest
-    if: github.event_type == 'release'
+    if: github.event_type == 'prereleased'
     steps:
       - run: echo "Creating release"
   
