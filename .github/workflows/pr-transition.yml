@@ -15,7 +15,6 @@ on:
     types: [jira-issue-updated]
 
   release:
-    type: [created]
 
   # schedule:
   #   - cron: '*/5 * * * *'
@@ -303,7 +302,7 @@ jobs:
 
   create-release:
     runs-on: ubuntu-latest
-    if: github.event_type == 'prereleased'
+    if: github.event_type == 'release'
     steps:
       - run: echo "Creating release"
   
