@@ -1,5 +1,6 @@
 on: 
-  release:
+  repository_dispatch:
+    type: [create-release-branch]
 
 jobs:
   create-release:
