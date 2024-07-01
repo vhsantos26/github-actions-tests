@@ -14,9 +14,6 @@ on:
   repository_dispatch: 
     types: [jira-issue-updated]
 
-  release:
-    types: [published]
-
   # schedule:
   #   - cron: '*/5 * * * *'
 
