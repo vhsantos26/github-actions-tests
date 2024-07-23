@@ -8,7 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     name: Clean Cache
-    steps:      
+    steps:
+      - name: Create Context JSON file
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo $GITHUB_CONTEXT >> github.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./github.json
+          name: github-context
+    
       - name: Clean Cache
         uses: actions/github-script@v7
         with:
@@ -29,18 +40,18 @@ jobs:
             console.log('Fetched caches:', actions_caches);
             console.log('Desired cache key prefix:', context.ref);
 
-            const cacheIds = actions_caches.filter(cache => cache.key === context.ref).map(cache => cache.id);
+            const cacheIds = actions_caches.filter(cache => cache.ref === context.ref).map(cache => cache.id);
             const uniqueCacheIds = [...new Set(cacheIds)];
 
             console.log('Cache IDs to delete:', uniqueCacheIds);
 
             for (const id of uniqueCacheIds) {
               console.log(`Deleting cache with ID: ${id}`);
-              await github.rest.actions.deleteActionsCacheById({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                cache_id: id,
-              });
+              # await github.rest.actions.deleteActionsCacheById({
+              #   owner: context.repo.owner,
+              #   repo: context.repo.repo,
+              #   cache_id: id,
+              # });
               console.log(`Deleted cache with ID: ${id}`);
             }
 
