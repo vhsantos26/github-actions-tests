@@ -16,7 +16,7 @@ jobs:
           script: |
             console.log('Starting cache cleanup process...');
 
-            const { actions_caches } = await github.rest.actions.getActionsCacheList({
+            const { actions_caches } = await github.rest.actions.listRepoCaches({
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
