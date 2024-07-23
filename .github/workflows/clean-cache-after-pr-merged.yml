@@ -27,6 +27,10 @@ jobs:
           script: |
             console.log('Starting cache cleanup process...');
 
+            // Access the head ref from the pull request event context
+            const headRef = 'refs/heads/' + context.payload.pull_request.head.ref;
+            console.log('Head ref:', headRef);
+
             const { data: { actions_caches } } = await github.rest.actions.getActionsCacheList({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -38,9 +42,9 @@ jobs:
             }
 
             console.log('Fetched caches:', actions_caches);
-            console.log('Desired cache key prefix:', github.head_ref);
 
-            const cacheIds = actions_caches.filter(cache => cache.ref === github.head_ref).map(cache => cache.id);
+            // Filter caches by comparing to the headRef
+            const cacheIds = actions_caches.filter(cache => cache.ref === headRef).map(cache => cache.id);
             const uniqueCacheIds = [...new Set(cacheIds)];
 
             console.log('Cache IDs to delete:', uniqueCacheIds);
