@@ -29,7 +29,7 @@ jobs:
 
             // Access the head ref from the pull request event context
             const ref = 'refs/pull/' + context.payload.pull_request.number + '/merge';
-            console.log('Head ref:', headRef);
+            console.log('Ref:', ref);
 
             const { data: { actions_caches } } = await github.rest.actions.getActionsCacheList({
               owner: context.repo.owner,
