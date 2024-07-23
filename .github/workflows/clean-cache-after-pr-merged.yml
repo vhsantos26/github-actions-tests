@@ -47,11 +47,11 @@ jobs:
 
             for (const id of uniqueCacheIds) {
               console.log(`Deleting cache with ID: ${id}`);
-              # await github.rest.actions.deleteActionsCacheById({
-              #   owner: context.repo.owner,
-              #   repo: context.repo.repo,
-              #   cache_id: id,
-              # });
+              await github.rest.actions.deleteActionsCacheById({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                cache_id: id,
+              });
               console.log(`Deleted cache with ID: ${id}`);
             }
 
