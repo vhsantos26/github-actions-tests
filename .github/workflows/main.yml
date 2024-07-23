@@ -11,10 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Common
     steps:
-      - run: echo "Build & Test Common"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: "true"
 
       - run: |
-          cd projects/mobile/__tests__/ui/
+          cd ./projects/mobile/__tests__/ui
           yarn install
 
       - name: Create Dummy Cache
