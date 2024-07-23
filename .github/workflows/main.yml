@@ -13,6 +13,12 @@ jobs:
     steps:
       - run: echo "Build & Test Common"
 
+      - name: Create Dummy Cache
+        uses: actions/cache@v3
+        with:
+          path: docs
+          key: dummy-cache-${{ github.sha }}
+
   build-mobile:
     runs-on: ubuntu-latest
     name: Build Mobile
