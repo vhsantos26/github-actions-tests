@@ -28,7 +28,7 @@ jobs:
             console.log('Starting cache cleanup process...');
 
             // Access the head ref from the pull request event context
-            const headRef = 'refs/heads/' + context.payload.pull_request.head.ref;
+            const headRef = 'refs/heads/' + context.payload.pull_request.number + '/merge';
             console.log('Head ref:', headRef);
 
             const { data: { actions_caches } } = await github.rest.actions.getActionsCacheList({
