@@ -13,10 +13,14 @@ jobs:
     steps:
       - run: echo "Build & Test Common"
 
+      - run: |
+          cd projects/mobile/__tests__/ui/
+          yarn install
+
       - name: Create Dummy Cache
         uses: actions/cache@v3
         with:
-          path: docs
+          path: projects/mobile/__tests__/ui/node_modules/
           key: dummy-cache-${{ github.sha }}
 
   build-mobile:
