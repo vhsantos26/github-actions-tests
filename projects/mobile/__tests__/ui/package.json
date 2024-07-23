@@ -5,6 +5,7 @@
   "author": "santosv@aljazeera.net",
   "license": "MIT",
   "devDependencies": {
+    "@faker-js/faker": "8.4.1",
     "@types/chai": "4.3.12",
     "@wdio/appium-service": "8.32.3",
     "@wdio/cli": "8.32.3",
