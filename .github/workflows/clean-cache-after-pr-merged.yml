@@ -40,7 +40,7 @@ jobs:
             console.log('Fetched caches:', actions_caches);
             console.log('Desired cache key prefix:', context.ref);
 
-            const cacheIds = actions_caches.filter(cache => cache.ref === context.ref).map(cache => cache.id);
+            const cacheIds = actions_caches.filter(cache => cache.ref === context.head_ref).map(cache => cache.id);
             const uniqueCacheIds = [...new Set(cacheIds)];
 
             console.log('Cache IDs to delete:', uniqueCacheIds);
