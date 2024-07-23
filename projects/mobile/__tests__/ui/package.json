@@ -5,7 +5,7 @@
   "author": "santosv@aljazeera.net",
   "license": "MIT",
   "devDependencies": {
-    "@types/chai": "4.3.5",
+    "@types/chai": "4.3.12",
     "@wdio/appium-service": "8.13.4",
     "@wdio/cli": "8.13.5",
     "@wdio/local-runner": "8.13.4",
