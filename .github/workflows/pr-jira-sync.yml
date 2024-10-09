@@ -1,0 +1,62 @@
+name: PR ~ Jira Sync
+
+on: 
+  repository_dispatch: 
+    types: [jira_issue_updated]
+
+  schedule:
+    - cron: '0 5,17 * * *'
+
+jobs:
+  add-pull-request-label:
+    name: PR Ready for Review
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Pull Request: Add '${{ github.event.client_payload.issueKey }}' label"
+        uses: ./.github/actions/manage-single-label-action
+        with:
+          branch: ${{ github.event.client_payload.issueKey }}
+          issue-status: '${{ github.event.client_payload.issueStatus }}'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  pr-merge-check:
+    name: PR Merge Check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - name: "Get Approved PRs"
+        id: approved_prs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'approved-by-po'
+            });
+            core.setOutput("approvedPRs", JSON.stringify(pullRequests));
+
+      - name: "Show Approved PRs"
+        run: |
+          echo "Approved PRs: ${{ steps.approved_prs.outputs.approvedPRs }}"
+
+  gthub-context-upload:
+    runs-on: ubuntu-latest
+    name: Upload GitHub Context
+    if: always()
+    needs: [add-pull-request-label, pr-merge-check]
+    steps: 
+      - name: Create Context JSON file
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo $GITHUB_CONTEXT >> github.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./github.json
+          name: github-context

@@ -1,0 +1,94 @@
+name: "Manage Single Label Action"
+description: "An action to manage labels on a pull request."
+
+inputs:
+  branch:
+    description: "The branch to manage."
+    required: true
+  issue-status:
+    description: "The issue status to map to a label."
+    required: true
+  github-token:
+    description: "The GitHub token to use."
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Find Open Pull Request"
+      id: find-pr
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const branchName = '${{ inputs.branch }}';
+          const { data: pullRequests } = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            head: `${context.repo.owner}:${branchName}`,
+          });
+
+          if (pullRequests.length > 0) {
+            core.setOutput('pr_number', pullRequests[0].number);
+          } else {
+            core.setFailed(`No open pull request found for branch ${branchName}`);
+          }
+
+    - name: "Map Issue Status to Label"
+      id: map-status
+      shell: bash
+      run: |
+        echo "Mapping issue status to label..."
+        case "${{ inputs.issue-status }}" in
+          "Code Review")
+            echo "::set-output name=label::code-review"
+            ;;
+          "In Progress")
+            echo "::set-output name=label::in-progress"
+            ;;
+          "Awaiting QA")
+            echo "::set-output name=label::approved-by-dev"
+            ;;
+          "Reviewing")
+            echo "::set-output name=label::approved-by-qa"
+            ;;
+          "Resolved")
+            echo "::set-output name=label::approved-by-po"
+            ;;
+          *)
+            echo "::set-output name=label::unknown"
+            ;;
+        esac
+
+    - name: "Pull Request: Remove unwanted labels"
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const labels = [
+            'in-progress',
+            'code-review',
+            'approved-by-dev',
+            'approved-by-po',
+            'approved-by-qa',
+          ];
+          const labelToKeep = '${{ steps.map-status.outputs.label }}';
+          const prNumber = ${{ steps.find-pr.outputs.pr_number }};
+          const currentLabels = await github.rest.issues.listLabelsOnIssue({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: prNumber,
+          });
+          const labelsToRemove = currentLabels.data
+            .map(label => label.name)
+            .filter(name => labels.includes(name) && name !== labelToKeep);
+
+          for (const label of labelsToRemove) {
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              name: label,
+            });
+          }
