@@ -42,23 +42,23 @@ runs:
         echo "Mapping issue status to label..."
         case "${{ inputs.issue-status }}" in
           "Code Review")
-            echo "::set-output name=label::code-review"
-            ;;
+          echo "label=code-review" >> $GITHUB_STATE
+          ;;
           "In Progress")
-            echo "::set-output name=label::in-progress"
-            ;;
+          echo "label=in-progress" >> $GITHUB_STATE
+          ;;
           "Awaiting QA")
-            echo "::set-output name=label::approved-by-dev"
-            ;;
+          echo "label=approved-by-dev" >> $GITHUB_STATE
+          ;;
           "Reviewing")
-            echo "::set-output name=label::approved-by-qa"
-            ;;
+          echo "label=approved-by-qa" >> $GITHUB_STATE
+          ;;
           "Resolved")
-            echo "::set-output name=label::approved-by-po"
-            ;;
+          echo "label=approved-by-po" >> $GITHUB_STATE
+          ;;
           *)
-            echo "::set-output name=label::unknown"
-            ;;
+          echo "label=unknown" >> $GITHUB_STATE
+          ;;
         esac
 
     - name: "Pull Request: Remove unwanted labels"
