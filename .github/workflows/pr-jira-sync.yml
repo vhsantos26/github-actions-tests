@@ -9,7 +9,7 @@ on:
 
 jobs:
   add-pull-request-label:
-    name: PR Ready for Review
+    name: Add Pull Request Label
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
