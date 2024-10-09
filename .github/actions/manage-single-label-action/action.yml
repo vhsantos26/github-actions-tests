@@ -48,22 +48,22 @@ runs:
         echo "Mapping issue status to label..."
         case "${{ inputs.issue-status }}" in
           "Code Review")
-          echo "label=code-review" >> $GITHUB_STATE
+          echo "label=code-review" >> $GITHUB_OUTPUT
           ;;
           "In Progress")
-          echo "label=in-progress" >> $GITHUB_STATE
+          echo "label=in-progress" >> $GITHUB_OUTPUT
           ;;
           "Awaiting QA")
-          echo "label=approved-by-dev" >> $GITHUB_STATE
+          echo "label=approved-by-dev" >> $GITHUB_OUTPUT
           ;;
           "Reviewing")
-          echo "label=approved-by-qa" >> $GITHUB_STATE
+          echo "label=approved-by-qa" >> $GITHUB_OUTPUT
           ;;
           "Resolved")
-          echo "label=approved-by-po" >> $GITHUB_STATE
+          echo "label=approved-by-po" >> $GITHUB_OUTPUT
           ;;
           *)
-          echo "label=unknown" >> $GITHUB_STATE
+          echo "label=unknown" >> $GITHUB_OUTPUT
           ;;
         esac
 
