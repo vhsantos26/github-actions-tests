@@ -103,3 +103,16 @@ runs:
               name: label,
             });
           }
+
+          const labelExists = currentLabels.data.some(label => label.name === labelToKeep);
+          if (!labelExists) {
+            core.info(`Adding label: ${labelToKeep}`);
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              labels: [labelToKeep],
+            });
+          } else {
+            core.info(`Label ${labelToKeep} already exists on the pull request`);
+          }
