@@ -21,8 +21,9 @@ runs:
       with:
         github-token: ${{ inputs.github-token }}
         script: |
+          const core = require('@actions/core');
           const branchName = '${{ inputs.branch }}';
-          console.log(`Branch name: ${branchName}`);
+          core.info(`Branch name: ${branchName}`);
           
           const { data: pullRequests } = await github.rest.pulls.list({
             owner: context.repo.owner,
@@ -31,13 +32,13 @@ runs:
             head: `${context.repo.owner}:${branchName}`,
           });
 
-          console.log(`Found ${pullRequests.length} pull request(s) for branch ${branchName}`);
+          core.info(`Found ${pullRequests.length} pull request(s) for branch ${branchName}`);
 
           if (pullRequests.length > 0) {
-            console.log(`Pull request number: ${pullRequests[0].number}`);
+            core.info(`Pull request number: ${pullRequests[0].number}`);
             core.setOutput('pr_number', pullRequests[0].number);
           } else {
-            console.log(`No open pull request found for branch ${branchName}`);
+            core.info(`No open pull request found for branch ${branchName}`);
             core.setFailed(`No open pull request found for branch ${branchName}`);
           }
 
