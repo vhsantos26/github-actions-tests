@@ -72,7 +72,6 @@ runs:
       with:
         github-token: ${{ inputs.github-token }}
         script: |
-          const core = require('@actions/core');
           const labels = [
             'in-progress',
             'code-review',
