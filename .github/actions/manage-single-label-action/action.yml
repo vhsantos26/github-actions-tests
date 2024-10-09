@@ -21,7 +21,6 @@ runs:
       with:
         github-token: ${{ inputs.github-token }}
         script: |
-          const core = require('@actions/core');
           const branchName = '${{ inputs.branch }}';
           core.info(`Branch name: ${branchName}`);
           
