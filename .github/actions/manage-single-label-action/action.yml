@@ -72,6 +72,7 @@ runs:
       with:
         github-token: ${{ inputs.github-token }}
         script: |
+          const core = require('@actions/core');
           const labels = [
             'in-progress',
             'code-review',
@@ -80,17 +81,22 @@ runs:
             'approved-by-qa',
           ];
           const labelToKeep = '${{ steps.map-status.outputs.label }}';
+          core.info(`Label to keep: ${labelToKeep}`);
           const prNumber = ${{ steps.find-pr.outputs.pr_number }};
+          core.info(`Pull request number: ${prNumber}`);
           const currentLabels = await github.rest.issues.listLabelsOnIssue({
             owner: context.repo.owner,
             repo: context.repo.repo,
             issue_number: prNumber,
           });
+          core.info(`Current labels on PR: ${currentLabels.data.map(label => label.name).join(', ')}`);
           const labelsToRemove = currentLabels.data
             .map(label => label.name)
             .filter(name => labels.includes(name) && name !== labelToKeep);
 
+          core.info(`Labels to remove: ${labelsToRemove.join(', ')}`);
           for (const label of labelsToRemove) {
+            core.info(`Removing label: ${label}`);
             await github.rest.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
