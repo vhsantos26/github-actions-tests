@@ -1,0 +1,18 @@
+on:
+  workflow_dispatch: 
+
+jobs:
+  send-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: hilarion5/send-mail@v1
+        with:
+          smtp-server: ${{ secrets.MAIL_SERVER }}
+          smtp-port: 465
+          smtp-secure: true
+          from-email: not-reply@mailer.aljazeera.net
+          to-email: santosv@aljazeera.net
+          username: ${{ secrets_MAIL_USER }}
+          password: ${{ secrets_MAIL_USER }}
+          subject: Test Email
+          body: This is a test email sent from GitHub Actions.
