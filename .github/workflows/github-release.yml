@@ -56,7 +56,6 @@ jobs:
       - name: Add Changed Files
         run: |
           git add .
-          git restore --staged ios/Gemfile.lock 
           git commit -m "${{ inputs.ticket_id }}: Bump version to ${{ inputs.version }}"
 
       - run: git push origin ${{ steps.set_branch_name.outputs.branch }}
