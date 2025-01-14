@@ -5,14 +5,14 @@ jobs:
   send-report:
     runs-on: ubuntu-latest
     steps:
-      - uses: hilarion5/send-mail@v1
+      - uses: dawidd6/action-send-mail@v3
         with:
-          smtp-server: ${{ secrets.MAIL_SERVER }}
-          smtp-port: 465
-          smtp-secure: true
-          from-email: not-reply@mailer.aljazeera.net
-          to-email: santosv@aljazeera.net
-          username: ${{ secrets.MAIL_USER }}
+          server_address: ${{ secrets.MAIL_SERVER }}
+          username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: Test Email
-          body: This is a test email sent from GitHub Actions.
+          server_port: 465
+          secure: true
+          subject: "[GitHub] Your Package Outdated report for this week"
+          to: santosv@aljazeera.net
+          from: not-reply@mailer.aljazeera.net
+          body: GitHub version alert digest
