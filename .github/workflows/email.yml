@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: dawidd6/action-send-mail@v3
         with:
-          server_address: ${{ secrets.MAIL_SERVER }}
+          connection_url: smtp+starttls://${{ secrets.MAIL_USERNAME }}:${{ secrets.MAIL_PASSWORD }}@${{ secrets.MAIL_SERVER }}:465
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           server_port: 465
