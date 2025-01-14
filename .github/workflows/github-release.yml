@@ -1,0 +1,58 @@
+name: GitHub Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: text
+        required: true
+        default: '7.7.0'
+
+permissions:
+  contents: write
+
+jobs:
+  create-release-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Install Yarn Dependencies
+        run: yarn --prefer-offline
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+          check-latest: true
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Set Branch Name
+        id: set_branch_name
+        run: |
+          VERSION=${{ inputs.version }}
+          LAST_DIGIT="${VERSION: -1}"
+          if [ "$LAST_DIGIT" == "0" ]; then
+            echo "branch=rc-${{ github.event.client_payload.release_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "branch=hotfix-${{ github.event.client_payload.release_version }}" >> $GITHUB_OUTPUT
+          fi
+  
+      - name: Bump version
+        run: sh scripts/bump-version.sh ${{ github.event.client_payload.release_version }}
+        shell: bash
+
+      - run: git checkout -b ${{ steps.set_branch_name.outputs.branch }}
+
+      - name: Add Changed Files
+        run: |
+          git add .
+          git restore --staged ios/Gemfile.lock 
+          git commit -m "${{ github.event.client_payload.issue_id }}: Bump version to ${{ github.event.client_payload.release_version }}"
+
+      - run: git push origin ${{ steps.set_branch_name.outputs.branch }}
