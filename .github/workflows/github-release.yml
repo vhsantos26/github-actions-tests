@@ -4,9 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        type: text
+        type: string
         required: true
         default: '7.7.0'
+      ticket_id:
+        type: string
+        required: true
+        default: 'UMP-1234'
 
 permissions:
   contents: write
@@ -38,13 +42,13 @@ jobs:
           VERSION=${{ inputs.version }}
           LAST_DIGIT="${VERSION: -1}"
           if [ "$LAST_DIGIT" == "0" ]; then
-            echo "branch=rc-${{ github.event.client_payload.release_version }}" >> $GITHUB_OUTPUT
+            echo "branch=rc-${{ inputs.version }}" >> $GITHUB_OUTPUT
           else
-            echo "branch=hotfix-${{ github.event.client_payload.release_version }}" >> $GITHUB_OUTPUT
+            echo "branch=hotfix-${{ inputs.version }}" >> $GITHUB_OUTPUT
           fi
   
       - name: Bump version
-        run: sh scripts/bump-version.sh ${{ github.event.client_payload.release_version }}
+        run: sh scripts/bump-version.sh ${{ inputs.version }}
         shell: bash
 
       - run: git checkout -b ${{ steps.set_branch_name.outputs.branch }}
@@ -53,6 +57,6 @@ jobs:
         run: |
           git add .
           git restore --staged ios/Gemfile.lock 
-          git commit -m "${{ github.event.client_payload.issue_id }}: Bump version to ${{ github.event.client_payload.release_version }}"
+          git commit -m "${{ inputs.ticket_id }}: Bump version to ${{ inputs.version }}"
 
       - run: git push origin ${{ steps.set_branch_name.outputs.branch }}
