@@ -12,7 +12,7 @@ jobs:
           smtp-secure: true
           from-email: not-reply@mailer.aljazeera.net
           to-email: santosv@aljazeera.net
-          username: ${{ secrets_MAIL_USER }}
-          password: ${{ secrets_MAIL_USER }}
+          username: ${{ secrets.MAIL_USER }}
+          password: ${{ secrets.MAIL_PASSWORD }}
           subject: Test Email
           body: This is a test email sent from GitHub Actions.
