@@ -7,13 +7,12 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
-
 BASE_DIR="${PWD}"
 
 ANDROID_BUILD_GRADLE="${BASE_DIR}/android/app/build.gradle"
 IOS_DIR="${BASE_DIR}/ios"
 APP_VERSION_JSON="${BASE_DIR}/assets/env/appVersion.json"
-cat <<< $(jq --arg VERSION "$VERSION" '.APP_VERSION = $VERSION' ${APP_VERSION_JSON}) > ${APP_VERSION_JSON}
+jq --arg VERSION "$VERSION" '.APP_VERSION = $VERSION' "$APP_VERSION_JSON" > tmp.$$.json && mv tmp.$$.json "$APP_VERSION_JSON"
 SONAR_PROJECT_PROPERTIES="${BASE_DIR}/sonar-project.properties"
 sed -i '' "s/^sonar.projectVersion.*$/sonar.projectVersion=$VERSION/" "${SONAR_PROJECT_PROPERTIES}"
 sed -i '' "s/app_version=\".*\"/app_version=\"$VERSION\"/" "${ANDROID_BUILD_GRADLE}"
