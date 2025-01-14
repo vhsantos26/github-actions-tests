@@ -18,4 +18,4 @@ SONAR_PROJECT_PROPERTIES="${BASE_DIR}/sonar-project.properties"
 sed -i '' "s/^sonar.projectVersion.*$/sonar.projectVersion=$VERSION/" "${SONAR_PROJECT_PROPERTIES}"
 sed -i '' "s/app_version=\".*\"/app_version=\"$VERSION\"/" "${ANDROID_BUILD_GRADLE}"
 cd "${BASE_DIR}" && yarn --new-version version $VERSION --no-git-tag-version --no-commit-hooks
-cd "${IOS_DIR}" && bundle install && APP_VERSION="$VERSION" bundle exec fastlane versionnum
+# cd "${IOS_DIR}" && bundle install && APP_VERSION="$VERSION" bundle exec fastlane versionnum
