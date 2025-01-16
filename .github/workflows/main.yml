@@ -1,0 +1,128 @@
+name: Continuous Integration/Delivery
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+  repository_dispatch: 
+    types: [release-build-check]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-mobile:
+    runs-on: ubuntu-22.04
+    if: github.event.pull_request.draft == false
+    name: Build & Test Mobile
+    steps:
+      - uses: actions/checkout@v4
+
+  build-mobile-android:
+    name: Build Dev
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+  build-mobile-ios:
+    name: Build Dev
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+  deploy-to-firebase:
+    name: Deploy to Firebase
+    needs: [build-mobile-android, build-mobile-ios]
+    runs-on: ubuntu-22.04
+    if: always() && needs.build-mobile-android.result == 'success' && needs.build-mobile-ios.result == 'success'
+    strategy:
+      matrix:
+        platform: [android, ios]
+    steps:
+      - uses: actions/checkout@v4
+
+  deploy-to-saucelabs:
+    if: github.event.pull_request.draft == false
+    name: Deploy to Sauce Labs
+    needs: [build-mobile-android, build-mobile-ios]
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        platform-name: [android, ios]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+  
+  end-to-end-execution:
+    name: End-to-end Execution
+    needs: [deploy-to-saucelabs]
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        platform-name: [android, ios]
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+  build-mobile-android-release:
+    name: Build Release
+    runs-on: ubuntu-22.04
+    if: always() && (github.base_ref == 'main' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-'))) && contains(github.event.pull_request.labels.*.name, 'ready-for-regression')
+    steps:
+      - uses: actions/checkout@v4
+
+  build-mobile-ios-release:
+    name: Build Release
+    runs-on: ubuntu-22.04
+    if: always() && (github.base_ref == 'main' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-'))) && contains(github.event.pull_request.labels.*.name, 'ready-for-regression')
+    steps:
+      - uses: actions/checkout@v4
+
+  deploy-amazon-appstore:
+    name: Deploy to Amazon AppStore
+    runs-on: ubuntu-22.04
+    needs: [build-mobile-android-release, build-mobile-ios-release]
+    steps:
+      - uses: actions/checkout@v4
+
+  deploy-google-playstore:
+    name: Deploy to Google PlayStore
+    runs-on: ubuntu-22.04
+    needs: [build-mobile-android-release, build-mobile-ios-release]
+    steps:
+      - uses: actions/checkout@v4
+
+  deploy-testflight:
+    name: Deploy to TestFlight
+    runs-on: ubuntu-22.04
+    needs: [build-mobile-android-release, build-mobile-ios-release]
+    steps:
+      - uses: actions/checkout@v4
+
+  deploy-dsym-from-appstore:
+    name: Upload Debug Symbols To Firebase Crashlytics
+    runs-on: ubuntu-22.04
+    needs: [build-mobile-android-release, build-mobile-ios-release]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+  slack:
+    name: Slack Notification
+    if: always()
+    runs-on: ubuntu-22.04
+    needs:
+      [ 
+        deploy-to-firebase,
+        end-to-end-execution,
+        deploy-amazon-appstore,
+        deploy-google-playstore,
+        deploy-testflight,
+        deploy-dsym-from-appstore,
+        deploy-to-saucelabs
+      ]
+    steps:
+      - uses: actions/checkout@v4

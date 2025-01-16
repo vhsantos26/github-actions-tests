@@ -1,0 +1,13 @@
+on:
+  pull_request:
+    types: [labeled]
+    branches: [rc-*]
+
+jobs:
+  trigger-jobs:
+    runs-on: ubuntu-22.04
+    name: Trigger Jobs
+    steps:
+      - uses: peter-evans/repository-dispatch@v3
+        with:
+          event-type: release-build-check
