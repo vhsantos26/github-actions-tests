@@ -80,14 +80,14 @@ jobs:
   build-mobile-android-release:
     name: Build Release
     runs-on: ubuntu-22.04
-    if: always() && (github.base_ref == 'main' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-'))) && contains(github.event.pull_request.labels.*.name, 'ready-for-regression')
+    if: always() && ((github.event_name == 'pull_request' && github.base_ref == 'main') || (github.event_name == 'repository_dispatch' && ref == 'refs/heads/main')) && contains(github.event.pull_request.labels.*.name, 'ready-for-regression')
     steps:
       - uses: actions/checkout@v4
 
   build-mobile-ios-release:
     name: Build Release
     runs-on: ubuntu-22.04
-    if: always() && (github.base_ref == 'main' && (startsWith(github.head_ref, 'rc-') || startsWith(github.head_ref, 'hotfix-'))) && contains(github.event.pull_request.labels.*.name, 'ready-for-regression')
+    if: always() && ((github.event_name == 'pull_request' && github.base_ref == 'main') || (github.event_name == 'repository_dispatch' && ref == 'refs/heads/main')) && contains(github.event.pull_request.labels.*.name, 'ready-for-regression')
     steps:
       - uses: actions/checkout@v4
 
