@@ -18,7 +18,17 @@ jobs:
     if: github.event.pull_request.draft == false
     name: Build & Test Mobile
     steps:
-      - uses: actions/checkout@v4
+      - name: Create Context Json file
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo $GITHUB_CONTEXT >> github.event.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./github.event.json
+          name: pull-request-event
+
 
   build-mobile-android:
     name: Build Dev
