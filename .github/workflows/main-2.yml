@@ -9,15 +9,30 @@ env:
   NODE_VERSION: 20
 
 jobs:
-  build-mobile:
+  deploy-to-sauce-labs:
     runs-on: ubuntu-24.04
     if: github.event.pull_request.draft == false
     name: Build & Test Mobile
+    strategy:
+      matrix:
+        os: [ios, android]
+    outputs:
+      ios_app_file_id: ${{ steps.upload-ios.outputs.file-id }}
+      android_app_file_id: ${{ steps.upload-android.outputs.file-id }}
     steps:
-      - uses: actions/checkout@v4
-      - run: corepack enable
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          check-latest: true
-          cache: 'yarn'
+      - id: upload-${{ matrix.os }}
+        run: echo "{id}={1234}" >> $GITHUB_OUTPUT
+
+  end-to-end-exection:
+    name: End-to-end Execution
+    needs: [deploy-to-sauce-labs]
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        platform-name: [android, ios]
+      fail-fast: false
+    steps:
+      - run: |
+          echo ${{ needs.deploy-to-sauce-labs.outputs.ios_app_file_id }}
+          echo ${{ needs.deploy-to-sauce-labs.outputs.android_app_file_id }}
+        
