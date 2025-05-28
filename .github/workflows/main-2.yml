@@ -1,0 +1,20 @@
+name: Continuous Integration/Delivery
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  LINUX_RUNNER: ubuntu-24.04
+
+jobs:
+  build-mobile:
+    runs-on: $LINUX_RUNNER
+    name: Build & Test Mobile
+    steps:
+      - uses: actions/checkout@v4
